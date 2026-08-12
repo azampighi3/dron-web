@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RCKT | Topografía con dron e ingeniería hidráulica</title>
+<meta name="description" content="RCKT: levantamientos con dron, curvas de nivel y deslindes + ingeniería hidráulica, drenaje y estudios de inundación en Chile. Calcula tu cotización en línea.">
+<link rel="canonical" href="https://www.rckt.cl/">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#05090d">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_CL">
+<meta property="og:site_name" content="RCKT">
+<meta property="og:title" content="RCKT | Topografía con dron e ingeniería hidráulica">
+<meta property="og:description" content="RCKT: levantamientos con dron, curvas de nivel y deslindes + ingeniería hidráulica, drenaje y estudios de inundación en Chile. Calcula tu cotización en línea.">
+<meta property="og:url" content="https://www.rckt.cl/">
+<meta property="og:image" content="https://www.rckt.cl/assets/img/og-portada.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/css/estilos.css?v=b9a93903">
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ProfessionalService", "@id": "https://www.rckt.cl/#negocio", "name": "RCKT", "alternateName": "RCKT Ingeniería y Geomática", "legalName": "RCKT SpA", "url": "https://www.rckt.cl/", "telephone": "+56 9 0000 0000", "email": "contacto@rckt.cl", "image": "https://www.rckt.cl/assets/img/og-portada.svg", "logo": "https://www.rckt.cl/assets/img/favicon.svg", "description": "RCKT: fotogrametría y topografía con dron e ingeniería hidráulica. Curvas de nivel, deslindes, ortomosaicos, modelación de redes de agua potable, drenaje pluvial y estudios de inundación en Chile.", "areaServed": [{"@type": "AdministrativeArea", "name": "Región Metropolitana"}, {"@type": "AdministrativeArea", "name": "Santiago"}, {"@type": "AdministrativeArea", "name": "Colina"}, {"@type": "AdministrativeArea", "name": "Buin"}, {"@type": "AdministrativeArea", "name": "Melipilla"}, {"@type": "AdministrativeArea", "name": "Región de Coquimbo"}, {"@type": "AdministrativeArea", "name": "La Serena"}, {"@type": "AdministrativeArea", "name": "Coquimbo"}, {"@type": "AdministrativeArea", "name": "Región de Valparaíso"}, {"@type": "AdministrativeArea", "name": "Valparaíso"}, {"@type": "AdministrativeArea", "name": "Viña del Mar"}, {"@type": "AdministrativeArea", "name": "San Antonio"}, {"@type": "AdministrativeArea", "name": "Casablanca"}, {"@type": "AdministrativeArea", "name": "Región de O'Higgins"}, {"@type": "AdministrativeArea", "name": "Rancagua"}, {"@type": "AdministrativeArea", "name": "San Fernando"}, {"@type": "AdministrativeArea", "name": "Santa Cruz"}, {"@type": "AdministrativeArea", "name": "Región del Maule"}, {"@type": "AdministrativeArea", "name": "Talca"}, {"@type": "AdministrativeArea", "name": "Curicó"}, {"@type": "AdministrativeArea", "name": "Linares"}, {"@type": "AdministrativeArea", "name": "Región de La Araucanía"}, {"@type": "AdministrativeArea", "name": "Pucón"}, {"@type": "AdministrativeArea", "name": "Villarrica"}, {"@type": "AdministrativeArea", "name": "Caburgua"}], "address": {"@type": "PostalAddress", "addressLocality": "Santiago", "addressRegion": "Región Metropolitana", "addressCountry": "CL"}, "knowsAbout": ["Fotogrametría con dron", "Topografía", "Curvas de nivel", "Ortomosaicos", "Modelación hidráulica", "EPANET", "SWMM", "HEC-RAS", "Drenaje pluvial", "Agua potable", "Alcantarillado"], "priceRange": "$$"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "¿Cuánto cuesta un levantamiento con dron?", "acceptedAnswer": {"@type": "Answer", "text": "Depende de la superficie y la ubicación. Puedes calcularlo al instante en la calculadora de cotización o escribirnos con los datos del terreno."}}, {"@type": "Question", "name": "¿Qué precisión tiene un levantamiento fotogramétrico?", "acceptedAnswer": {"@type": "Answer", "text": "Con puntos de control medidos con GNSS, entre 2 y 5 cm en planta. Sin ellos queda sujeto al GPS del dron: 1 a 3 m, útil como referencia pero no para diseño ni deslindes."}}, {"@type": "Question", "name": "¿El levantamiento con dron reemplaza a un topógrafo?", "acceptedAnswer": {"@type": "Answer", "text": "En superficies medianas y grandes entrega mucha más información en el mismo tiempo, pero necesita apoyo en terreno para georreferenciar. Hay casos —vegetación densa, deslindes con validez legal— que requieren medición directa."}}, {"@type": "Question", "name": "¿Entregan archivos editables?", "acceptedAnswer": {"@type": "Answer", "text": "Sí: DWG y DXF para curvas y planimetría, GeoTIFF para el ortomosaico, LAS/LAZ para la nube de puntos. Listos para importar en Civil 3D, QGIS o ArcGIS."}}]}</script>
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+
+<header class="cabecera">
+  <div class="contenedor cabecera__barra">
+    <a class="logo" href="">
+      <svg class="logo__marca" viewBox="0 0 36 36" width="34" height="34" aria-hidden="true" focusable="false">
+        <rect width="36" height="36" rx="9" fill="currentColor" opacity=".1"/>
+        <path d="M18 7.5 24 20h-12z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="18" cy="15.5" r="1.7" fill="currentColor"/>
+        <path d="M8 26c3.6-4.6 6.4 2.2 10-1.4S22.6 25 28 21.6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+      </svg>
+      <span class="logo__texto"><strong>RCKT</strong><span>Ingeniería y Geomática</span></span>
+    </a>
+    <button class="menu-boton" type="button" aria-expanded="false" aria-controls="nav-principal">
+      <span class="menu-boton__barras" aria-hidden="true"></span>
+      <span class="menu-boton__texto">Menú</span>
+    </button>
+    <nav id="nav-principal" class="nav" aria-label="Navegación principal">
+      <ul class="nav__lista">
+    <li class="nav__item nav__item--sub">
+      <a href="dron-fotogrametria/">Dron y topografía</a>
+      <ul class="nav__sub">
+        <li><a href="dron-fotogrametria/fotogrametria/">Fotogrametría aérea</a></li>
+        <li><a href="dron-fotogrametria/curvas-de-nivel/">Curvas de nivel</a></li>
+        <li><a href="dron-fotogrametria/deslindes-linderos/">Deslindes y linderos</a></li>
+        <li><a href="dron-fotogrametria/mapas-ortomosaicos/">Mapas y ortomosaicos</a></li>
+        <li><a href="cotizador/">Calculadora de cotización</a></li>
+      </ul>
+    </li>
+    <li class="nav__item nav__item--sub">
+      <a href="ingenieria-hidraulica/">Ingeniería hidráulica</a>
+      <ul class="nav__sub">
+        <li><a href="ingenieria-hidraulica/modelacion-redes/">Modelación de redes</a></li>
+        <li><a href="ingenieria-hidraulica/dimensionamiento-bombas-impulsiones/">Bombas e impulsiones</a></li>
+        <li><a href="ingenieria-hidraulica/estudios-inundacion/">Estudios de inundación</a></li>
+        <li><a href="ingenieria-hidraulica/drenaje-pluvial/">Drenaje pluvial</a></li>
+        <li><a href="ingenieria-hidraulica/proyectos-sanitarios/">Proyectos sanitarios</a></li>
+      </ul>
+    </li>
+    <li class="nav__item"><a href="capacidades/">Capacidades</a></li>
+    <li class="nav__item nav__item--sub">
+      <a href="zonas/">Zonas</a>
+      <ul class="nav__sub">
+        <li><a href="zonas/santiago-rm/">Santiago y RM</a></li>
+        <li><a href="zonas/coquimbo-la-serena-iv-region/">La Serena y Coquimbo</a></li>
+        <li><a href="zonas/valparaiso-vina-v-region/">Valparaíso y Viña</a></li>
+        <li><a href="zonas/ohiggins-vi-region/">O'Higgins</a></li>
+        <li><a href="zonas/maule-vii-region/">Maule</a></li>
+        <li><a href="zonas/pucon-villarrica-caburgua/">Pucón · Villarrica</a></li>
+      </ul>
+    </li>
+    <li class="nav__item"><a href="blog/">Blog</a></li>
+    <li class="nav__item"><a href="empresa/">Empresa</a></li>
+        <li class="nav__item nav__item--cta"><a class="boton boton--acento boton--sm" href="contacto/">Cotizar</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="contenido">
+
+<section class="hero">
+  <div class="patron patron--curvas" aria-hidden="true"><svg class="patron__svg" viewBox="0 0 1280 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.25"><ellipse cx="300" cy="300" rx="42" ry="30" transform="rotate(-14 300 300)"/><ellipse cx="305" cy="303" rx="72" ry="52" transform="rotate(-14 305 303)"/><ellipse cx="310" cy="306" rx="102" ry="73" transform="rotate(-14 310 306)"/><ellipse cx="315" cy="309" rx="132" ry="95" transform="rotate(-14 315 309)"/><ellipse cx="320" cy="312" rx="162" ry="116" transform="rotate(-14 320 312)"/><ellipse cx="325" cy="315" rx="192" ry="138" transform="rotate(-14 325 315)"/><ellipse cx="330" cy="318" rx="222" ry="160" transform="rotate(-14 330 318)"/><ellipse cx="335" cy="321" rx="252" ry="181" transform="rotate(-14 335 321)"/><ellipse cx="340" cy="324" rx="282" ry="203" transform="rotate(-14 340 324)"/><ellipse cx="345" cy="327" rx="312" ry="224" transform="rotate(-14 345 327)"/><ellipse cx="350" cy="330" rx="342" ry="246" transform="rotate(-14 350 330)"/><ellipse cx="980" cy="210" rx="34" ry="24" transform="rotate(22 980 210)"/><ellipse cx="985" cy="213" rx="62" ry="44" transform="rotate(22 985 213)"/><ellipse cx="990" cy="216" rx="90" ry="64" transform="rotate(22 990 216)"/><ellipse cx="995" cy="219" rx="118" ry="84" transform="rotate(22 995 219)"/><ellipse cx="1000" cy="222" rx="146" ry="105" transform="rotate(22 1000 222)"/><ellipse cx="1005" cy="225" rx="174" ry="125" transform="rotate(22 1005 225)"/><ellipse cx="1010" cy="228" rx="202" ry="145" transform="rotate(22 1010 228)"/><ellipse cx="1015" cy="231" rx="230" ry="165" transform="rotate(22 1015 231)"/></g></svg></div>
+  <div class="contenedor hero__caja">
+    <p class="hero__etiqueta"><svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M13.5 2 4.5 13.5H11l-.5 8.5 9-11.5H13z"/></svg> Dron · Topografía · Ingeniería hidráulica</p>
+    <h1>Levantamos el terreno y resolvemos el agua</h1>
+    <p class="hero__bajada">Topografía con dron y proyectos hidráulicos en una sola oficina. La misma base
+    de terreno que levantamos alimenta el cálculo, sin coordinar dos proveedores.</p>
+    <div class="hero__acciones">
+      <a class="boton boton--acento" href="cotizador/">Calcular mi cotización <svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
+      <a class="boton boton--fantasma" href="contacto/">Hablemos</a>
+    </div>
+    <ul class="hero__chips">
+      <li><svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/></svg> Precisión de 2 a 5 cm</li>
+      <li><svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg> Entrega en 5 a 10 días</li>
+      <li><svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3 4.5 6v6c0 4.5 3.2 7.8 7.5 9 4.3-1.2 7.5-4.5 7.5-9V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg> RPAS registrado ante la DGAC</li>
+    </ul>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor">
+    <h2 class="seccion__titulo">Dron y topografía</h2>
+    <div class="tarjetas">
+  <a class="tarjeta" href="dron-fotogrametria/fotogrametria/"><span class="tarjeta__icono"><svg class="icono" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="5.5" cy="5.5" r="2.5"/><circle cx="18.5" cy="5.5" r="2.5"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/><path d="M7.3 7.3 9 9m6 0 1.7-1.7M9 15l-1.7 1.7M15 15l1.7 1.7"/></svg></span><h3>Fotogrametría aérea</h3><p>Nube de puntos y modelo digital de terreno para cubicar, diseñar y controlar obra.</p><span class="tarjeta__mas">Ver más <svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span></a>
+  <a class="tarjeta" href="dron-fotogrametria/curvas-de-nivel/"><span class="tarjeta__icono"><svg class="icono" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 8c3.2-4.5 6.4 3 9.6-1.5S18 4 22 6"/><path d="M2 14c3.2-4.5 6.4 3 9.6-1.5S18 10 22 12"/><path d="M2 20c3.2-4.5 6.4 3 9.6-1.5S18 16 22 18"/></svg></span><h3>Curvas de nivel</h3><p>Cada 0,25 · 0,5 o 1 m, en DWG listo para Civil 3D.</p><span class="tarjeta__mas">Ver más <svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span></a>
+  <a class="tarjeta" href="dron-fotogrametria/deslindes-linderos/"><span class="tarjeta__icono"><svg class="icono" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3.5 20.5 8v8L12 20.5 3.5 16V8z"/><circle cx="12" cy="3.5" r="1.4" fill="currentColor" stroke="none"/><circle cx="20.5" cy="8" r="1.4" fill="currentColor" stroke="none"/><circle cx="20.5" cy="16" r="1.4" fill="currentColor" stroke="none"/><circle cx="12" cy="20.5" r="1.4" fill="currentColor" stroke="none"/><circle cx="3.5" cy="16" r="1.4" fill="currentColor" stroke="none"/><circle cx="3.5" cy="8" r="1.4" fill="currentColor" stroke="none"/></svg></span><h3>Deslindes y linderos</h3><p>Límites reales del predio, con coordenadas por vértice.</p><span class="tarjeta__mas">Ver más <svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span></a>
+  <a class="tarjeta" href="dron-fotogrametria/mapas-ortomosaicos/"><span class="tarjeta__icono"><svg class="icono" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 4 3 6.2v14L9 18l6 2 6-2.2v-14L15 6z"/><path d="M9 4v14M15 6v14"/></svg></span><h3>Mapas y ortomosaicos</h3><p>Imagen georreferenciada de 2 a 5 cm/píxel, medible a escala.</p><span class="tarjeta__mas">Ver más <svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span></a>
+  <a class="tarjeta" href="cotizador/"><span class="tarjeta__icono"><svg class="icono" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M8 7.5h8M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"/></svg></span><h3>Calculadora de cotización</h3><p>Ingresa superficie y ubicación y obtén el valor al instante.</p><span class="tarjeta__mas">Ver más <svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span></a>
+</div>
+  </div>
+</section>
+
+<section class="seccion seccion--clara">
+  <div class="contenedor">
+    <h2 class="seccion__titulo">Ingeniería hidráulica</h2>
+    <div class="tarjetas">
+  <a class="tarjeta" href="ingenieria-hidraulica/modelacion-redes/"><span class="tarjeta__icono"><svg class="icono" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="5" cy="6" r="2.2"/><circle cx="19" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M7.2 6h9.6M6.1 8l4.8 8.2M17.9 8l-4.8 8.2"/></svg></span><h3>Modelación de redes</h3><p>Presiones, velocidades y diámetros verificados en EPANET.</p><span class="tarjeta__mas">Ver más <svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span></a>
+  <a class="tarjeta" href="ingenieria-hidraulica/dimensionamiento-bombas-impulsiones/"><span class="tarjeta__icono"><svg class="icono" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="13" cy="13" r="5.2"/><path d="M13 7.8V4h5.5"/><path d="M7.8 13H4"/><path d="M13 18.2V21"/><path d="M11 11.6l3.6 1.4-3.6 1.4z" fill="currentColor" stroke="none"/></svg></span><h3>Bombas e impulsiones</h3><p>Punto de operación, golpe de ariete y eficiencia energética.</p><span class="tarjeta__mas">Ver más <svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span></a>
+  <a class="tarjeta" href="ingenieria-hidraulica/estudios-inundacion/"><span class="tarjeta__icono"><svg class="icono" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6.5 12.5V8.8L12 4.5l5.5 4.3v3.7"/><path d="M2 16.5c1.7 0 1.7 1.6 3.3 1.6s1.7-1.6 3.4-1.6 1.7 1.6 3.3 1.6 1.7-1.6 3.3-1.6 1.7 1.6 3.4 1.6 1.6-1.6 3.3-1.6"/><path d="M2 20.5c1.7 0 1.7 1.6 3.3 1.6"/></svg></span><h3>Estudios de inundación</h3><p>Áreas inundables y cota de seguridad con HEC-RAS.</p><span class="tarjeta__mas">Ver más <svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span></a>
+  <a class="tarjeta" href="ingenieria-hidraulica/drenaje-pluvial/"><span class="tarjeta__icono"><svg class="icono" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 2.5v4M12 2v5M18 2.5v4"/><rect x="3" y="10.5" width="18" height="9" rx="2"/><path d="M8 10.5v9M12 10.5v9M16 10.5v9"/></svg></span><h3>Drenaje pluvial</h3><p>Escorrentía, colectores y obras de retención o infiltración.</p><span class="tarjeta__mas">Ver más <svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span></a>
+  <a class="tarjeta" href="ingenieria-hidraulica/proyectos-sanitarios/"><span class="tarjeta__icono"><svg class="icono" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2.5" y="6.5" width="4.5" height="6" rx="1.2"/><path d="M7 9.5h6a4 4 0 0 1 4 4v3"/><path d="M17 16.5c1.6 1.8 2.5 3 2.5 4a2.5 2.5 0 0 1-5 0c0-1 .9-2.2 2.5-4z"/></svg></span><h3>Proyectos sanitarios</h3><p>Agua potable y alcantarillado con memoria y planos.</p><span class="tarjeta__mas">Ver más <svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span></a>
+</div>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor">
+    <h2 class="seccion__titulo">Cómo se ve el trabajo</h2>
+    <div class="galeria">
+      <figure class="figura">
+  <div class="figura__placeholder" style="aspect-ratio: 3 / 2;">
+    <svg class="icono icono--grande" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3.2 21 8l-9 4.8L3 8z"/><path d="M4.5 12 12 16l7.5-4M4.5 16 12 20l7.5-4"/></svg>
+    <span class="figura__texto">Modelo digital de elevación en escala de colores generado con dron</span>
+    <span class="figura__archivo">assets/img/modelo-digital-elevacion.webp</span>
+  </div>
+  <figcaption>Modelo digital de elevación</figcaption>
+</figure>
+      <figure class="figura">
+  <div class="figura__placeholder" style="aspect-ratio: 3 / 2;">
+    <svg class="icono icono--grande" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3.2 21 8l-9 4.8L3 8z"/><path d="M4.5 12 12 16l7.5-4M4.5 16 12 20l7.5-4"/></svg>
+    <span class="figura__texto">Plano de curvas de nivel obtenidas de un levantamiento con dron</span>
+    <span class="figura__archivo">assets/img/curvas-de-nivel.webp</span>
+  </div>
+  <figcaption>Curvas de nivel restituidas</figcaption>
+</figure>
+      <figure class="figura">
+  <div class="figura__placeholder" style="aspect-ratio: 3 / 2;">
+    <svg class="icono icono--grande" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3.2 21 8l-9 4.8L3 8z"/><path d="M4.5 12 12 16l7.5-4M4.5 16 12 20l7.5-4"/></svg>
+    <span class="figura__texto">Modelación hidráulica de una red de agua potable en EPANET</span>
+    <span class="figura__archivo">assets/img/modelacion-redes-epanet.webp</span>
+  </div>
+  <figcaption>Modelación de red en EPANET</figcaption>
+</figure>
+    </div>
+  </div>
+</section>
+
+<section class="seccion seccion--oscura">
+  <div class="patron patron--flujo" aria-hidden="true"><svg class="patron__svg" viewBox="0 0 1280 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.25"><path d="M-60 30 C 140 -10, 300 70, 480 30 S 820 -10, 1000 30 S 1240 64, 1340 30"/><path d="M-60 92 C 140 52, 300 132, 480 92 S 820 52, 1000 92 S 1240 126, 1340 92"/><path d="M-60 154 C 140 114, 300 194, 480 154 S 820 114, 1000 154 S 1240 188, 1340 154"/><path d="M-60 216 C 140 176, 300 256, 480 216 S 820 176, 1000 216 S 1240 250, 1340 216"/><path d="M-60 278 C 140 238, 300 318, 480 278 S 820 238, 1000 278 S 1240 312, 1340 278"/><path d="M-60 340 C 140 300, 300 380, 480 340 S 820 300, 1000 340 S 1240 374, 1340 340"/><path d="M-60 402 C 140 362, 300 442, 480 402 S 820 362, 1000 402 S 1240 436, 1340 402"/><path d="M-60 464 C 140 424, 300 504, 480 464 S 820 424, 1000 464 S 1240 498, 1340 464"/><path d="M-60 526 C 140 486, 300 566, 480 526 S 820 486, 1000 526 S 1240 560, 1340 526"/><circle cx="240" cy="154" r="4.5" fill="currentColor" stroke="none"/><circle cx="240" cy="154" r="11"/><circle cx="620" cy="216" r="4.5" fill="currentColor" stroke="none"/><circle cx="620" cy="216" r="11"/><circle cx="900" cy="340" r="4.5" fill="currentColor" stroke="none"/><circle cx="900" cy="340" r="11"/><circle cx="420" cy="402" r="4.5" fill="currentColor" stroke="none"/><circle cx="420" cy="402" r="11"/><circle cx="1080" cy="92" r="4.5" fill="currentColor" stroke="none"/><circle cx="1080" cy="92" r="11"/><circle cx="760" cy="464" r="4.5" fill="currentColor" stroke="none"/><circle cx="760" cy="464" r="11"/></g></svg></div>
+  <div class="contenedor">
+    <h2 class="seccion__titulo">Por qué las dos especialidades juntas</h2>
+    <p class="seccion__bajada">Todo cálculo hidráulico depende de la cota. Al levantar el terreno nosotros
+    mismos, el modelo se construye sobre datos medidos con precisión centimétrica.</p>
+    <div class="datos">
+  <div class="dato"><svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/></svg><span class="dato__cifra">2–5 cm</span><span class="dato__label">Precisión con puntos de control</span></div>
+  <div class="dato"><svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 4 3 6.2v14L9 18l6 2 6-2.2v-14L15 6z"/><path d="M9 4v14M15 6v14"/></svg><span class="dato__cifra">60 ha</span><span class="dato__label">Cubiertas por jornada de vuelo</span></div>
+  <div class="dato"><svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg><span class="dato__cifra">5–10 días</span><span class="dato__label">Plazo de entrega habitual</span></div>
+  <div class="dato"><svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M8.5 13h7M8.5 16.5h4.5"/></svg><span class="dato__cifra">DWG · LAS</span><span class="dato__label">Formatos editables</span></div>
+</div>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor">
+    <h2 class="seccion__titulo">Dónde trabajamos</h2>
+    <p class="seccion__bajada">Base en Santiago, con cobertura entre Coquimbo y
+    La Araucanía.</p>
+    <div class="tarjetas">
+  <a class="tarjeta" href="zonas/santiago-rm/"><span class="tarjeta__icono"><svg class="icono" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 21.5s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10.5" r="2.6"/></svg></span><h3>Santiago y RM</h3><p>Deslindes, drenaje y proyectos sanitarios urbanos.</p><span class="tarjeta__mas">Ver más <svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span></a>
+  <a class="tarjeta" href="zonas/coquimbo-la-serena-iv-region/"><span class="tarjeta__icono"><svg class="icono" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 21.5s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10.5" r="2.6"/></svg></span><h3>La Serena y Coquimbo</h3><p>Riego, pozos y quebradas de los valles del norte chico.</p><span class="tarjeta__mas">Ver más <svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span></a>
+  <a class="tarjeta" href="zonas/valparaiso-vina-v-region/"><span class="tarjeta__icono"><svg class="icono" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 21.5s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10.5" r="2.6"/></svg></span><h3>Valparaíso y V Región</h3><p>Terrenos costeros, quebradas y pendiente fuerte.</p><span class="tarjeta__mas">Ver más <svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span></a>
+  <a class="tarjeta" href="zonas/ohiggins-vi-region/"><span class="tarjeta__icono"><svg class="icono" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 21.5s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10.5" r="2.6"/></svg></span><h3>O'Higgins</h3><p>Predios agrícolas y vitivinícolas, curvas para riego.</p><span class="tarjeta__mas">Ver más <svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span></a>
+  <a class="tarjeta" href="zonas/maule-vii-region/"><span class="tarjeta__icono"><svg class="icono" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 21.5s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10.5" r="2.6"/></svg></span><h3>Maule</h3><p>Levantamientos prediales extensos y drenaje agrícola.</p><span class="tarjeta__mas">Ver más <svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span></a>
+  <a class="tarjeta" href="zonas/pucon-villarrica-caburgua/"><span class="tarjeta__icono"><svg class="icono" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 21.5s7-6 7-11a7 7 0 1 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10.5" r="2.6"/></svg></span><h3>Pucón y Villarrica</h3><p>Parcelaciones, deslindes y agua particular.</p><span class="tarjeta__mas">Ver más <svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg></span></a>
+</div>
+  </div>
+</section>
+<section class="seccion" id="faq">
+  <div class="contenedor">
+    <h2>Preguntas frecuentes</h2>
+    <div class="faq">
+  <details class="faq__item">
+    <summary><h3>¿Cuánto cuesta un levantamiento con dron?</h3></summary>
+    <div class="faq__respuesta">Depende de la superficie y la ubicación. Puedes calcularlo al instante en la <a href='cotizador/'>calculadora de cotización</a> o escribirnos con los datos del terreno.</div>
+  </details>
+  <details class="faq__item">
+    <summary><h3>¿Qué precisión tiene un levantamiento fotogramétrico?</h3></summary>
+    <div class="faq__respuesta">Con puntos de control medidos con GNSS, entre 2 y 5 cm en planta. Sin ellos queda sujeto al GPS del dron: 1 a 3 m, útil como referencia pero no para diseño ni deslindes.</div>
+  </details>
+  <details class="faq__item">
+    <summary><h3>¿El levantamiento con dron reemplaza a un topógrafo?</h3></summary>
+    <div class="faq__respuesta">En superficies medianas y grandes entrega mucha más información en el mismo tiempo, pero necesita apoyo en terreno para georreferenciar. Hay casos —vegetación densa, deslindes con validez legal— que requieren medición directa.</div>
+  </details>
+  <details class="faq__item">
+    <summary><h3>¿Entregan archivos editables?</h3></summary>
+    <div class="faq__respuesta">Sí: DWG y DXF para curvas y planimetría, GeoTIFF para el ortomosaico, LAS/LAZ para la nube de puntos. Listos para importar en Civil 3D, QGIS o ArcGIS.</div>
+  </details>
+    </div>
+  </div>
+</section><section class="cta">
+  <div class="contenedor cta__caja">
+    <div class="cta__texto">
+      <h2>¿Tienes un terreno o un proyecto que evaluar?</h2>
+      <p>Cuéntanos qué necesitas y te respondemos con alcance, plazo y valor en menos de 24 horas hábiles.</p>
+    </div>
+    <div class="cta__botones">
+      <a class="boton boton--acento" href="contacto/">Solicitar cotización <svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
+      <a class="boton boton--fantasma" href="https://wa.me/56900000000" rel="nofollow noopener" target="_blank"><svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.5 12c0 4.2-3.8 7.5-8.5 7.5-1.2 0-2.4-.2-3.4-.6L3.5 20.5l1.7-4.2A7 7 0 0 1 3.5 12C3.5 7.8 7.3 4.5 12 4.5s8.5 3.3 8.5 7.5z"/></svg> WhatsApp</a>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="pie">
+  <div class="contenedor pie__grid">
+    <div class="pie__col">
+      <p class="pie__marca">RCKT</p>
+      <p class="pie__descriptor">Ingeniería y Geomática</p>
+      <p class="pie__texto">Topografía con dron e ingeniería hidráulica. Terreno y gabinete
+      desde Santiago hacia todo Chile central y sur.</p>
+      <ul class="pie__contacto">
+        <li><svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 3.5H4.8A1.8 1.8 0 0 0 3 5.4C3 13.5 10.5 21 18.6 21a1.8 1.8 0 0 0 1.9-1.8V17l-4.4-1.6-2 2.2a14 14 0 0 1-5.2-5.2l2.2-2z"/></svg><a href="tel:+56900000000">+56 9 0000 0000</a></li>
+        <li><svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M3.5 7l8.5 6 8.5-6"/></svg><a href="mailto:contacto@rckt.cl">contacto@rckt.cl</a></li>
+      </ul>
+    </div>
+    <div class="pie__col">
+      <p class="pie__titulo">Dron y topografía</p>
+      <ul><li><a href="dron-fotogrametria/fotogrametria/">Fotogrametría aérea</a></li>
+<li><a href="dron-fotogrametria/curvas-de-nivel/">Curvas de nivel</a></li>
+<li><a href="dron-fotogrametria/deslindes-linderos/">Deslindes y linderos</a></li>
+<li><a href="dron-fotogrametria/mapas-ortomosaicos/">Mapas y ortomosaicos</a></li>
+<li><a href="cotizador/">Calculadora de cotización</a></li></ul>
+    </div>
+    <div class="pie__col">
+      <p class="pie__titulo">Ingeniería hidráulica</p>
+      <ul><li><a href="ingenieria-hidraulica/modelacion-redes/">Modelación de redes</a></li>
+<li><a href="ingenieria-hidraulica/dimensionamiento-bombas-impulsiones/">Bombas e impulsiones</a></li>
+<li><a href="ingenieria-hidraulica/estudios-inundacion/">Estudios de inundación</a></li>
+<li><a href="ingenieria-hidraulica/drenaje-pluvial/">Drenaje pluvial</a></li>
+<li><a href="ingenieria-hidraulica/proyectos-sanitarios/">Proyectos sanitarios</a></li></ul>
+    </div>
+    <div class="pie__col">
+      <p class="pie__titulo">Zonas de cobertura</p>
+      <ul><li><a href="zonas/santiago-rm/">Santiago y RM</a></li>
+<li><a href="zonas/coquimbo-la-serena-iv-region/">La Serena y Coquimbo</a></li>
+<li><a href="zonas/valparaiso-vina-v-region/">Valparaíso y Viña</a></li>
+<li><a href="zonas/ohiggins-vi-region/">O'Higgins</a></li>
+<li><a href="zonas/maule-vii-region/">Maule</a></li>
+<li><a href="zonas/pucon-villarrica-caburgua/">Pucón · Villarrica</a></li></ul>
+    </div>
+  </div>
+  <div class="contenedor pie__legal">
+    <p>© 2026 RCKT. Todos los derechos reservados.</p>
+    <p><a href="capacidades/">Capacidades</a> · <a href="empresa/">Empresa</a> · <a href="contacto/">Contacto</a></p>
+  </div>
+</footer>
+<script>
+(function () {
+  var b = document.querySelector('.menu-boton');
+  var n = document.getElementById('nav-principal');
+  if (!b || !n) return;
+  b.addEventListener('click', function () {
+    var abierto = n.classList.toggle('nav--abierto');
+    b.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+  });
+})();
+</script>
+</body>
+</html>

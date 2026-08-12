@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capacidades: entregables, herramientas y formatos | RCKT</title>
+<meta name="description" content="Qué entrega RCKT en cada servicio, con qué software se produce y en qué formato: DWG, GeoTIFF, LAS, EPANET y HEC-RAS. Revisa el detalle técnico aquí.">
+<link rel="canonical" href="https://www.rckt.cl/capacidades/">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#05090d">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_CL">
+<meta property="og:site_name" content="RCKT">
+<meta property="og:title" content="Capacidades: entregables, herramientas y formatos | RCKT">
+<meta property="og:description" content="Qué entrega RCKT en cada servicio, con qué software se produce y en qué formato: DWG, GeoTIFF, LAS, EPANET y HEC-RAS. Revisa el detalle técnico aquí.">
+<meta property="og:url" content="https://www.rckt.cl/capacidades/">
+<meta property="og:image" content="https://www.rckt.cl/assets/img/og-portada.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/css/estilos.css?v=b9a93903">
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://www.rckt.cl/"}, {"@type": "ListItem", "position": 2, "name": "Capacidades", "item": "https://www.rckt.cl/capacidades/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "¿Puedo pedir solo un producto puntual?", "acceptedAnswer": {"@type": "Answer", "text": "Sí. Si solo necesitas el ortomosaico, o solo la memoria de una impulsión, se cotiza así. Lo que no hacemos es entregar algo que sabemos que no servirá para el uso declarado sin advertirlo antes."}}, {"@type": "Question", "name": "¿Entregan archivos editables o solo PDF?", "acceptedAnswer": {"@type": "Answer", "text": "Editables. El modelo de EPANET, el DWG de las curvas y la nube de puntos se entregan como archivos de trabajo, para que tu equipo siga trabajando sin depender de nosotros."}}, {"@type": "Question", "name": "¿Trabajan como subcontrato de otras oficinas?", "acceptedAnswer": {"@type": "Answer", "text": "Sí. Podemos usar el formato, la nomenclatura y las capas que ya usa tu oficina."}}]}</script>
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+
+<header class="cabecera">
+  <div class="contenedor cabecera__barra">
+    <a class="logo" href="../">
+      <svg class="logo__marca" viewBox="0 0 36 36" width="34" height="34" aria-hidden="true" focusable="false">
+        <rect width="36" height="36" rx="9" fill="currentColor" opacity=".1"/>
+        <path d="M18 7.5 24 20h-12z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="18" cy="15.5" r="1.7" fill="currentColor"/>
+        <path d="M8 26c3.6-4.6 6.4 2.2 10-1.4S22.6 25 28 21.6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+      </svg>
+      <span class="logo__texto"><strong>RCKT</strong><span>Ingeniería y Geomática</span></span>
+    </a>
+    <button class="menu-boton" type="button" aria-expanded="false" aria-controls="nav-principal">
+      <span class="menu-boton__barras" aria-hidden="true"></span>
+      <span class="menu-boton__texto">Menú</span>
+    </button>
+    <nav id="nav-principal" class="nav" aria-label="Navegación principal">
+      <ul class="nav__lista">
+    <li class="nav__item nav__item--sub">
+      <a href="../dron-fotogrametria/">Dron y topografía</a>
+      <ul class="nav__sub">
+        <li><a href="../dron-fotogrametria/fotogrametria/">Fotogrametría aérea</a></li>
+        <li><a href="../dron-fotogrametria/curvas-de-nivel/">Curvas de nivel</a></li>
+        <li><a href="../dron-fotogrametria/deslindes-linderos/">Deslindes y linderos</a></li>
+        <li><a href="../dron-fotogrametria/mapas-ortomosaicos/">Mapas y ortomosaicos</a></li>
+        <li><a href="../cotizador/">Calculadora de cotización</a></li>
+      </ul>
+    </li>
+    <li class="nav__item nav__item--sub">
+      <a href="../ingenieria-hidraulica/">Ingeniería hidráulica</a>
+      <ul class="nav__sub">
+        <li><a href="../ingenieria-hidraulica/modelacion-redes/">Modelación de redes</a></li>
+        <li><a href="../ingenieria-hidraulica/dimensionamiento-bombas-impulsiones/">Bombas e impulsiones</a></li>
+        <li><a href="../ingenieria-hidraulica/estudios-inundacion/">Estudios de inundación</a></li>
+        <li><a href="../ingenieria-hidraulica/drenaje-pluvial/">Drenaje pluvial</a></li>
+        <li><a href="../ingenieria-hidraulica/proyectos-sanitarios/">Proyectos sanitarios</a></li>
+      </ul>
+    </li>
+    <li class="nav__item"><a href="../capacidades/" aria-current="page">Capacidades</a></li>
+    <li class="nav__item nav__item--sub">
+      <a href="../zonas/">Zonas</a>
+      <ul class="nav__sub">
+        <li><a href="../zonas/santiago-rm/">Santiago y RM</a></li>
+        <li><a href="../zonas/coquimbo-la-serena-iv-region/">La Serena y Coquimbo</a></li>
+        <li><a href="../zonas/valparaiso-vina-v-region/">Valparaíso y Viña</a></li>
+        <li><a href="../zonas/ohiggins-vi-region/">O'Higgins</a></li>
+        <li><a href="../zonas/maule-vii-region/">Maule</a></li>
+        <li><a href="../zonas/pucon-villarrica-caburgua/">Pucón · Villarrica</a></li>
+      </ul>
+    </li>
+    <li class="nav__item"><a href="../blog/">Blog</a></li>
+    <li class="nav__item"><a href="../empresa/">Empresa</a></li>
+        <li class="nav__item nav__item--cta"><a class="boton boton--acento boton--sm" href="../contacto/">Cotizar</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<nav class="migas" aria-label="Ruta de navegación"><div class="contenedor"><ol><li><a href="../">Inicio</a></li><li aria-current="page">Capacidades</li></ol></div></nav>
+<main id="contenido">
+
+<section class="encabezado">
+  <div class="patron patron--curvas" aria-hidden="true"><svg class="patron__svg" viewBox="0 0 1280 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.25"><ellipse cx="300" cy="300" rx="42" ry="30" transform="rotate(-14 300 300)"/><ellipse cx="305" cy="303" rx="72" ry="52" transform="rotate(-14 305 303)"/><ellipse cx="310" cy="306" rx="102" ry="73" transform="rotate(-14 310 306)"/><ellipse cx="315" cy="309" rx="132" ry="95" transform="rotate(-14 315 309)"/><ellipse cx="320" cy="312" rx="162" ry="116" transform="rotate(-14 320 312)"/><ellipse cx="325" cy="315" rx="192" ry="138" transform="rotate(-14 325 315)"/><ellipse cx="330" cy="318" rx="222" ry="160" transform="rotate(-14 330 318)"/><ellipse cx="335" cy="321" rx="252" ry="181" transform="rotate(-14 335 321)"/><ellipse cx="340" cy="324" rx="282" ry="203" transform="rotate(-14 340 324)"/><ellipse cx="345" cy="327" rx="312" ry="224" transform="rotate(-14 345 327)"/><ellipse cx="350" cy="330" rx="342" ry="246" transform="rotate(-14 350 330)"/><ellipse cx="980" cy="210" rx="34" ry="24" transform="rotate(22 980 210)"/><ellipse cx="985" cy="213" rx="62" ry="44" transform="rotate(22 985 213)"/><ellipse cx="990" cy="216" rx="90" ry="64" transform="rotate(22 990 216)"/><ellipse cx="995" cy="219" rx="118" ry="84" transform="rotate(22 995 219)"/><ellipse cx="1000" cy="222" rx="146" ry="105" transform="rotate(22 1000 222)"/><ellipse cx="1005" cy="225" rx="174" ry="125" transform="rotate(22 1005 225)"/><ellipse cx="1010" cy="228" rx="202" ry="145" transform="rotate(22 1010 228)"/><ellipse cx="1015" cy="231" rx="230" ry="165" transform="rotate(22 1015 231)"/></g></svg></div>
+  <div class="contenedor">
+    <p class="encabezado__etiqueta">Capacidades</p>
+    <h1>Qué entregamos, con qué herramientas y en qué formatos</h1>
+    <p class="encabezado__bajada">RCKT es una oficina nueva con foco en hacer bien dos cosas: levantar
+    terreno con dron y resolver ingeniería hidráulica. Acá está el detalle técnico de lo que recibes.</p>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor">
+    <div class="bloques">
+      <div class="bloque">
+        <div class="bloque__cabecera"><svg class="icono" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="5.5" cy="5.5" r="2.5"/><circle cx="18.5" cy="5.5" r="2.5"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/><path d="M7.3 7.3 9 9m6 0 1.7-1.7M9 15l-1.7 1.7M15 15l1.7 1.7"/></svg><h3>Topografía y fotogrametría</h3></div>
+        <ul class="lista-check">
+          <li>Ortomosaico en GeoTIFF, 2 a 5 cm/píxel.</li>
+          <li>Nube de puntos en LAS/LAZ clasificada.</li>
+          <li>Modelo digital de superficie y de terreno.</li>
+          <li>Curvas de nivel en DWG/DXF por capas.</li>
+          <li>Informe con error verificado por puntos independientes.</li>
+        </ul>
+      </div>
+      <div class="bloque">
+        <div class="bloque__cabecera"><svg class="icono" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="5" cy="6" r="2.2"/><circle cx="19" cy="6" r="2.2"/><circle cx="12" cy="18" r="2.2"/><path d="M7.2 6h9.6M6.1 8l4.8 8.2M17.9 8l-4.8 8.2"/></svg><h3>Ingeniería hidráulica</h3></div>
+        <ul class="lista-check">
+          <li>Memoria con criterios y referencias normativas explícitas.</li>
+          <li>Modelo hidráulico entregado como archivo editable.</li>
+          <li>Planos de planta, perfiles y detalles.</li>
+          <li>Mapas temáticos: áreas inundables, presiones por nudo.</li>
+          <li>Respuesta a observaciones hasta la aprobación.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="seccion seccion--clara">
+  <div class="contenedor">
+    <h2 class="seccion__titulo">Formatos de entrega</h2>
+    <div class="tabla-envoltura">
+    <table>
+      <caption>Qué archivo recibes según el producto</caption>
+      <thead><tr><th scope="col">Producto</th><th scope="col">Formato</th><th scope="col">Se abre con</th></tr></thead>
+      <tbody>
+        <tr><td>Ortomosaico</td><td>GeoTIFF (+ JPG liviano)</td><td>AutoCAD, Civil 3D, QGIS</td></tr>
+        <tr><td>Nube de puntos</td><td>LAS / LAZ</td><td>CloudCompare, Civil 3D, Recap</td></tr>
+        <tr><td>Modelo de terreno</td><td>GeoTIFF ráster</td><td>QGIS, Civil 3D</td></tr>
+        <tr><td>Curvas y planimetría</td><td>DWG / DXF</td><td>AutoCAD, Civil 3D</td></tr>
+        <tr><td>Modelos hidráulicos</td><td>INP (EPANET/SWMM), PRJ (HEC-RAS)</td><td>Software respectivo</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor">
+    <h2 class="seccion__titulo">Desarrollos propios</h2>
+    <p class="seccion__bajada">Trabajos y ejercicios técnicos desarrollados por cuenta propia, que son la
+    base metodológica de la oficina.</p>
+    <div class="galeria">
+      <figure class="figura">
+  <div class="figura__placeholder" style="aspect-ratio: 3 / 2;">
+    <svg class="icono icono--grande" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3.2 21 8l-9 4.8L3 8z"/><path d="M4.5 12 12 16l7.5-4M4.5 16 12 20l7.5-4"/></svg>
+    <span class="figura__texto">Rectificación de deslindes de un predio levantado con dron</span>
+    <span class="figura__archivo">assets/img/rectificacion-deslindes.webp</span>
+  </div>
+  <figcaption>Rectificación de deslindes</figcaption>
+</figure>
+      <figure class="figura">
+  <div class="figura__placeholder" style="aspect-ratio: 3 / 2;">
+    <svg class="icono icono--grande" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3.2 21 8l-9 4.8L3 8z"/><path d="M4.5 12 12 16l7.5-4M4.5 16 12 20l7.5-4"/></svg>
+    <span class="figura__texto">Modelación de golpe de ariete en una impulsión</span>
+    <span class="figura__archivo">assets/img/modelacion-golpe-de-ariete.webp</span>
+  </div>
+  <figcaption>Modelación de golpe de ariete</figcaption>
+</figure>
+      <figure class="figura">
+  <div class="figura__placeholder" style="aspect-ratio: 3 / 2;">
+    <svg class="icono icono--grande" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3.2 21 8l-9 4.8L3 8z"/><path d="M4.5 12 12 16l7.5-4M4.5 16 12 20l7.5-4"/></svg>
+    <span class="figura__texto">Proyecto de drenaje pluvial con trazado de colectores</span>
+    <span class="figura__archivo">assets/img/drenaje-pluvial.webp</span>
+  </div>
+  <figcaption>Drenaje pluvial</figcaption>
+</figure>
+    </div>
+  </div>
+</section>
+<section class="seccion" id="faq">
+  <div class="contenedor">
+    <h2>Preguntas frecuentes</h2>
+    <div class="faq">
+  <details class="faq__item">
+    <summary><h3>¿Puedo pedir solo un producto puntual?</h3></summary>
+    <div class="faq__respuesta">Sí. Si solo necesitas el ortomosaico, o solo la memoria de una impulsión, se cotiza así. Lo que no hacemos es entregar algo que sabemos que no servirá para el uso declarado sin advertirlo antes.</div>
+  </details>
+  <details class="faq__item">
+    <summary><h3>¿Entregan archivos editables o solo PDF?</h3></summary>
+    <div class="faq__respuesta">Editables. El modelo de EPANET, el DWG de las curvas y la nube de puntos se entregan como archivos de trabajo, para que tu equipo siga trabajando sin depender de nosotros.</div>
+  </details>
+  <details class="faq__item">
+    <summary><h3>¿Trabajan como subcontrato de otras oficinas?</h3></summary>
+    <div class="faq__respuesta">Sí. Podemos usar el formato, la nomenclatura y las capas que ya usa tu oficina.</div>
+  </details>
+    </div>
+  </div>
+</section><section class="cta">
+  <div class="contenedor cta__caja">
+    <div class="cta__texto">
+      <h2>¿Tienes un terreno o un proyecto que evaluar?</h2>
+      <p>Cuéntanos qué necesitas y te respondemos con alcance, plazo y valor en menos de 24 horas hábiles.</p>
+    </div>
+    <div class="cta__botones">
+      <a class="boton boton--acento" href="../contacto/">Solicitar cotización <svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
+      <a class="boton boton--fantasma" href="https://wa.me/56900000000" rel="nofollow noopener" target="_blank"><svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.5 12c0 4.2-3.8 7.5-8.5 7.5-1.2 0-2.4-.2-3.4-.6L3.5 20.5l1.7-4.2A7 7 0 0 1 3.5 12C3.5 7.8 7.3 4.5 12 4.5s8.5 3.3 8.5 7.5z"/></svg> WhatsApp</a>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="pie">
+  <div class="contenedor pie__grid">
+    <div class="pie__col">
+      <p class="pie__marca">RCKT</p>
+      <p class="pie__descriptor">Ingeniería y Geomática</p>
+      <p class="pie__texto">Topografía con dron e ingeniería hidráulica. Terreno y gabinete
+      desde Santiago hacia todo Chile central y sur.</p>
+      <ul class="pie__contacto">
+        <li><svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 3.5H4.8A1.8 1.8 0 0 0 3 5.4C3 13.5 10.5 21 18.6 21a1.8 1.8 0 0 0 1.9-1.8V17l-4.4-1.6-2 2.2a14 14 0 0 1-5.2-5.2l2.2-2z"/></svg><a href="tel:+56900000000">+56 9 0000 0000</a></li>
+        <li><svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M3.5 7l8.5 6 8.5-6"/></svg><a href="mailto:contacto@rckt.cl">contacto@rckt.cl</a></li>
+      </ul>
+    </div>
+    <div class="pie__col">
+      <p class="pie__titulo">Dron y topografía</p>
+      <ul><li><a href="../dron-fotogrametria/fotogrametria/">Fotogrametría aérea</a></li>
+<li><a href="../dron-fotogrametria/curvas-de-nivel/">Curvas de nivel</a></li>
+<li><a href="../dron-fotogrametria/deslindes-linderos/">Deslindes y linderos</a></li>
+<li><a href="../dron-fotogrametria/mapas-ortomosaicos/">Mapas y ortomosaicos</a></li>
+<li><a href="../cotizador/">Calculadora de cotización</a></li></ul>
+    </div>
+    <div class="pie__col">
+      <p class="pie__titulo">Ingeniería hidráulica</p>
+      <ul><li><a href="../ingenieria-hidraulica/modelacion-redes/">Modelación de redes</a></li>
+<li><a href="../ingenieria-hidraulica/dimensionamiento-bombas-impulsiones/">Bombas e impulsiones</a></li>
+<li><a href="../ingenieria-hidraulica/estudios-inundacion/">Estudios de inundación</a></li>
+<li><a href="../ingenieria-hidraulica/drenaje-pluvial/">Drenaje pluvial</a></li>
+<li><a href="../ingenieria-hidraulica/proyectos-sanitarios/">Proyectos sanitarios</a></li></ul>
+    </div>
+    <div class="pie__col">
+      <p class="pie__titulo">Zonas de cobertura</p>
+      <ul><li><a href="../zonas/santiago-rm/">Santiago y RM</a></li>
+<li><a href="../zonas/coquimbo-la-serena-iv-region/">La Serena y Coquimbo</a></li>
+<li><a href="../zonas/valparaiso-vina-v-region/">Valparaíso y Viña</a></li>
+<li><a href="../zonas/ohiggins-vi-region/">O'Higgins</a></li>
+<li><a href="../zonas/maule-vii-region/">Maule</a></li>
+<li><a href="../zonas/pucon-villarrica-caburgua/">Pucón · Villarrica</a></li></ul>
+    </div>
+  </div>
+  <div class="contenedor pie__legal">
+    <p>© 2026 RCKT. Todos los derechos reservados.</p>
+    <p><a href="../capacidades/">Capacidades</a> · <a href="../empresa/">Empresa</a> · <a href="../contacto/">Contacto</a></p>
+  </div>
+</footer>
+<script>
+(function () {
+  var b = document.querySelector('.menu-boton');
+  var n = document.getElementById('nav-principal');
+  if (!b || !n) return;
+  b.addEventListener('click', function () {
+    var abierto = n.classList.toggle('nav--abierto');
+    b.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+  });
+})();
+</script>
+</body>
+</html>

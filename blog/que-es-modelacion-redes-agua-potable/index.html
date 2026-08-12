@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Qué es la modelación de redes de agua potable</title>
+<meta name="description" content="Qué hace un modelo hidráulico en EPANET, los cuatro escenarios que hay que verificar y por qué elegir diámetros por costumbre termina saliendo caro.">
+<link rel="canonical" href="https://www.rckt.cl/blog/que-es-modelacion-redes-agua-potable/">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#05090d">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="es_CL">
+<meta property="og:site_name" content="RCKT">
+<meta property="og:title" content="Qué es la modelación de redes de agua potable">
+<meta property="og:description" content="Qué hace un modelo hidráulico en EPANET, los cuatro escenarios que hay que verificar y por qué elegir diámetros por costumbre termina saliendo caro.">
+<meta property="og:url" content="https://www.rckt.cl/blog/que-es-modelacion-redes-agua-potable/">
+<meta property="og:image" content="https://www.rckt.cl/assets/img/og-portada.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../assets/img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/css/estilos.css?v=b9a93903">
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "Qué es la modelación de redes de agua potable y cuándo se necesita", "description": "Qué hace un modelo hidráulico en EPANET, los cuatro escenarios de operación que hay que verificar y por qué elegir diámetros por costumbre sale caro.", "datePublished": "2026-08-11", "dateModified": "2026-08-11", "inLanguage": "es-CL", "mainEntityOfPage": {"@type": "WebPage", "@id": "https://www.rckt.cl/blog/que-es-modelacion-redes-agua-potable/"}, "image": "https://www.rckt.cl/assets/img/og-portada.svg", "author": {"@type": "Organization", "name": "RCKT"}, "publisher": {"@type": "ProfessionalService", "@id": "https://www.rckt.cl/#negocio", "name": "RCKT"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://www.rckt.cl/"}, {"@type": "ListItem", "position": 2, "name": "Blog", "item": "https://www.rckt.cl/blog/"}, {"@type": "ListItem", "position": 3, "name": "Modelación de redes de agua potable", "item": "https://www.rckt.cl/blog/que-es-modelacion-redes-agua-potable/"}]}</script>
+</head>
+<body>
+<a class="saltar" href="#contenido">Saltar al contenido</a>
+
+<header class="cabecera">
+  <div class="contenedor cabecera__barra">
+    <a class="logo" href="../../">
+      <svg class="logo__marca" viewBox="0 0 36 36" width="34" height="34" aria-hidden="true" focusable="false">
+        <rect width="36" height="36" rx="9" fill="currentColor" opacity=".1"/>
+        <path d="M18 7.5 24 20h-12z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+        <circle cx="18" cy="15.5" r="1.7" fill="currentColor"/>
+        <path d="M8 26c3.6-4.6 6.4 2.2 10-1.4S22.6 25 28 21.6" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
+      </svg>
+      <span class="logo__texto"><strong>RCKT</strong><span>Ingeniería y Geomática</span></span>
+    </a>
+    <button class="menu-boton" type="button" aria-expanded="false" aria-controls="nav-principal">
+      <span class="menu-boton__barras" aria-hidden="true"></span>
+      <span class="menu-boton__texto">Menú</span>
+    </button>
+    <nav id="nav-principal" class="nav" aria-label="Navegación principal">
+      <ul class="nav__lista">
+    <li class="nav__item nav__item--sub">
+      <a href="../../dron-fotogrametria/">Dron y topografía</a>
+      <ul class="nav__sub">
+        <li><a href="../../dron-fotogrametria/fotogrametria/">Fotogrametría aérea</a></li>
+        <li><a href="../../dron-fotogrametria/curvas-de-nivel/">Curvas de nivel</a></li>
+        <li><a href="../../dron-fotogrametria/deslindes-linderos/">Deslindes y linderos</a></li>
+        <li><a href="../../dron-fotogrametria/mapas-ortomosaicos/">Mapas y ortomosaicos</a></li>
+        <li><a href="../../cotizador/">Calculadora de cotización</a></li>
+      </ul>
+    </li>
+    <li class="nav__item nav__item--sub">
+      <a href="../../ingenieria-hidraulica/">Ingeniería hidráulica</a>
+      <ul class="nav__sub">
+        <li><a href="../../ingenieria-hidraulica/modelacion-redes/">Modelación de redes</a></li>
+        <li><a href="../../ingenieria-hidraulica/dimensionamiento-bombas-impulsiones/">Bombas e impulsiones</a></li>
+        <li><a href="../../ingenieria-hidraulica/estudios-inundacion/">Estudios de inundación</a></li>
+        <li><a href="../../ingenieria-hidraulica/drenaje-pluvial/">Drenaje pluvial</a></li>
+        <li><a href="../../ingenieria-hidraulica/proyectos-sanitarios/">Proyectos sanitarios</a></li>
+      </ul>
+    </li>
+    <li class="nav__item"><a href="../../capacidades/">Capacidades</a></li>
+    <li class="nav__item nav__item--sub">
+      <a href="../../zonas/">Zonas</a>
+      <ul class="nav__sub">
+        <li><a href="../../zonas/santiago-rm/">Santiago y RM</a></li>
+        <li><a href="../../zonas/coquimbo-la-serena-iv-region/">La Serena y Coquimbo</a></li>
+        <li><a href="../../zonas/valparaiso-vina-v-region/">Valparaíso y Viña</a></li>
+        <li><a href="../../zonas/ohiggins-vi-region/">O'Higgins</a></li>
+        <li><a href="../../zonas/maule-vii-region/">Maule</a></li>
+        <li><a href="../../zonas/pucon-villarrica-caburgua/">Pucón · Villarrica</a></li>
+      </ul>
+    </li>
+    <li class="nav__item"><a href="../../blog/" aria-current="page">Blog</a></li>
+    <li class="nav__item"><a href="../../empresa/">Empresa</a></li>
+        <li class="nav__item nav__item--cta"><a class="boton boton--acento boton--sm" href="../../contacto/">Cotizar</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+<nav class="migas" aria-label="Ruta de navegación"><div class="contenedor"><ol><li><a href="../../">Inicio</a></li><li><a href="../../blog/">Blog</a></li><li aria-current="page">Modelación de redes de agua potable</li></ol></div></nav>
+<main id="contenido">
+
+<section class="encabezado encabezado--post">
+  <div class="patron patron--flujo" aria-hidden="true"><svg class="patron__svg" viewBox="0 0 1280 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.25"><path d="M-60 30 C 140 -10, 300 70, 480 30 S 820 -10, 1000 30 S 1240 64, 1340 30"/><path d="M-60 92 C 140 52, 300 132, 480 92 S 820 52, 1000 92 S 1240 126, 1340 92"/><path d="M-60 154 C 140 114, 300 194, 480 154 S 820 114, 1000 154 S 1240 188, 1340 154"/><path d="M-60 216 C 140 176, 300 256, 480 216 S 820 176, 1000 216 S 1240 250, 1340 216"/><path d="M-60 278 C 140 238, 300 318, 480 278 S 820 238, 1000 278 S 1240 312, 1340 278"/><path d="M-60 340 C 140 300, 300 380, 480 340 S 820 300, 1000 340 S 1240 374, 1340 340"/><path d="M-60 402 C 140 362, 300 442, 480 402 S 820 362, 1000 402 S 1240 436, 1340 402"/><path d="M-60 464 C 140 424, 300 504, 480 464 S 820 424, 1000 464 S 1240 498, 1340 464"/><path d="M-60 526 C 140 486, 300 566, 480 526 S 820 486, 1000 526 S 1240 560, 1340 526"/><circle cx="240" cy="154" r="4.5" fill="currentColor" stroke="none"/><circle cx="240" cy="154" r="11"/><circle cx="620" cy="216" r="4.5" fill="currentColor" stroke="none"/><circle cx="620" cy="216" r="11"/><circle cx="900" cy="340" r="4.5" fill="currentColor" stroke="none"/><circle cx="900" cy="340" r="11"/><circle cx="420" cy="402" r="4.5" fill="currentColor" stroke="none"/><circle cx="420" cy="402" r="11"/><circle cx="1080" cy="92" r="4.5" fill="currentColor" stroke="none"/><circle cx="1080" cy="92" r="11"/><circle cx="760" cy="464" r="4.5" fill="currentColor" stroke="none"/><circle cx="760" cy="464" r="11"/></g></svg></div>
+  <div class="contenedor">
+    <p class="encabezado__etiqueta">Blog · Ingeniería hidráulica</p>
+    <h1>Qué es la modelación de redes de agua potable y cuándo se necesita</h1>
+    <p class="encabezado__meta"><time datetime="2026-08-11">11 de agosto de 2026</time> · 6 min de lectura</p>
+  </div>
+</section>
+
+<section class="seccion"><div class="contenedor">
+<article class="articulo">
+  <p class="articulo__entrada">Es construir una representación matemática del sistema —tuberías, nudos,
+  estanques, bombas y válvulas— y resolver el equilibrio hidráulico de toda la red para conocer la presión en
+  cada punto bajo distintos escenarios. Se necesita cuando la red es mallada, cuando hay diferencias de cota
+  relevantes, cuando existen bombas o estanques intermedios, o cuando hay que verificar el incendio.</p>
+
+  <h2>El problema con calcular "por tramos"</h2>
+  <p>En una red ramificada simple el caudal de cada tramo se conoce de antemano. Pero en cuanto hay circuitos
+  cerrados, el agua se reparte entre los caminos según las pérdidas de carga de cada uno, y esas pérdidas
+  dependen del caudal: el problema se vuelve un sistema de ecuaciones no lineales acopladas que no se resuelve
+  a mano de forma razonable.</p>
+
+  <h2>Los cuatro escenarios que hay que verificar</h2>
+  <ol class="pasos">
+  <li class="pasos__item"><h3>Demanda máxima horaria</h3><p>La hora de mayor consumo del año. Es el escenario crítico por presión baja: si la red cumple aquí, cumple casi siempre.</p></li>
+  <li class="pasos__item"><h3>Demanda mínima nocturna</h3><p>De madrugada el consumo cae y las presiones suben. Causa habitual de fugas y roturas repetidas en las zonas bajas.</p></li>
+  <li class="pasos__item"><h3>Incendio</h3><p>Un grifo demandando su caudal de diseño mientras el resto opera normal. Suele definir el diámetro mínimo de las matrices.</p></li>
+  <li class="pasos__item"><h3>Tramos fuera de servicio</h3><p>Verifica que la red mallada efectivamente entregue redundancia y no deje sectores sin servicio.</p></li>
+</ol>
+
+  <h2>Por qué el diámetro "por costumbre" sale caro</h2>
+  <p>Sobredimensionar significa pagar tubería de más en toda la red y tener velocidades tan bajas que
+  favorecen la sedimentación. Subdimensionar significa presiones insuficientes en los puntos altos justo en la
+  hora de mayor consumo, y corregirlo después implica romper calles ya pavimentadas.</p>
+
+  <h2>El dato que más veces falta: la cota</h2>
+  <p>Cada nudo necesita su cota, porque la presión disponible es esencialmente la diferencia de altura
+  respecto del estanque menos las pérdidas. Un error de un metro en la cota es un error de un metro de columna
+  de agua, y en el punto más desfavorable eso puede ser la diferencia entre cumplir y no cumplir. Por eso el
+  levantamiento previo con <a href="../../dron-fotogrametria/">dron</a> no es un lujo.</p>
+
+  <h2>También sirve para redes existentes</h2>
+  <p>Cuando una red da problemas de presión, se modela tal como está construida, se calibra con mediciones en
+  terreno y se identifica la causa real: un diámetro insuficiente, una válvula parcialmente cerrada hace años
+  o una demanda que creció por sobre lo previsto. Diagnosticar con modelo evita cambiar tubería que no era el
+  problema.</p>
+
+  <p class="articulo__cierre">¿Tienes una red que diseñar o una que da problemas? Revisa el servicio de
+  <a href="../../ingenieria-hidraulica/modelacion-redes/">modelación de redes</a> o
+  <a href="../../contacto/">escríbenos</a>.</p>
+</article>
+</div></section>
+<section class="cta">
+  <div class="contenedor cta__caja">
+    <div class="cta__texto">
+      <h2>¿Tienes un terreno o un proyecto que evaluar?</h2>
+      <p>Cuéntanos qué necesitas y te respondemos con alcance, plazo y valor en menos de 24 horas hábiles.</p>
+    </div>
+    <div class="cta__botones">
+      <a class="boton boton--acento" href="../../contacto/">Solicitar cotización <svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6"/></svg></a>
+      <a class="boton boton--fantasma" href="https://wa.me/56900000000" rel="nofollow noopener" target="_blank"><svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.5 12c0 4.2-3.8 7.5-8.5 7.5-1.2 0-2.4-.2-3.4-.6L3.5 20.5l1.7-4.2A7 7 0 0 1 3.5 12C3.5 7.8 7.3 4.5 12 4.5s8.5 3.3 8.5 7.5z"/></svg> WhatsApp</a>
+    </div>
+  </div>
+</section>
+</main>
+<footer class="pie">
+  <div class="contenedor pie__grid">
+    <div class="pie__col">
+      <p class="pie__marca">RCKT</p>
+      <p class="pie__descriptor">Ingeniería y Geomática</p>
+      <p class="pie__texto">Topografía con dron e ingeniería hidráulica. Terreno y gabinete
+      desde Santiago hacia todo Chile central y sur.</p>
+      <ul class="pie__contacto">
+        <li><svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 3.5H4.8A1.8 1.8 0 0 0 3 5.4C3 13.5 10.5 21 18.6 21a1.8 1.8 0 0 0 1.9-1.8V17l-4.4-1.6-2 2.2a14 14 0 0 1-5.2-5.2l2.2-2z"/></svg><a href="tel:+56900000000">+56 9 0000 0000</a></li>
+        <li><svg class="icono icono--sm" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M3.5 7l8.5 6 8.5-6"/></svg><a href="mailto:contacto@rckt.cl">contacto@rckt.cl</a></li>
+      </ul>
+    </div>
+    <div class="pie__col">
+      <p class="pie__titulo">Dron y topografía</p>
+      <ul><li><a href="../../dron-fotogrametria/fotogrametria/">Fotogrametría aérea</a></li>
+<li><a href="../../dron-fotogrametria/curvas-de-nivel/">Curvas de nivel</a></li>
+<li><a href="../../dron-fotogrametria/deslindes-linderos/">Deslindes y linderos</a></li>
+<li><a href="../../dron-fotogrametria/mapas-ortomosaicos/">Mapas y ortomosaicos</a></li>
+<li><a href="../../cotizador/">Calculadora de cotización</a></li></ul>
+    </div>
+    <div class="pie__col">
+      <p class="pie__titulo">Ingeniería hidráulica</p>
+      <ul><li><a href="../../ingenieria-hidraulica/modelacion-redes/">Modelación de redes</a></li>
+<li><a href="../../ingenieria-hidraulica/dimensionamiento-bombas-impulsiones/">Bombas e impulsiones</a></li>
+<li><a href="../../ingenieria-hidraulica/estudios-inundacion/">Estudios de inundación</a></li>
+<li><a href="../../ingenieria-hidraulica/drenaje-pluvial/">Drenaje pluvial</a></li>
+<li><a href="../../ingenieria-hidraulica/proyectos-sanitarios/">Proyectos sanitarios</a></li></ul>
+    </div>
+    <div class="pie__col">
+      <p class="pie__titulo">Zonas de cobertura</p>
+      <ul><li><a href="../../zonas/santiago-rm/">Santiago y RM</a></li>
+<li><a href="../../zonas/coquimbo-la-serena-iv-region/">La Serena y Coquimbo</a></li>
+<li><a href="../../zonas/valparaiso-vina-v-region/">Valparaíso y Viña</a></li>
+<li><a href="../../zonas/ohiggins-vi-region/">O'Higgins</a></li>
+<li><a href="../../zonas/maule-vii-region/">Maule</a></li>
+<li><a href="../../zonas/pucon-villarrica-caburgua/">Pucón · Villarrica</a></li></ul>
+    </div>
+  </div>
+  <div class="contenedor pie__legal">
+    <p>© 2026 RCKT. Todos los derechos reservados.</p>
+    <p><a href="../../capacidades/">Capacidades</a> · <a href="../../empresa/">Empresa</a> · <a href="../../contacto/">Contacto</a></p>
+  </div>
+</footer>
+<script>
+(function () {
+  var b = document.querySelector('.menu-boton');
+  var n = document.getElementById('nav-principal');
+  if (!b || !n) return;
+  b.addEventListener('click', function () {
+    var abierto = n.classList.toggle('nav--abierto');
+    b.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+  });
+})();
+</script>
+</body>
+</html>

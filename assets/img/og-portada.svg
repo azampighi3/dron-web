@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#05090d"/>
+  <g fill="none" stroke="#17c3d4" stroke-width="1.4" opacity=".22">
+    <ellipse cx="330" cy="430" rx="120" ry="86" transform="rotate(-14 330 430)"/>
+    <ellipse cx="336" cy="434" rx="180" ry="130" transform="rotate(-14 336 434)"/>
+    <ellipse cx="342" cy="438" rx="240" ry="173" transform="rotate(-14 342 438)"/>
+    <ellipse cx="348" cy="442" rx="300" ry="216" transform="rotate(-14 348 442)"/>
+    <ellipse cx="960" cy="180" rx="110" ry="78" transform="rotate(20 960 180)"/>
+    <ellipse cx="966" cy="184" rx="170" ry="122" transform="rotate(20 966 184)"/>
+    <ellipse cx="972" cy="188" rx="230" ry="165" transform="rotate(20 972 188)"/>
+  </g>
+  <path d="M96 96 132 168H60z" fill="none" stroke="#17c3d4" stroke-width="5" stroke-linejoin="round"/>
+  <circle cx="96" cy="134" r="7" fill="#17c3d4"/>
+  <text x="180" y="152" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="74" font-weight="700" fill="#ffffff" letter-spacing="6">RCKT</text>
+  <text x="182" y="192" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="22" fill="#17c3d4" letter-spacing="7">INGENIERIA Y GEOMATICA</text>
+  <text x="96" y="360" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="58" font-weight="700" fill="#ffffff">Topografia con dron e</text>
+  <text x="96" y="430" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="58" font-weight="700" fill="#ffffff">ingenieria hidraulica</text>
+  <text x="96" y="500" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="27" fill="#8fa3b3">Curvas de nivel · Deslindes · Redes de agua · Drenaje</text>
+</svg>
