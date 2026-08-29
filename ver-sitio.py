@@ -8,7 +8,6 @@ No se ejecuta directamente: usa `ver-sitio.bat` (doble clic).
 import os
 import sys
 import http.server
-import socketserver
 import subprocess
 import threading
 import webbrowser
@@ -44,11 +43,20 @@ def construir():
         sys.exit(1)
 
 
+class Servidor(http.server.ThreadingHTTPServer):
+    """Atiende varias peticiones a la vez.
+
+    Con un servidor de un solo hilo el navegador mantiene abierta la primera
+    conexión y las páginas siguientes quedan esperando indefinidamente.
+    """
+    allow_reuse_address = True
+    daemon_threads = True
+
+
 def servir():
-    socketserver.TCPServer.allow_reuse_address = True
     for puerto in range(PUERTO_INICIAL, PUERTO_INICIAL + 20):
         try:
-            servidor = socketserver.TCPServer(("127.0.0.1", puerto), Handler)
+            servidor = Servidor(("127.0.0.1", puerto), Handler)
         except OSError:
             continue
 

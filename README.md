@@ -127,14 +127,41 @@ que en un dominio propio.
 
 ## Antes de publicar en el dominio definitivo
 
-- [ ] Cambiar `CONFIG["dominio"]` al dominio real y volver a ejecutar `python build.py`
-      (afecta a `canonical`, Open Graph, sitemap y JSON-LD).
+Ordenado por impacto en visibilidad:
+
+- [ ] **Subir las fotos a `assets/img/`.** Hoy el sitio no tiene ni una imagen real, y Google Imágenes es
+      una fuente de tráfico relevante para este rubro. Los nombres esperados aparecen en cada recuadro
+      punteado del sitio.
+- [ ] **Crear `assets/img/og-portada.jpg` de 1200x630 px.** Se detecta sola: basta dejarla ahí y
+      reconstruir. Sin ella, los enlaces compartidos por WhatsApp o LinkedIn no muestran vista previa,
+      porque el respaldo actual es un SVG y varias plataformas no lo renderizan.
+- [ ] Cambiar `CONFIG["dominio"]` al dominio real y reconstruir (afecta canonical, Open Graph, sitemap
+      y JSON-LD).
 - [ ] Completar teléfono, email y razón social en `CONFIG`.
+- [ ] Ajustar `CONFIG["lat"]` y `CONFIG["lon"]` a la ubicación real de la base (hoy apuntan al centro de
+      Santiago). Van al schema de negocio y ayudan al posicionamiento local.
+- [ ] Agregar las URLs de LinkedIn e Instagram en `CONFIG["redes"]` cuando existan: se publican como
+      `sameAs`, que es una señal de entidad para Google y para los buscadores de IA.
+- [ ] Pegar el código de verificación en `CONFIG["gsc_verificacion"]`, registrar el sitio en
+      **Google Search Console** y enviar el `sitemap.xml`.
+- [ ] Pegar el identificador en `CONFIG["ga4_id"]` para activar Google Analytics 4.
 - [ ] Completar la página `empresa/` con datos verificables (título profesional, registro DGAC, RUT).
-- [ ] Crear `assets/img/og-portada.jpg` de 1200x630 px y cambiar `CONFIG["og_image"]`
-      (el SVG actual es un marcador de posición: WhatsApp y varias redes no lo previsualizan).
-- [ ] Registrar el sitio en Google Search Console y enviar el `sitemap.xml`.
-- [ ] Crear el perfil de Google Business como *negocio con área de servicio*.
+- [ ] Crear el perfil de **Google Business** como *negocio con área de servicio*, declarando todas las
+      comunas de `ZONAS_SERVICIO`.
+
+## Qué SEO ya está resuelto en el generador
+
+No hay que hacer nada de esto a mano: se genera solo en cada `python build.py`.
+
+- Un `<h1>` único por página y jerarquía de encabezados sin saltos.
+- `title` y `meta description` únicos, dentro de los rangos recomendados.
+- `canonical` autorreferente y Open Graph completo (incluidas dimensiones y `alt` de la imagen).
+- JSON-LD: `ProfessionalService` con geo, horario, catálogo de servicios y `areaServed` por comuna;
+  `Service` por cada servicio y por cada zona; `BreadcrumbList`; `FAQPage`; `BlogPosting`.
+- `sitemap.xml` y `robots.txt` sincronizados con las páginas realmente publicadas.
+- Cero peticiones a servidores externos: todo el CSS, los iconos y los gráficos van en el propio dominio.
+- Versionado automático del CSS para que los cambios de diseño no queden ocultos por la caché.
+- `404.html` con `noindex, follow`.
 
 ## Cuando tengas proyectos que mostrar
 
@@ -143,6 +170,31 @@ metodología y herramientas. Cuando existan trabajos publicables:
 
 1. Agrega los ejemplos en la sección "Desarrollos propios" de `capacidades/` (en `contenido.py`), o
 2. Crea una página `proyectos/` nueva agregando su diccionario a la lista `PAGINAS` y su entrada al `NAV`.
+
+## Imágenes que el sitio está esperando
+
+Deja el archivo en `assets/img/` con el nombre exacto y ejecuta `python build.py`: el recuadro punteado se
+reemplaza solo por la foto, con sus medidas y carga diferida. Acepta `.webp`, `.avif`, `.jpg` y `.png`.
+
+| Archivo | Qué mostrar | Dónde aparece |
+|---|---|---|
+| `dron-en-vuelo-terreno` | El dron operando en terreno real | Pilar de dron |
+| `modelo-digital-elevacion` | Modelo de elevación en escala de colores | Home · Nube de puntos |
+| `curvas-de-nivel` | Plano de curvas sobre foto aérea | Home · Curvas de nivel |
+| `rectificacion-deslindes` | Plano de deslindes con vértices marcados | Deslindes · Capacidades |
+| `ortomosaico-predio` | Ortomosaico real de un vuelo hecho | Mapas y ortomosaicos |
+| `captura-modelacion-hidraulica` | Pantalla de EPANET o HEC-RAS | Pilar de hidráulica |
+| `modelacion-redes-epanet` | Red modelada en EPANET | Home · Modelación de redes |
+| `modelacion-golpe-de-ariete` | Gráfico de presión transitoria | Bombas · Capacidades |
+| `mapa-inundacion-hecras` | Mancha de inundación por profundidad | Estudios de inundación |
+| `drenaje-pluvial` | Plano de colectores o cámara en terreno | Drenaje · Capacidades |
+| `plano-red-agua-potable` | Plano de red domiciliaria | Proyectos sanitarios |
+| `retrato-profesional-rckt` | Tu foto, retrato o en terreno | Empresa |
+| `og-portada.jpg` | Composición 1200×630 para compartir | Todo el sitio (redes) |
+
+Si prefieres nombres que incluyan la zona del proyecto —recomendable para Google Imágenes, por ejemplo
+`ortomosaico-predio-pucon-2026.webp`— renombra el archivo y cambia el nombre en la llamada a `figura(...)`
+correspondiente dentro de `contenido.py`.
 
 ## Cómo poner las imágenes
 

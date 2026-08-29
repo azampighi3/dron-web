@@ -25,7 +25,8 @@ Componentes (definidos en build.py):
 """
 
 from build import (CONFIG, icono, figura, pasos, datos, tarjetas, lista_iconos, patron,
-                   cotizador_html, opciones_consulta)
+                   cotizador_html, opciones_consulta, acciones_encabezado, bloque_precio,
+                   tabla_precios, horario_texto)
 
 WSP = "https://wa.me/" + CONFIG["whatsapp"]
 
@@ -37,12 +38,12 @@ HOME = '''
   ''' + patron("curvas") + '''
   <div class="contenedor hero__caja">
     <p class="hero__etiqueta">''' + icono("rayo", "icono icono--sm") + ''' Dron · Topografía · Ingeniería hidráulica</p>
-    <h1>Levantamos el terreno y resolvemos el agua</h1>
-    <p class="hero__bajada">Topografía con dron y proyectos hidráulicos en una sola oficina. La misma base
-    de terreno que levantamos alimenta el cálculo, sin coordinar dos proveedores.</p>
+    <h1>Levantamiento de terreno e ingeniería hidráulica</h1>
+    <p class="hero__bajada">Topografía con dron y proyectos hidráulicos en una sola oficina. Calcula el
+    precio exacto de tu levantamiento en línea —un valor, no un rango— sin dejar tus datos.</p>
     <div class="hero__acciones">
-      <a class="boton boton--acento" href="{{P}}cotizador/">Calcular mi cotización ''' + icono("flecha", "icono icono--sm") + '''</a>
-      <a class="boton boton--fantasma" href="{{P}}contacto/">Hablemos</a>
+      <a class="boton boton--acento" href="{{P}}cotizador/">Calcular mi precio ''' + icono("flecha", "icono icono--sm") + '''</a>
+      <a class="boton boton--fantasma" href="''' + WSP + '''" rel="nofollow noopener" target="_blank">''' + icono("chat", "icono icono--sm") + ''' WhatsApp</a>
     </div>
     <ul class="hero__chips">
       <li>''' + icono("objetivo", "icono icono--sm") + ''' Precisión de 2 a 5 cm</li>
@@ -56,15 +57,15 @@ HOME = '''
   <div class="contenedor">
     <h2 class="seccion__titulo">Dron y topografía</h2>
     ''' + tarjetas([
-    ("dron", "Fotogrametría aérea",
+    ("dron", "Nube de puntos y modelo de terreno",
      "Nube de puntos y modelo digital de terreno para cubicar, diseñar y controlar obra.",
      "dron-fotogrametria/fotogrametria/"),
     ("curvas", "Curvas de nivel",
      "Cada 0,25 · 0,5 o 1 m, en DWG listo para Civil 3D.",
      "dron-fotogrametria/curvas-de-nivel/"),
-    ("deslindes", "Deslindes y linderos",
+    ("deslindes", "Rectificación de deslindes",
      "Límites reales del predio, con coordenadas por vértice.",
-     "dron-fotogrametria/deslindes-linderos/"),
+     "dron-fotogrametria/rectificacion-deslindes/"),
     ("mapa", "Mapas y ortomosaicos",
      "Imagen georreferenciada de 2 a 5 cm/píxel, medible a escala.",
      "dron-fotogrametria/mapas-ortomosaicos/"),
@@ -133,15 +134,16 @@ HOME = '''
 <section class="seccion">
   <div class="contenedor">
     <h2 class="seccion__titulo">Dónde trabajamos</h2>
-    <p class="seccion__bajada">Base en ''' + CONFIG["ciudad_base"] + ''', con cobertura entre Coquimbo y
-    La Araucanía.</p>
-    ''' + tarjetas([
-    ("pin", "Santiago y RM", "Deslindes, drenaje y proyectos sanitarios urbanos.", "zonas/santiago-rm/"),
-    ("pin", "La Serena y Coquimbo", "Riego, pozos y quebradas de los valles del norte chico.", "zonas/coquimbo-la-serena-iv-region/"),
-    ("pin", "Valparaíso y V Región", "Terrenos costeros, quebradas y pendiente fuerte.", "zonas/valparaiso-vina-v-region/"),
-    ("pin", "O'Higgins", "Predios agrícolas y vitivinícolas, curvas para riego.", "zonas/ohiggins-vi-region/"),
-    ("pin", "Maule", "Levantamientos prediales extensos y drenaje agrícola.", "zonas/maule-vii-region/"),
-    ("pin", "Pucón y Villarrica", "Parcelaciones, deslindes y agua particular.", "zonas/pucon-villarrica-caburgua/"),
+    <p class="seccion__bajada">Base en ''' + CONFIG["ciudad_base"] + ''', con proyectos entre la Región de
+    Coquimbo y La Araucanía. El terreno se concentra en una sola visita planificada y el resto se desarrolla
+    en gabinete, así el traslado queda acotado y en un solo ítem informado por adelantado.</p>
+    ''' + lista_iconos([
+    ("pin", "<strong>Región Metropolitana.</strong> Santiago y comunas periurbanas, sin costo de traslado."),
+    ("pin", "<strong>Coquimbo.</strong> La Serena, Coquimbo, Ovalle, Illapel y los valles de Elqui, Limarí y Choapa."),
+    ("pin", "<strong>Valparaíso.</strong> Valparaíso, Viña del Mar, Casablanca, San Antonio y el litoral."),
+    ("pin", "<strong>O'Higgins y Maule.</strong> Rancagua, San Fernando, Santa Cruz, Curicó, Talca y Linares."),
+    ("pin", "<strong>La Araucanía.</strong> Temuco, Angol, Villarrica, Pucón y toda la región."),
+    ("chat", "¿Tu proyecto está fuera de estas zonas? <a href='{{P}}contacto/'>Escríbenos</a> y lo evaluamos."),
 ]) + '''
   </div>
 </section>
@@ -171,16 +173,21 @@ DRON_PILAR = '''
   ''' + patron("curvas") + '''
   <div class="contenedor">
     <p class="encabezado__etiqueta">Dron y topografía</p>
-    <h1>Fotogrametría y topografía con dron en Chile</h1>
-    <p class="encabezado__bajada">Fotografiamos el terreno desde el aire con alto traslape y procesamos esas
-    imágenes para obtener un modelo tridimensional georreferenciado. De ahí salen el ortomosaico, el modelo
-    digital de terreno y las curvas de nivel, con mucha más densidad de datos que un levantamiento
-    tradicional y una fracción del tiempo de terreno.</p>
+    <h1>Fotogrametría y topografía con dron</h1>
+    <p class="encabezado__bajada">Fotografiamos el terreno desde el aire y procesamos esas imágenes para
+    obtener un modelo tridimensional medible. De ahí salen el plano de curvas de nivel, la imagen aérea a
+    escala y el modelo del terreno, con mucha más información que un levantamiento tradicional y en una
+    fracción del tiempo.</p>
+    ''' + acciones_encabezado("topografía con dron") + '''
   </div>
 </section>
 
 <section class="seccion">
   <div class="contenedor">
+    ''' + figura("dron-en-vuelo-terreno",
+                 "Operación de dron RPAS durante un levantamiento topográfico en terreno",
+                 "Operación en terreno con RPAS registrado ante la DGAC",
+                 "16 / 9") + '''
     ''' + datos([
     ("2–5 cm", "Precisión con puntos de control", "objetivo"),
     ("2 cm/píxel", "Resolución del ortomosaico", "mapa"),
@@ -195,15 +202,15 @@ DRON_PILAR = '''
     <h2 class="seccion__titulo">Qué servicio necesitas</h2>
     <p class="seccion__bajada">Todos parten del mismo vuelo; cambia el procesamiento y el entregable.</p>
     ''' + tarjetas([
-    ("dron", "Fotogrametría aérea",
+    ("dron", "Nube de puntos y modelo de terreno",
      "El servicio base: nube de puntos y modelo digital de terreno. Para cubicar, diseñar y controlar obra.",
      "dron-fotogrametria/fotogrametria/"),
     ("curvas", "Curvas de nivel",
      "Restitución a la equidistancia que necesite el proyecto. Es lo que pide un arquitecto o un proyectista de riego.",
      "dron-fotogrametria/curvas-de-nivel/"),
-    ("deslindes", "Deslindes y linderos",
+    ("deslindes", "Rectificación de deslindes",
      "Cercos, muros y ocupación real contrastados con los planos existentes.",
-     "dron-fotogrametria/deslindes-linderos/"),
+     "dron-fotogrametria/rectificacion-deslindes/"),
     ("mapa", "Mapas y ortomosaicos",
      "Imagen aérea corregida y georreferenciada, medible a escala real.",
      "dron-fotogrametria/mapas-ortomosaicos/"),
@@ -233,6 +240,17 @@ DRON_PILAR = '''
     <a href="https://www.dgac.gob.cl/" rel="noopener" target="_blank">DAN 151</a>.</p>
   </div>
 </section>
+
+<section class="seccion seccion--clara">
+  <div class="contenedor">
+    <h2 class="seccion__titulo">Cuánto cuesta</h2>
+    <p class="seccion__bajada">Estos son valores de referencia para que tengas un orden de magnitud sin
+    tener que preguntar. El valor exacto depende de la superficie y de dónde esté el terreno, y lo obtienes
+    en segundos en la <a href="{{P}}cotizador/">calculadora</a>: te entrega un precio, no un rango.</p>
+    ''' + tabla_precios() + '''
+    <p><a class="enlace-fuerte" href="{{P}}cotizador/">Calcular el valor de mi terreno ''' + icono("flecha", "icono icono--sm") + '''</a></p>
+  </div>
+</section>
 '''
 
 DRON_FAQ = [
@@ -259,7 +277,7 @@ FOTOGRAMETRIA = '''
   ''' + patron("curvas") + '''
   <div class="contenedor">
     <p class="encabezado__etiqueta">Dron y topografía</p>
-    <h1>Fotogrametría aérea con dron: modelo 3D y nube de puntos</h1>
+    <h1>Nube de puntos y modelo digital de terreno con dron</h1>
     <p class="encabezado__bajada">Convertimos cientos de fotografías aéreas en un modelo tridimensional
     medible del terreno. De esa nube de puntos salen el modelo digital de superficie, el de terreno y todos
     los productos derivados.</p>
@@ -329,18 +347,27 @@ CURVAS = '''
   <div class="contenedor">
     <p class="encabezado__etiqueta">Dron y topografía</p>
     <h1>Levantamiento de curvas de nivel con dron</h1>
-    <p class="encabezado__bajada">Las curvas de nivel unen puntos de igual altura y son la forma estándar de
-    representar el relieve. Con dron cada curva se apoya en cientos de miles de puntos medidos, no en la
-    interpolación entre unas decenas de estaciones.</p>
+    <p class="encabezado__bajada">El plano que muestra cómo sube y baja tu terreno. Es lo que te van a pedir
+    para subdividir un predio, diseñar el riego, emplazar una casa en pendiente o presentar un proyecto en la
+    municipalidad. Con dron cada curva se apoya en cientos de miles de puntos medidos, no en la interpolación
+    entre unas pocas estaciones.</p>
+    ''' + acciones_encabezado("levantamiento de curvas de nivel") + '''
   </div>
 </section>
 
 <section class="seccion">
   <div class="contenedor">
+    ''' + bloque_precio() + '''
     ''' + figura("curvas-de-nivel",
                  "Plano de curvas de nivel sobre ortomosaico levantado con dron",
                  "Curvas de nivel restituidas sobre el ortomosaico del predio",
                  "16 / 9") + '''
+    <h2>Para qué se piden</h2>
+    <p>Las razones más habituales: <strong>subdividir un terreno</strong> y presentar el plano ante la
+    Dirección de Obras o el Conservador de Bienes Raíces; <strong>diseñar el riego</strong> de un predio
+    agrícola; <strong>emplazar una construcción</strong> en pendiente y calcular cuánta excavación implica;
+    o cumplir con lo que exige un trámite ante el SAG o el municipio. Cada uno necesita un nivel de detalle
+    distinto, y por eso lo primero que preguntamos es para qué lo vas a usar.</p>
     <h2>Qué equidistancia necesitas</h2>
     <div class="tabla-envoltura">
     <table>
@@ -395,19 +422,28 @@ DESLINDES = '''
   ''' + patron("curvas") + '''
   <div class="contenedor">
     <p class="encabezado__etiqueta">Dron y topografía</p>
-    <h1>Rectificación de deslindes y linderos con dron</h1>
-    <p class="encabezado__bajada">Documentamos con precisión centimétrica dónde están hoy los límites
-    materializados de un predio —cercos, muros, canales, hitos— y los contrastamos con la escritura y los
-    planos existentes. Permite cuantificar cuánta superficie está en discusión cuando no coinciden.</p>
+    <h1>Rectificación de deslindes con dron</h1>
+    <p class="encabezado__bajada">Para saber exactamente dónde terminan los límites de tu terreno. Volamos
+    el predio y medimos dónde están hoy los cercos, muros y canales, para compararlos con lo que dice la
+    escritura. Así sabes si la superficie que compraste es la que realmente tienes, y cuántos metros están
+    en discusión si no coinciden.</p>
+    ''' + acciones_encabezado("rectificación de deslindes") + '''
   </div>
 </section>
 
 <section class="seccion">
   <div class="contenedor">
+    ''' + bloque_precio() + '''
     ''' + figura("rectificacion-deslindes",
                  "Rectificación de deslindes: plano de título superpuesto al ortomosaico del predio",
                  "Deslindes materializados contrastados con el plano de título",
                  "16 / 9") + '''
+    <h2>Cuándo se pide</h2>
+    <p>Los motivos más frecuentes son concretos: <strong>antes de comprar o vender</strong> un terreno, para
+    verificar que la superficie sea la que dice el papel; <strong>antes de subdividir</strong> un predio;
+    cuando hay una <strong>diferencia con un vecino</strong> por un cerco corrido; o cuando el plano que
+    existe es antiguo y describe los límites por referencias ("hasta el canal", "siguiendo el camino") en
+    vez de coordenadas.</p>
     <h2>Qué incluye el entregable</h2>
     ''' + lista_iconos([
     ("mapa", "<strong>Ortomosaico</strong> del predio y su entorno inmediato."),
@@ -438,6 +474,13 @@ DESLINDES = '''
     ("mapa", "Predios rurales grandes",
      "Kilómetros de cerco que a pie tomarían días se cubren en una jornada.", None),
 ]) + '''
+    <p><strong>Servicios relacionados:</strong> se apoya en el mismo vuelo de
+    <a href="{{P}}dron-fotogrametria/fotogrametria/">fotogrametría aérea</a>, se entrega sobre el
+    <a href="{{P}}dron-fotogrametria/mapas-ortomosaicos/">ortomosaico del predio</a> y suele acompañarse de
+    <a href="{{P}}dron-fotogrametria/curvas-de-nivel/">curvas de nivel</a> cuando se va a subdividir.
+    Puedes estimar el valor en la <a href="{{P}}cotizador/">calculadora</a> o leer el detalle del proceso en
+    <a href="{{P}}blog/levantamiento-fotogrametrico-deslindes/">cómo se hace un levantamiento para
+    deslindes</a>.</p>
   </div>
 </section>
 '''
@@ -475,6 +518,10 @@ ORTOMOSAICOS = '''
     ("UTM 19S", "Sistema de referencia", "mapa"),
     ("GeoTIFF", "Compatible con CAD y SIG", "archivo"),
 ]) + '''
+    ''' + figura("ortomosaico-predio",
+                 "Ortomosaico georreferenciado de alta resolución de un predio levantado con dron",
+                 "Ortomosaico de un predio completo, medible a escala real",
+                 "16 / 9") + '''
     <p>Las imágenes satelitales de uso libre entregan del orden de 0,5 a 1 m por píxel y se actualizan cada
     varios años. Con dron obtienes 2 a 5 cm por píxel con la fecha exacta de tu proyecto: se distinguen
     cercos, cámaras, hitos y el estado real de cada sector.</p>
@@ -497,7 +544,7 @@ ORTOMOSAICOS = '''
     <p><strong>Servicios relacionados:</strong> es un subproducto del mismo vuelo de
     <a href="{{P}}dron-fotogrametria/fotogrametria/">fotogrametría aérea</a> y la base sobre la que se dibujan
     las <a href="{{P}}dron-fotogrametria/curvas-de-nivel/">curvas de nivel</a> y los
-    <a href="{{P}}dron-fotogrametria/deslindes-linderos/">deslindes</a>.</p>
+    <a href="{{P}}dron-fotogrametria/rectificacion-deslindes/">deslindes</a>.</p>
   </div>
 </section>
 '''
@@ -547,6 +594,15 @@ COTIZADOR_PAGINA = '''
     ("pin", "<strong>Ubicación.</strong> Define traslados y, en zonas lejanas, estadía."),
     ("capas", "<strong>Escala.</strong> Superficies mayores rinden más por jornada."),
 ]) + '''
+    <p>La calculadora cubre solo el levantamiento con dron:
+    <a href="{{P}}dron-fotogrametria/fotogrametria/">fotogrametría aérea</a>,
+    <a href="{{P}}dron-fotogrametria/curvas-de-nivel/">curvas de nivel</a>,
+    <a href="{{P}}dron-fotogrametria/rectificacion-deslindes/">deslindes</a> y
+    <a href="{{P}}dron-fotogrametria/mapas-ortomosaicos/">ortomosaicos</a>. Para proyectos de
+    <a href="{{P}}ingenieria-hidraulica/">ingeniería hidráulica</a>,
+    <a href="{{P}}contacto/">escríbenos</a> y te respondemos con una propuesta a medida. Si tienes dudas
+    sobre qué equidistancia pedir, revisa
+    <a href="{{P}}blog/curvas-de-nivel-cada-cuanto/">cada cuánto conviene pedir las curvas de nivel</a>.</p>
   </div>
 </section>
 '''
@@ -554,7 +610,9 @@ COTIZADOR_PAGINA = '''
 COTIZADOR_FAQ = [
     ("¿El valor es definitivo?",
      "Es una estimación confiable para presupuestar, pero no reemplaza la propuesta formal. Vegetación densa, "
-     "pendiente extrema o restricciones de vuelo pueden modificar el alcance."),
+     "pendiente extrema o restricciones de vuelo pueden modificar el alcance. El valor final también se "
+     "conversa según el requerimiento específico, el plazo que necesites, la extensión real del terreno y "
+     "el tipo de archivo de entrega."),
     ("¿Por qué baja el valor por hectárea en terrenos grandes?",
      "Porque buena parte del costo es fija: llegar al lugar, instalar los puntos de control y preparar la "
      "entrega cuestan casi lo mismo en 10 que en 100 hectáreas. Ese efecto ya está incorporado."),
@@ -575,15 +633,20 @@ HIDRO_PILAR = '''
   ''' + patron("flujo") + '''
   <div class="contenedor">
     <p class="encabezado__etiqueta">Ingeniería hidráulica</p>
-    <h1>Ingeniería hidráulica y sanitaria para proyectos en Chile</h1>
+    <h1>Ingeniería hidráulica y sanitaria</h1>
     <p class="encabezado__bajada">Resolvemos cómo se conduce, se almacena, se impulsa y se evacúa el agua:
     la red que abastece un loteo, la bomba que eleva a un estanque, el colector que recibe la lluvia o el
     estudio que determina hasta dónde llega una crecida.</p>
+    ''' + acciones_encabezado("ingeniería hidráulica", calculadora=False) + '''
   </div>
 </section>
 
 <section class="seccion">
   <div class="contenedor">
+    ''' + figura("captura-modelacion-hidraulica",
+                 "Modelación hidráulica de una red de agua potable en EPANET",
+                 "Modelación hidráulica: cada tramo verificado antes de construir",
+                 "16 / 9") + '''
     <h2 class="seccion__titulo">Servicios</h2>
     ''' + tarjetas([
     ("red", "Modelación de redes de agua potable",
@@ -791,6 +854,10 @@ INUNDACION = '''
     ("2–5 cm", "Precisión del terreno con dron", "objetivo"),
     ("3–6 sem", "Plazo típico del estudio", "reloj"),
 ]) + '''
+    ''' + figura("mapa-inundacion-hecras",
+                 "Mapa de inundación con la mancha coloreada por profundidad, modelado en HEC-RAS",
+                 "Mancha de inundación por período de retorno, coloreada por profundidad",
+                 "16 / 9") + '''
     <h2>Qué incluye el entregable</h2>
     ''' + lista_iconos([
     ("gota", "<strong>Estudio hidrológico</strong>: caudales de crecida por período de retorno."),
@@ -908,14 +975,37 @@ SANITARIOS = '''
   <div class="contenedor">
     <p class="encabezado__etiqueta">Ingeniería hidráulica</p>
     <h1>Proyectos sanitarios: agua potable y alcantarillado</h1>
-    <p class="encabezado__bajada">Definimos cómo llega el agua potable a cada unidad y cómo se evacúan las
-    aguas servidas de un loteo, una parcelación o una edificación, con memoria de cálculo, planos y
-    especificaciones para tramitar.</p>
+    <p class="encabezado__bajada">El proyecto que te piden para tener agua y alcantarillado aprobados, sea
+    para una casa, una ampliación o un loteo completo. Definimos de dónde viene el agua, cómo llega a cada
+    unidad y cómo se evacúan las aguas servidas, con la memoria de cálculo, los planos y las
+    especificaciones que exige el organismo revisor.</p>
+    ''' + acciones_encabezado("proyecto sanitario", calculadora=False) + '''
   </div>
 </section>
 
 <section class="seccion">
   <div class="contenedor">
+    <h2 class="seccion__titulo">Trámites en los que te podemos ayudar</h2>
+    ''' + lista_iconos([
+    ("archivo", "<strong>Certificado de factibilidad.</strong> El documento con que la empresa sanitaria declara si hay red disponible para tu terreno, y en qué condiciones."),
+    ("gota", "<strong>Certificado de dotación sanitaria.</strong> Requerido cuando no hay red pública y hay que acreditar una solución particular de agua."),
+    ("check", "<strong>Recepción final de obras.</strong> Preparación del expediente sanitario para que la obra quede recibida sin observaciones pendientes."),
+    ("engranaje", "<strong>Regularización de ampliaciones.</strong> Levantamiento de lo ya construido, verificación del cálculo y expediente para regularizarlo."),
+    ("sanitario", "<strong>Instalaciones domiciliarias.</strong> Proyecto de agua potable y alcantarillado de una vivienda o local, con sus planos y memoria."),
+    ("mapa", "<strong>Loteos y parcelaciones.</strong> Sistema completo: fuente, estanque, red de distribución y disposición de aguas servidas."),
+]) + '''
+    <p>Si no sabes cuál de estos corresponde a tu caso —es lo más común—, cuéntanos qué te pidieron y en qué
+    oficina, y te decimos exactamente qué se necesita.</p>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor">
+    ''' + figura("plano-red-agua-potable",
+                 "Plano de red domiciliaria de agua potable y alcantarillado",
+                 "Plano de red de agua potable y alcantarillado listo para tramitar",
+                 "16 / 9") + '''
+    <h2 class="seccion__titulo">Qué incluye el entregable</h2>
     <div class="bloques">
       <div class="bloque">
         <div class="bloque__cabecera">''' + icono("gota") + '''<h3>Agua potable</h3></div>
@@ -991,6 +1081,7 @@ CAPACIDADES = '''
 
 <section class="seccion">
   <div class="contenedor">
+    <h2 class="seccion__titulo">Entregables por área</h2>
     <div class="bloques">
       <div class="bloque">
         <div class="bloque__cabecera">''' + icono("dron") + '''<h3>Topografía y fotogrametría</h3></div>
@@ -1051,6 +1142,12 @@ CAPACIDADES = '''
                    "Proyecto de drenaje pluvial con trazado de colectores",
                    "Drenaje pluvial") + '''
     </div>
+    <p>Cada uno corresponde a un servicio: <a href="{{P}}dron-fotogrametria/rectificacion-deslindes/">rectificación
+    de deslindes</a>, <a href="{{P}}ingenieria-hidraulica/dimensionamiento-bombas-impulsiones/">modelación de
+    golpe de ariete</a> y <a href="{{P}}ingenieria-hidraulica/drenaje-pluvial/">drenaje pluvial</a>. Revisa
+    también la <a href="{{P}}dron-fotogrametria/">línea de topografía con dron</a>, la de
+    <a href="{{P}}ingenieria-hidraulica/">ingeniería hidráulica</a> o calcula un levantamiento en la
+    <a href="{{P}}cotizador/">calculadora</a>.</p>
   </div>
 </section>
 '''
@@ -1064,352 +1161,6 @@ CAPACIDADES_FAQ = [
      "trabajo, para que tu equipo siga trabajando sin depender de nosotros."),
     ("¿Trabajan como subcontrato de otras oficinas?",
      "Sí. Podemos usar el formato, la nomenclatura y las capas que ya usa tu oficina."),
-]
-
-# ==========================================================================
-# ZONAS
-# ==========================================================================
-ZONAS_INDEX = '''
-<section class="encabezado">
-  ''' + patron("curvas") + '''
-  <div class="contenedor">
-    <p class="encabezado__etiqueta">Cobertura</p>
-    <h1>Zonas de cobertura: dónde trabajamos</h1>
-    <p class="encabezado__bajada">Base en ''' + CONFIG["ciudad_base"] + ''', con proyectos entre la Región de
-    Coquimbo y La Araucanía. Si tu proyecto está fuera de estas zonas, escríbenos igual: lo evaluamos según
-    la envergadura del trabajo.</p>
-  </div>
-</section>
-
-<section class="seccion">
-  <div class="contenedor">
-    ''' + tarjetas([
-    ("pin", "Santiago y Región Metropolitana",
-     "Proyectos urbanos: deslindes, drenaje pluvial, proyectos sanitarios y modelación de redes.",
-     "zonas/santiago-rm/"),
-    ("pin", "La Serena, Coquimbo y IV Región",
-     "Valles de riego, escasez hídrica, pozos y quebradas con crecidas aluvionales.",
-     "zonas/coquimbo-la-serena-iv-region/"),
-    ("pin", "Valparaíso, Viña del Mar y V Región",
-     "Terrenos costeros y de quebrada: topografía en pendiente, escorrentía y drenaje.",
-     "zonas/valparaiso-vina-v-region/"),
-    ("pin", "Región de O'Higgins",
-     "Zona agrícola y vitivinícola: curvas de detalle para riego y deslindes rurales.",
-     "zonas/ohiggins-vi-region/"),
-    ("pin", "Región del Maule",
-     "Predios extensos, drenaje agrícola y estudios de inundación de esteros.",
-     "zonas/maule-vii-region/"),
-    ("pin", "Pucón, Villarrica y Caburgua",
-     "Parcelaciones y loteos: topografía para venta, deslindes y soluciones sanitarias.",
-     "zonas/pucon-villarrica-caburgua/"),
-]) + '''
-  </div>
-</section>
-
-<section class="seccion seccion--clara">
-  <div class="contenedor">
-    <h2 class="seccion__titulo">Cómo funcionan los proyectos fuera de Santiago</h2>
-    <p class="seccion__bajada">El terreno se concentra en una sola visita bien planificada y el resto se
-    desarrolla en gabinete. Eso mantiene el costo de traslado acotado y en un solo ítem, informado por
-    adelantado. Para proyectos de <a href="{{P}}ingenieria-hidraulica/">ingeniería hidráulica</a> sin
-    componente de terreno, la ubicación es indiferente.</p>
-  </div>
-</section>
-'''
-
-ZONA_RM = '''
-<section class="encabezado">
-  ''' + patron("curvas") + '''
-  <div class="contenedor">
-    <p class="encabezado__etiqueta">Zona de cobertura</p>
-    <h1>Topografía con dron e ingeniería hidráulica en Santiago y la RM</h1>
-    <p class="encabezado__bajada">Proyectos urbanos y periurbanos: urbanizaciones en el borde de la ciudad,
-    deslindes en predios que se subdividen, drenaje pluvial y proyectos sanitarios. Es nuestra base, así que
-    no hay costo de traslado y las visitas se coordinan con pocos días de anticipación.</p>
-  </div>
-</section>
-
-<section class="seccion">
-  <div class="contenedor">
-    <p>Trabajamos en el Gran Santiago y en Colina, Lampa, Til Til, Buin, Paine, Melipilla, María Pinto,
-    Curacaví, Talagante, Isla de Maipo, Peñaflor, Padre Hurtado, Pirque, San José de Maipo y Calera de Tango.</p>
-    ''' + tarjetas([
-    ("drenaje", "Drenaje pluvial para urbanizaciones",
-     "Acreditar que la urbanización no aumenta el caudal descargado aguas abajo.",
-     "ingenieria-hidraulica/drenaje-pluvial/"),
-    ("sanitario", "Proyectos sanitarios",
-     "Agua potable y alcantarillado para loteos y condominios, con planos para tramitación.",
-     "ingenieria-hidraulica/proyectos-sanitarios/"),
-    ("deslindes", "Deslindes antes de subdividir",
-     "Verificación de la ocupación real en predios periurbanos con cercos antiguos.",
-     "dron-fotogrametria/deslindes-linderos/"),
-    ("reloj", "Control de avance de obra",
-     "Vuelos periódicos para documentar el avance y cubicar movimientos de tierra.",
-     "dron-fotogrametria/fotogrametria/"),
-]) + '''
-  </div>
-</section>
-
-<section class="seccion seccion--clara">
-  <div class="contenedor">
-    <h2 class="seccion__titulo">Consideraciones para volar en la RM</h2>
-    <p class="seccion__bajada">Buena parte del área urbana está dentro de espacio aéreo controlado y volar
-    sobre aglomeraciones tiene requisitos adicionales. Se gestiona, pero conviene avisar con una o dos
-    semanas. En el sector rural la coordinación es mucho más simple.</p>
-  </div>
-</section>
-'''
-
-ZONA_IV = '''
-<section class="encabezado">
-  ''' + patron("curvas") + '''
-  <div class="contenedor">
-    <p class="encabezado__etiqueta">Zona de cobertura</p>
-    <h1>Topografía con dron e hidráulica en La Serena, Coquimbo y la IV Región</h1>
-    <p class="encabezado__bajada">La Región de Coquimbo tiene una condición que define casi todos los
-    proyectos: el agua es escasa y los cauces son intermitentes pero violentos. Eso hace que la topografía de
-    precisión y el cálculo hidráulico pesen más que en otras zonas, tanto para aprovechar cada litro de riego
-    como para no construir en la línea de una quebrada.</p>
-  </div>
-</section>
-
-<section class="seccion">
-  <div class="contenedor">
-    <p>Trabajamos en La Serena, Coquimbo, Ovalle, Vicuña, Paihuano, Andacollo, Monte Patria, Combarbalá,
-    Illapel, Salamanca y Los Vilos, en los valles de Elqui, Limarí y Choapa.</p>
-    ''' + tarjetas([
-    ("curvas", "Curvas de nivel para riego",
-     "Paltos, cítricos y uva pisquera en ladera: el diseño de riego por sectores exige curvas de detalle.",
-     "dron-fotogrametria/curvas-de-nivel/"),
-    ("bomba", "Impulsiones y pozos",
-     "Elevación desde pozo o punto de captación hasta estanque o cabezal, con foco en eficiencia energética.",
-     "ingenieria-hidraulica/dimensionamiento-bombas-impulsiones/"),
-    ("inundacion", "Quebradas y aluviones",
-     "Delimitación de áreas de riesgo en cauces secos que se activan con lluvias intensas.",
-     "ingenieria-hidraulica/estudios-inundacion/"),
-    ("sanitario", "Agua potable particular",
-     "Sistemas autónomos para parcelaciones y proyectos sin red pública disponible.",
-     "ingenieria-hidraulica/proyectos-sanitarios/"),
-    ("deslindes", "Deslindes rurales",
-     "Predios extensos de secano con cercos antiguos y planos descritos por referencias.",
-     "dron-fotogrametria/deslindes-linderos/"),
-]) + '''
-  </div>
-</section>
-
-<section class="seccion seccion--clara">
-  <div class="contenedor">
-    <h2 class="seccion__titulo">Lo que distingue a esta zona</h2>
-    <p class="seccion__bajada">Las quebradas de la región permanecen secas la mayor parte del año y se
-    activan con lluvias intensas, arrastrando material. Un terreno que parece seguro en verano puede estar en
-    la línea de escurrimiento: el modelo de terreno levantado con dron muestra esa vía preferente antes de
-    emplazar nada. En riego, por su parte, la diferencia de cota es lo que define si un sector llega por
-    gravedad o necesita bombeo, y eso solo se resuelve con curvas de detalle.</p>
-  </div>
-</section>
-'''
-
-ZONA_IV_FAQ = [
-    ("¿Viajan a Ovalle, Illapel o Los Vilos?",
-     "Sí. Los viajes a la región se agrupan para hacer varios trabajos en la misma salida, lo que reduce el "
-     "costo de traslado de cada proyecto. Escríbenos y te avisamos cuándo es el próximo viaje programado."),
-    ("¿Sirve el dron para terrenos de secano sin vegetación?",
-     "Es donde mejor funciona: sin cobertura vegetal el modelo de terreno queda muy limpio y la precisión es "
-     "la máxima alcanzable."),
-    ("¿Pueden evaluar el riesgo de una quebrada seca?",
-     "Sí, con un estudio de inundación sobre topografía propia. Determina la vía de escurrimiento y la cota "
-     "de seguridad para emplazar construcciones."),
-]
-
-ZONA_V = '''
-<section class="encabezado">
-  ''' + patron("curvas") + '''
-  <div class="contenedor">
-    <p class="encabezado__etiqueta">Zona de cobertura</p>
-    <h1>Fotogrametría con dron e hidráulica en Valparaíso y Viña del Mar</h1>
-    <p class="encabezado__bajada">Pendiente fuerte, quebradas que concentran la escorrentía y alta densidad
-    de proyectos en ladera. En una quebrada, un error de cota de un metro cambia por completo el resultado de
-    un cálculo de drenaje.</p>
-  </div>
-</section>
-
-<section class="seccion">
-  <div class="contenedor">
-    <p>Trabajamos en Valparaíso, Viña del Mar, Concón, Quilpué, Villa Alemana, Limache, Olmué, Casablanca,
-    San Antonio, Cartagena, El Quisco, Algarrobo, Quintero, Puchuncaví, La Ligua y Zapallar.</p>
-    ''' + tarjetas([
-    ("montana", "Topografía en pendiente",
-     "Vuelo adaptado al relieve y pasadas oblicuas, que reconstruyen taludes mucho mejor.",
-     "dron-fotogrametria/fotogrametria/"),
-    ("drenaje", "Escorrentía de quebradas",
-     "Delimitación de cuencas aportantes y obras de conducción para proyectos en ladera.",
-     "ingenieria-hidraulica/drenaje-pluvial/"),
-    ("inundacion", "Esteros costeros",
-     "Áreas inundables en esteros y desembocaduras, donde el desborde afecta terrenos de alto valor.",
-     "ingenieria-hidraulica/estudios-inundacion/"),
-    ("mapa", "Ortomosaicos inmobiliarios",
-     "Base cartográfica actualizada y material visual para proyectos con vista.",
-     "dron-fotogrametria/mapas-ortomosaicos/"),
-]) + '''
-  </div>
-</section>
-
-<section class="seccion seccion--clara">
-  <div class="contenedor">
-    <h2 class="seccion__titulo">Consideraciones locales</h2>
-    <p class="seccion__bajada">La camanchaca puede impedir el vuelo en las mañanas y el viento de la tarde
-    suele superar el límite operacional en el borde costero. La ventana útil se concentra en las horas
-    centrales del día, y así planificamos la jornada.</p>
-  </div>
-</section>
-'''
-
-ZONA_VI = '''
-<section class="encabezado">
-  ''' + patron("curvas") + '''
-  <div class="contenedor">
-    <p class="encabezado__etiqueta">Zona de cobertura</p>
-    <h1>Topografía con dron para agricultura en la Región de O'Higgins</h1>
-    <p class="encabezado__bajada">Zona agrícola y vitivinícola, donde la pregunta relevante no es cuánto mide
-    el terreno sino cómo se mueve el agua dentro de él: curvas de detalle para riego por sectores, nivelación
-    y deslindes rurales.</p>
-  </div>
-</section>
-
-<section class="seccion">
-  <div class="contenedor">
-    <p>Trabajamos en Rancagua, Machalí, Graneros, Rengo, San Vicente de Tagua Tagua, San Fernando,
-    Chimbarongo, Santa Cruz, Nancagua, Palmilla, Peralillo, Pichidegua, Las Cabras y Peumo.</p>
-    ''' + tarjetas([
-    ("curvas", "Curvas de nivel para riego",
-     "Cada 0,25 m en terreno plano: la única forma de sectorizar bien un riego tecnificado.",
-     "dron-fotogrametria/curvas-de-nivel/"),
-    ("mapa", "Catastro por cuartel",
-     "Superficie efectiva, conteo de plantas y detección de fallas.",
-     "dron-fotogrametria/mapas-ortomosaicos/"),
-    ("deslindes", "Deslindes rurales",
-     "Perímetros extensos con cercos antiguos, canales y caminos.",
-     "dron-fotogrametria/deslindes-linderos/"),
-    ("bomba", "Impulsiones de riego",
-     "Dimensionamiento desde la captación hasta el estanque o el cabezal.",
-     "ingenieria-hidraulica/dimensionamiento-bombas-impulsiones/"),
-]) + '''
-  </div>
-</section>
-
-<section class="seccion seccion--clara">
-  <div class="contenedor">
-    <h2 class="seccion__titulo">Cuándo volar un predio agrícola</h2>
-    <p class="seccion__bajada">Para levantar el terreno y sus deslindes conviene volar con el suelo
-    despejado, después de la cosecha o en invierno. Para catastro de plantación, con el cultivo desarrollado.
-    Si el predio necesita ambas cosas, se planifican dos vuelos.</p>
-  </div>
-</section>
-'''
-
-ZONA_VII = '''
-<section class="encabezado">
-  ''' + patron("curvas") + '''
-  <div class="contenedor">
-    <p class="encabezado__etiqueta">Zona de cobertura</p>
-    <h1>Levantamientos con dron e hidráulica en la Región del Maule</h1>
-    <p class="encabezado__bajada">Agricultura de riego, secano y sector forestal, con una red de esteros y
-    canales que atraviesa buena parte de los predios. Los encargos suelen cruzar las dos especialidades:
-    levantar el predio y, sobre esa base, resolver el riego o el drenaje.</p>
-  </div>
-</section>
-
-<section class="seccion">
-  <div class="contenedor">
-    <p>Trabajamos en Talca, Curicó, Molina, Sagrada Familia, San Clemente, Pencahue, San Javier, Villa Alegre,
-    Linares, Longaví, Parral, Constitución y Cauquenes.</p>
-    ''' + tarjetas([
-    ("mapa", "Levantamientos prediales extensos",
-     "Decenas o cientos de hectáreas donde el levantamiento tradicional sería inviable.",
-     "dron-fotogrametria/fotogrametria/"),
-    ("curvas", "Curvas para riego y nivelación",
-     "Diseño sobre curvas de detalle, con cálculo de volúmenes de nivelación.",
-     "dron-fotogrametria/curvas-de-nivel/"),
-    ("inundacion", "Inundación de esteros",
-     "Crecidas en cauces que atraviesan predios agrícolas o terrenos con proyectos.",
-     "ingenieria-hidraulica/estudios-inundacion/"),
-    ("sanitario", "Agua para parcelaciones",
-     "Agua potable y aguas servidas en parcelaciones de agrado del secano y la precordillera.",
-     "ingenieria-hidraulica/proyectos-sanitarios/"),
-]) + '''
-  </div>
-</section>
-
-<section class="seccion seccion--clara">
-  <div class="contenedor">
-    <h2 class="seccion__titulo">Consideraciones locales</h2>
-    <p class="seccion__bajada">Los predios grandes suelen tener planos antiguos con deslindes descritos por
-    referencias —canales, caminos, cercos— y no por coordenadas. Superponer ese plano al ortomosaico actual
-    muestra de inmediato dónde coincide con la realidad y dónde no.</p>
-  </div>
-</section>
-'''
-
-ZONA_PUCON = '''
-<section class="encabezado">
-  ''' + patron("curvas") + '''
-  <div class="contenedor">
-    <p class="encabezado__etiqueta">Zona de cobertura</p>
-    <h1>Fotogrametría y topografía con dron en Pucón, Villarrica y Caburgua</h1>
-    <p class="encabezado__bajada">Alto volumen de parcelaciones, terrenos con bosque y pendiente, cercanía a
-    lagos y ríos, y compradores que deciden mirando fotos y planos. Por eso pesan dos cosas: un levantamiento
-    confiable que muestre la superficie realmente utilizable, y una solución de agua resuelta, porque casi
-    nunca hay red pública.</p>
-  </div>
-</section>
-
-<section class="seccion">
-  <div class="contenedor">
-    <p>Trabajamos en Pucón, Villarrica, Caburgua, Curarrehue, Lican Ray, Coñaripe, Panguipulli y Loncoche,
-    incluidos los sectores de Quelhue, Paillaco, Candelaria, Palguín, Menetúe y Trancura.</p>
-    ''' + tarjetas([
-    ("curvas", "Topografía de parcelas",
-     "Plataformas de construcción, accesos y superficie realmente utilizable de cada lote.",
-     "dron-fotogrametria/curvas-de-nivel/"),
-    ("mapa", "Ortomosaicos para venta",
-     "Imagen de alta resolución con la subdivisión y los accesos dibujados encima.",
-     "dron-fotogrametria/mapas-ortomosaicos/"),
-    ("deslindes", "Deslindes con bosque",
-     "Límites y superficie real donde el bosque y la pendiente dificultan recorrer el perímetro.",
-     "dron-fotogrametria/deslindes-linderos/"),
-    ("sanitario", "Agua y aguas servidas particulares",
-     "Fuente, estanque, distribución y tratamiento para parcelaciones sin red pública.",
-     "ingenieria-hidraulica/proyectos-sanitarios/"),
-    ("inundacion", "Riberas de ríos y lagos",
-     "Áreas inundables y cotas de seguridad para proyectos junto al Trancura, el Liucura o el lago.",
-     "ingenieria-hidraulica/estudios-inundacion/"),
-]) + '''
-  </div>
-</section>
-
-<section class="seccion seccion--oscura">
-  ''' + patron("flujo") + '''
-  <div class="contenedor">
-    <h2 class="seccion__titulo">Lo que más problemas genera</h2>
-    ''' + lista_iconos([
-    ("montana", "<strong>Superficie utilizable menor a la vendida.</strong> Un lote con quebrada y pendiente fuerte puede tener bastante menos superficie construible."),
-    ("gota", "<strong>Agua no resuelta.</strong> Sin red pública, cada proyecto necesita fuente propia y su derecho de aprovechamiento."),
-    ("inundacion", "<strong>Emplazamiento en zona inundable.</strong> Los ríos de la zona tienen crecidas importantes en invierno y con deshielo."),
-]) + '''
-  </div>
-</section>
-'''
-
-ZONA_PUCON_FAQ = [
-    ("¿Se puede volar cerca del volcán Villarrica?",
-     "Hay restricciones asociadas al aeródromo de Pucón y al entorno de las áreas protegidas. Se gestionan "
-     "las autorizaciones cuando corresponde; en la mayoría de los terrenos de parcelación no hay impedimento."),
-    ("¿Cuánto cuesta traer un dron desde Santiago?",
-     "El traslado se cotiza aparte y se reparte entre los trabajos de la misma salida. Si tu proyecto coincide "
-     "con otro viaje programado, el costo baja bastante."),
-    ("¿Se puede levantar un terreno con bosque nativo denso?",
-     "El ortomosaico y los deslindes visibles sí. El modelo de terreno bajo copa cerrada pierde exactitud y se "
-     "complementa con medición directa."),
 ]
 
 # ==========================================================================
@@ -1429,6 +1180,10 @@ EMPRESA = '''
 
 <section class="seccion">
   <div class="contenedor">
+    ''' + figura("retrato-profesional-rckt",
+                 "Retrato profesional del equipo de RCKT en terreno junto al dron",
+                 "Quien conversa el proyecto es quien vuela el terreno y firma la entrega",
+                 "16 / 9") + '''
     <div class="dos-columnas">
       <div>
         <h2>Por qué las dos juntas</h2>
@@ -1464,10 +1219,14 @@ EMPRESA = '''
         <tr><td>Razón social</td><td>''' + CONFIG["marca_legal"] + '''</td></tr>
         <tr><td>Base de operaciones</td><td>''' + CONFIG["ciudad_base"] + ", " + CONFIG["region_base"] + '''</td></tr>
         <tr><td>Cobertura</td><td>Coquimbo, Valparaíso, Metropolitana, O'Higgins, Maule y La Araucanía</td></tr>
-        <tr><td>Especialidades</td><td>Geomática y fotogrametría · Ingeniería hidráulica y sanitaria</td></tr>
+        <tr><td>Especialidades</td><td>Topografía y fotogrametría con dron · Ingeniería hidráulica y sanitaria</td></tr>
       </tbody>
     </table>
     </div>
+    <p>Trabajamos en dos líneas: <a href="{{P}}dron-fotogrametria/">topografía con dron</a> e
+    <a href="{{P}}ingenieria-hidraulica/">ingeniería hidráulica</a>. Puedes estimar un levantamiento en la
+    <a href="{{P}}cotizador/">calculadora de cotización</a> o <a href="{{P}}contacto/">escribirnos</a>
+    directamente.</p>
     <p class="nota">Completa esta tabla con los datos definitivos —RUT, razón social inscrita, registro DGAC
     del operador y del RPAS, título profesional— editando la sección <code>EMPRESA</code> en
     <code>contenido.py</code>.</p>
@@ -1511,7 +1270,7 @@ CONTACTO = '''
         </div></li>
         <li>''' + icono("reloj") + '''<div>
           <span class="contacto__etiqueta">Horario</span>
-          <span class="contacto__valor">Lunes a viernes, 9:00 a 18:00</span>
+          <span class="contacto__valor">''' + horario_texto() + '''</span>
         </div></li>
       </ul>
 
@@ -1523,7 +1282,9 @@ CONTACTO = '''
         <li>Si hay algún plazo que cumplir.</li>
       </ul>
       <p>Si es un levantamiento con dron, puedes estimar el valor tú mismo en la
-      <a href="{{P}}cotizador/">calculadora de cotización</a>.</p>
+      <a href="{{P}}cotizador/">calculadora de cotización</a>. También puedes revisar los servicios de
+      <a href="{{P}}dron-fotogrametria/">topografía con dron</a> y de
+      <a href="{{P}}ingenieria-hidraulica/">ingeniería hidráulica</a>.</p>
     </div>
 
     <div class="contacto__form">
@@ -1548,12 +1309,8 @@ CONTACTO = '''
           </select>
         </p>
         <p class="form__campo">
-          <label for="ubicacion">Ubicación del terreno</label>
-          <input type="text" id="ubicacion" name="ubicacion" placeholder="Comuna, sector o enlace de Google Maps">
-        </p>
-        <p class="form__campo">
           <label for="mensaje">Cuéntanos el proyecto</label>
-          <textarea id="mensaje" name="mensaje" rows="5" required></textarea>
+          <textarea id="mensaje" name="mensaje" rows="5" placeholder="Qué necesitas, dónde está el terreno y cualquier plazo que debamos considerar" required></textarea>
         </p>
         <p class="form__campo">
           <button class="boton boton--acento boton--ancho" type="submit">Enviar mensaje</button>
@@ -1563,6 +1320,22 @@ CONTACTO = '''
       </form>
     </div>
   </div>
+  </div>
+</section>
+
+<section class="seccion seccion--clara">
+  <div class="contenedor">
+    <h2 class="seccion__titulo">Zonas de cobertura</h2>
+    <p class="seccion__bajada"><strong>Región Metropolitana (base):</strong> Santiago y comunas, Colina,
+    Lampa, Buin, Paine, Melipilla, Curacaví, Talagante, Peñaflor, Pirque y San José de Maipo ·
+    <strong>Coquimbo:</strong> La Serena, Coquimbo, Ovalle, Vicuña, Monte Patria, Illapel, Salamanca y
+    Los Vilos · <strong>Valparaíso:</strong> Valparaíso, Viña del Mar, Concón, Quilpué, Casablanca,
+    San Antonio, Algarrobo y La Ligua · <strong>O'Higgins:</strong> Rancagua, Machalí, Rengo,
+    San Fernando, Santa Cruz y Peumo · <strong>Maule:</strong> Talca, Curicó, Molina, San Javier, Linares
+    y Constitución · <strong>La Araucanía:</strong> Temuco, Padre Las Casas, Angol, Victoria, Villarrica,
+    Pucón, Curarrehue, Nueva Imperial y Loncoche.</p>
+    <p>Fuera de la Región Metropolitana se agrega el traslado, informado por adelantado en la propuesta.
+    Los viajes a zonas distantes se agrupan para repartir ese costo entre varios trabajos.</p>
   </div>
 </section>
 '''
@@ -1638,7 +1411,7 @@ POST_DESLINDES = '''
   <h2>Los antecedentes primero</h2>
   <p>Antes de volar se reúne todo lo que exista: escritura, plano de subdivisión, certificado de rol y
   cualquier levantamiento anterior. Cuando el plano tiene coordenadas, la comparación es directa; cuando
-  describe linderos por referencias, hay un trabajo de interpretación previo que define qué elementos hay que
+  describe los deslindes por referencias, hay un trabajo de interpretación previo que define qué hay que
   capturar con especial cuidado.</p>
 
   <h2>El vuelo</h2>
@@ -1667,8 +1440,10 @@ POST_DESLINDES = '''
   </ul>
 
   <p class="articulo__cierre">¿Necesitas verificar los deslindes de un predio? Revisa el
-  <a href="{{P}}dron-fotogrametria/deslindes-linderos/">servicio de rectificación de deslindes</a> o
-  <a href="{{P}}contacto/">escríbenos</a>.</p>
+  <a href="{{P}}dron-fotogrametria/rectificacion-deslindes/">servicio de rectificación de deslindes</a>, estima el
+  valor en la <a href="{{P}}cotizador/">calculadora</a> o <a href="{{P}}contacto/">escríbenos</a>. Si además
+  vas a subdividir, te servirá el <a href="{{P}}dron-fotogrametria/curvas-de-nivel/">levantamiento de curvas
+  de nivel</a>.</p>
 </article>
 </div></section>
 '''
@@ -1811,7 +1586,7 @@ PAGINAS = [
     # ---- DRON ----
     {
         "path": "dron-fotogrametria",
-        "title": "Topografía con dron en Chile | Levantamientos aéreos",
+        "title": "Topografía con dron | Levantamientos aéreos y fotogrametría",
         "desc": "Levantamientos topográficos con dron: ortomosaicos, curvas de nivel, deslindes y modelos 3D con precisión de 2 a 5 cm. Solicita tu cotización sin costo.",
         "body": DRON_PILAR,
         "faq": DRON_FAQ,
@@ -1823,13 +1598,13 @@ PAGINAS = [
     },
     {
         "path": "dron-fotogrametria/fotogrametria",
-        "title": "Fotogrametría aérea con dron: modelo 3D y nube de puntos",
+        "title": "Nube de puntos y modelo digital de terreno con dron",
         "desc": "Vuelo fotogramétrico con dron: nube de puntos densa, modelo digital de terreno y ortomosaico con precisión de 2 a 5 cm. Consulta plazos y valores.",
         "body": FOTOGRAMETRIA,
         "faq": FOTOGRAMETRIA_FAQ,
-        "crumbs": [("Dron y topografía", "dron-fotogrametria/"), ("Fotogrametría aérea", None)],
+        "crumbs": [("Dron y topografía", "dron-fotogrametria/"), ("Nube de puntos y modelo de terreno", None)],
         "nav_activa": "dron-fotogrametria/",
-        "schema_servicio": ("Fotogrametría aérea con dron",
+        "schema_servicio": ("Nube de puntos y modelo digital de terreno con dron",
                             "Vuelo fotogramétrico, nube de puntos densa, modelo digital de superficie y de terreno, y ortomosaico georreferenciado con precisión centimétrica.",
                             "Fotogrametría aérea"),
     },
@@ -1846,14 +1621,14 @@ PAGINAS = [
                             "Levantamiento de curvas de nivel"),
     },
     {
-        "path": "dron-fotogrametria/deslindes-linderos",
-        "title": "Rectificación de deslindes y linderos con dron",
-        "desc": "Verifica los límites reales de tu predio: ortomosaico, coordenadas de cada vértice y comparación con el plano de título. Cotiza tu levantamiento de deslindes.",
+        "path": "dron-fotogrametria/rectificacion-deslindes",
+        "title": "Rectificación de deslindes de predios con dron",
+        "desc": "Verifica los límites reales de tu predio: ortomosaico, coordenadas de cada vértice y comparación con el plano de título. Cotiza tu rectificación de deslindes.",
         "body": DESLINDES,
         "faq": DESLINDES_FAQ,
-        "crumbs": [("Dron y topografía", "dron-fotogrametria/"), ("Deslindes y linderos", None)],
+        "crumbs": [("Dron y topografía", "dron-fotogrametria/"), ("Rectificación de deslindes", None)],
         "nav_activa": "dron-fotogrametria/",
-        "schema_servicio": ("Rectificación de deslindes y linderos con dron",
+        "schema_servicio": ("Rectificación de deslindes con dron",
                             "Catastro de límites materializados de un predio con dron: coordenadas de vértices, cálculo de superficie real y comparación con el plano de título.",
                             "Levantamiento de deslindes"),
     },
@@ -1965,66 +1740,8 @@ PAGINAS = [
         "nav_activa": "capacidades/",
     },
     {
-        "path": "zonas",
-        "title": "Zonas de cobertura | Dron e ingeniería hidráulica",
-        "desc": "Cobertura desde la Región de Coquimbo hasta La Araucanía: Santiago, La Serena, Valparaíso, O'Higgins, Maule y Pucón. Consulta la disponibilidad en tu zona.",
-        "body": ZONAS_INDEX,
-        "crumbs": [("Zonas de cobertura", None)],
-        "nav_activa": "zonas/",
-    },
-    {
-        "path": "zonas/santiago-rm",
-        "title": "Topografía con dron e hidráulica en Santiago y la RM",
-        "desc": "Levantamientos con dron, drenaje pluvial y proyectos sanitarios en Santiago y comunas de la Región Metropolitana, sin costo de traslado. Cotiza tu proyecto.",
-        "body": ZONA_RM,
-        "crumbs": [("Zonas de cobertura", "zonas/"), ("Santiago y RM", None)],
-        "nav_activa": "zonas/",
-    },
-    {
-        "path": "zonas/coquimbo-la-serena-iv-region",
-        "title": "Topografía con dron en La Serena, Coquimbo y IV Región",
-        "desc": "Curvas de nivel para riego, impulsiones desde pozos y estudios de quebradas en La Serena, Coquimbo, Ovalle e Illapel. Consulta el próximo viaje a la zona.",
-        "body": ZONA_IV,
-        "faq": ZONA_IV_FAQ,
-        "crumbs": [("Zonas de cobertura", "zonas/"), ("La Serena y Coquimbo", None)],
-        "nav_activa": "zonas/",
-    },
-    {
-        "path": "zonas/valparaiso-vina-v-region",
-        "title": "Dron e ingeniería hidráulica en Valparaíso y Viña del Mar",
-        "desc": "Topografía en pendiente, drenaje de quebradas y estudios de inundación en Valparaíso, Viña del Mar y el litoral de la V Región. Consulta disponibilidad.",
-        "body": ZONA_V,
-        "crumbs": [("Zonas de cobertura", "zonas/"), ("Valparaíso y V Región", None)],
-        "nav_activa": "zonas/",
-    },
-    {
-        "path": "zonas/ohiggins-vi-region",
-        "title": "Topografía con dron para agricultura en O'Higgins",
-        "desc": "Curvas de nivel para riego, catastro de cuarteles y deslindes rurales en Rancagua, San Fernando, Santa Cruz y toda la VI Región. Solicita tu cotización.",
-        "body": ZONA_VI,
-        "crumbs": [("Zonas de cobertura", "zonas/"), ("Región de O'Higgins", None)],
-        "nav_activa": "zonas/",
-    },
-    {
-        "path": "zonas/maule-vii-region",
-        "title": "Levantamientos con dron e hidráulica en el Maule",
-        "desc": "Levantamientos prediales, curvas de nivel para riego y estudios de inundación en Talca, Curicó, Linares y toda la Región del Maule. Consulta aquí.",
-        "body": ZONA_VII,
-        "crumbs": [("Zonas de cobertura", "zonas/"), ("Región del Maule", None)],
-        "nav_activa": "zonas/",
-    },
-    {
-        "path": "zonas/pucon-villarrica-caburgua",
-        "title": "Topografía con dron en Pucón, Villarrica y Caburgua",
-        "desc": "Topografía de parcelas, deslindes, agua potable particular y estudios de inundación en Pucón, Villarrica y Caburgua. Consulta el próximo viaje a la zona.",
-        "body": ZONA_PUCON,
-        "faq": ZONA_PUCON_FAQ,
-        "crumbs": [("Zonas de cobertura", "zonas/"), ("Pucón, Villarrica y Caburgua", None)],
-        "nav_activa": "zonas/",
-    },
-    {
         "path": "empresa",
-        "title": "Empresa | RCKT Ingeniería y Geomática",
+        "title": "Empresa | RCKT Topografía e Ingeniería Hidráulica",
         "desc": "RCKT combina topografía con dron e ingeniería hidráulica en una sola oficina: alcance cerrado, un interlocutor técnico y entregables editables. Conócenos.",
         "body": EMPRESA,
         "crumbs": [("Empresa", None)],

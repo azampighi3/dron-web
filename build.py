@@ -14,6 +14,7 @@ Para editar el sitio:
 import os
 import re
 import json
+import math
 import hashlib
 import datetime
 
@@ -22,18 +23,41 @@ import datetime
 # --------------------------------------------------------------------------
 CONFIG = {
     "marca": "RCKT",
-    "descriptor": "Ingeniería y Geomática",       # bajada de la marca
+    "descriptor": "Topografía e Ingeniería Hidráulica",  # bajada de la marca (logo, pie, schema)
     "marca_legal": "RCKT SpA",                     # razón social — ajustar cuando exista
     "dominio": "https://www.rckt.cl",              # sin barra final. Cambiar al registrar el dominio
-    "telefono_display": "+56 9 0000 0000",
-    "telefono_link": "+56900000000",
-    "whatsapp": "56900000000",
+    "telefono_display": "+56 9 9224 1636",
+    "telefono_link": "+56992241636",
+    "whatsapp": "56992241636",
     "email": "contacto@rckt.cl",
     "ciudad_base": "Santiago",
     "region_base": "Región Metropolitana",
     "pais": "CL",
-    "og_image": "assets/img/og-portada.svg",       # reemplazar por un JPG 1200x630 antes de publicar
+    "og_image": "assets/img/og-portada.svg",       # respaldo: si dejas og-portada.jpg se usa ese
     "anio": datetime.date.today().year,
+
+    # --- SEO local: coordenadas de la base de operaciones ---
+    # AJUSTAR a la ubicación real (búscala en Google Maps, clic derecho sobre el punto).
+    # Hoy apunta al centro de Santiago.
+    "lat": -33.4489,
+    "lon": -70.6693,
+    # Días de atención. Hoy: todos los días de la semana (etapa de arranque, sin
+    # restricción de fin de semana). Para volver a un horario de oficina, deja
+    # solo ("Monday", ..., "Friday") — el texto de contacto y el schema se
+    # actualizan solos, no hay que tocarlos aparte.
+    "horario": [("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")],
+    "hora_apertura": "09:00",
+    "hora_cierre": "18:00",
+
+    # --- Perfiles públicos (schema sameAs). Agrega las URLs cuando existan. ---
+    # Ej: ["https://www.linkedin.com/company/rckt", "https://www.instagram.com/rckt.cl"]
+    "redes": [],
+
+    # --- Herramientas de medición (dejar vacío hasta tenerlas) ---
+    # Search Console → Propiedad → Verificación por etiqueta HTML: pega solo el "content".
+    "gsc_verificacion": "",
+    # Google Analytics 4: pega el identificador, ej. "G-XXXXXXXXXX".
+    "ga4_id": "",
 }
 
 # --------------------------------------------------------------------------
@@ -52,7 +76,7 @@ CONFIG = {
 #   dron-fotogrametria                                   (pilar completo)
 #   dron-fotogrametria/fotogrametria
 #   dron-fotogrametria/curvas-de-nivel
-#   dron-fotogrametria/deslindes-linderos
+#   dron-fotogrametria/rectificacion-deslindes
 #   dron-fotogrametria/mapas-ortomosaicos
 #   cotizador
 #   ingenieria-hidraulica                                (pilar completo)
@@ -61,12 +85,19 @@ CONFIG = {
 #   ingenieria-hidraulica/estudios-inundacion
 #   ingenieria-hidraulica/drenaje-pluvial
 #   ingenieria-hidraulica/proyectos-sanitarios
-#   capacidades · zonas · zonas/<cada-zona> · blog · empresa
+#   capacidades · blog · empresa
 #
 # Ejemplo — dejar de ofrecer estudios de inundación en temporada baja:
 #   SERVICIOS_OCULTOS = ["ingenieria-hidraulica/estudios-inundacion"]
+#
+# "blog" y "capacidades" están ocultas por ahora (2026-08-14): el sitio recién
+# arranca y esas dos páginas conviene publicarlas con contenido más maduro
+# (artículos reales, entregables ya probados). Borra las dos líneas cuando
+# quieras reactivarlas — no hace falta tocar nada más.
 # --------------------------------------------------------------------------
 SERVICIOS_OCULTOS = [
+    "blog",
+    "capacidades",
 ]
 
 
@@ -100,7 +131,7 @@ def desactivar_enlaces(html):
 OPCIONES_CONSULTA = [
     ("Levantamiento con dron / topografía", "dron-fotogrametria/fotogrametria"),
     ("Curvas de nivel", "dron-fotogrametria/curvas-de-nivel"),
-    ("Deslindes y linderos", "dron-fotogrametria/deslindes-linderos"),
+    ("Rectificación de deslindes", "dron-fotogrametria/rectificacion-deslindes"),
     ("Ortomosaico / mapa", "dron-fotogrametria/mapas-ortomosaicos"),
     ("Proyecto sanitario (agua potable / alcantarillado)", "ingenieria-hidraulica/proyectos-sanitarios"),
     ("Drenaje pluvial", "ingenieria-hidraulica/drenaje-pluvial"),
@@ -123,7 +154,8 @@ ZONAS_SERVICIO = [
     "Región de Valparaíso", "Valparaíso", "Viña del Mar", "San Antonio", "Casablanca",
     "Región de O'Higgins", "Rancagua", "San Fernando", "Santa Cruz",
     "Región del Maule", "Talca", "Curicó", "Linares",
-    "Región de La Araucanía", "Pucón", "Villarrica", "Caburgua",
+    "Región de La Araucanía", "Temuco", "Padre Las Casas", "Angol", "Victoria",
+    "Villarrica", "Pucón", "Curarrehue", "Nueva Imperial", "Loncoche",
 ]
 
 OUT = os.path.dirname(os.path.abspath(__file__))
@@ -195,6 +227,7 @@ COTIZADOR = {
         ("Valparaíso, Viña del Mar y litoral", 130),
         ("Curicó, Talca y Región del Maule", 260),
         ("La Serena y Región de Coquimbo", 470),
+        ("Temuco y La Araucanía", 675),
         ("Pucón, Villarrica y Caburgua", 780),
     ],
 }
@@ -204,9 +237,9 @@ COTIZADOR = {
 # --------------------------------------------------------------------------
 NAV = [
     ("Dron y topografía", "dron-fotogrametria/", [
-        ("Fotogrametría aérea", "dron-fotogrametria/fotogrametria/"),
+        ("Nube de puntos y modelo de terreno", "dron-fotogrametria/fotogrametria/"),
         ("Curvas de nivel", "dron-fotogrametria/curvas-de-nivel/"),
-        ("Deslindes y linderos", "dron-fotogrametria/deslindes-linderos/"),
+        ("Rectificación de deslindes", "dron-fotogrametria/rectificacion-deslindes/"),
         ("Mapas y ortomosaicos", "dron-fotogrametria/mapas-ortomosaicos/"),
         ("Calculadora de cotización", "cotizador/"),
     ]),
@@ -218,16 +251,17 @@ NAV = [
         ("Proyectos sanitarios", "ingenieria-hidraulica/proyectos-sanitarios/"),
     ]),
     ("Capacidades", "capacidades/", []),
-    ("Zonas", "zonas/", [
-        ("Santiago y RM", "zonas/santiago-rm/"),
-        ("La Serena y Coquimbo", "zonas/coquimbo-la-serena-iv-region/"),
-        ("Valparaíso y Viña", "zonas/valparaiso-vina-v-region/"),
-        ("O'Higgins", "zonas/ohiggins-vi-region/"),
-        ("Maule", "zonas/maule-vii-region/"),
-        ("Pucón · Villarrica", "zonas/pucon-villarrica-caburgua/"),
-    ]),
     ("Blog", "blog/", []),
     ("Empresa", "empresa/", []),
+]
+
+# Tercera columna del pie de página
+PIE_ENLACES = [
+    ("Calculadora de cotización", "cotizador/"),
+    ("Capacidades", "capacidades/"),
+    ("Blog técnico", "blog/"),
+    ("Empresa", "empresa/"),
+    ("Contacto", "contacto/"),
 ]
 
 
@@ -480,6 +514,151 @@ def limpiar(texto):
     return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", texto)).strip()
 
 
+def acciones_encabezado(servicio, calculadora=True):
+    """Botones de contacto directo bajo el título de una página de servicio.
+
+    El WhatsApp lleva el mensaje ya escrito con el nombre del servicio, para que
+    la persona no tenga que explicar de qué se trata.
+    """
+    mensaje = "Hola, me interesa el servicio de %s. ¿Podemos cotizarlo?" % servicio
+    from urllib.parse import quote
+    wsp = "https://wa.me/%s?text=%s" % (CONFIG["whatsapp"], quote(mensaje))
+    segundo = ('<a class="boton boton--fantasma" href="{{P}}cotizador/">Calcular el valor</a>'
+               if calculadora else
+               '<a class="boton boton--fantasma" href="{{P}}contacto/">Escribirnos</a>')
+    return (f'<div class="encabezado__acciones">'
+            f'<a class="boton boton--acento" href="{wsp}" rel="nofollow noopener" target="_blank">'
+            f'{icono("chat", "icono icono--sm")} Consultar por WhatsApp</a>{segundo}</div>')
+
+
+# --------------------------------------------------------------------------
+# PRECIOS DE REFERENCIA
+#
+# Réplica en Python del mismo modelo que usa la calculadora, para publicar
+# valores "desde" en las páginas de servicio sin que puedan quedar desfasados:
+# ambos leen los parámetros de COTIZADOR.
+#
+# IMPORTANTE: si cambias la fórmula del cotizador (el <script> de
+# `cotizador_html`), hay que cambiarla también acá. La función
+# `verificar_precios()` avisa si las dos versiones dejan de coincidir.
+# --------------------------------------------------------------------------
+def precio_estimado(ha, km, compartir=False):
+    C = COTIZADOR
+    base = ha / C["rendimiento_ha_jornada"]
+    crudas = base ** C["exp_terreno"]
+    enteras = math.floor(crudas)
+    resto = crudas - enteras
+
+    if enteras < 1:
+        dias_campo, j_terreno, estirada = 1, max(C["jornada_parcial_minima"], crudas), False
+    elif resto <= C["tolerancia_horas_extra"]:
+        dias_campo = enteras
+        j_terreno = enteras + resto * C["recargo_horas_extra"]
+        estirada = resto > 0
+    else:
+        dias_campo = enteras + 1
+        j_terreno = enteras + max(C["jornada_parcial_minima"], resto)
+        estirada = False
+
+    j_gabinete = max(0.5, C["coef_gabinete"] * base ** C["exp_gabinete"])
+
+    lejos = km > C["km_sin_alojamiento"]
+    viajes = math.ceil(dias_campo / C["jornadas_terreno_por_viaje"]) if lejos else dias_campo
+    j_traslado = 0 if km <= 80 else (0.5 if km <= 300 else (1 if km <= 600 else 1.5))
+    j_traslado *= viajes
+    noches = (dias_campo + viajes) if lejos else 0
+    vehiculo = viajes * 2 * km * C["costo_km"]
+    if compartir:
+        vehiculo *= C["factor_viaje_compartido"]
+        j_traslado *= C["factor_viaje_compartido"]
+
+    baterias = min(C["max_baterias_extra"],
+                   max(0, math.ceil((dias_campo - C["jornadas_kit_base"]) / C["jornadas_por_bateria_extra"])))
+    if estirada and baterias == 0:
+        baterias = 1
+    cargador = C["valor_cargador"] if (estirada or dias_campo > 1) else 0
+    equipos = j_terreno * ((C["valor_dron"] + cargador + baterias * C["valor_bateria"]) / C["vida_util_jornadas"])
+
+    costo = ((j_terreno + j_gabinete + j_traslado) * C["valor_jornada"]
+             + vehiculo + noches * C["costo_noche"] + equipos)
+    total = costo * C["factor_gg_utilidades"]
+    return max(C["minimo"], math.ceil(total / C["redondeo"]) * C["redondeo"])
+
+
+def pesos(valor):
+    return "$" + "{:,.0f}".format(valor).replace(",", ".")
+
+
+_DIAS_ES = {"Monday": "lunes", "Tuesday": "martes", "Wednesday": "miércoles",
+            "Thursday": "jueves", "Friday": "viernes", "Saturday": "sábado", "Sunday": "domingo"}
+_ORDEN_DIAS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+
+def horario_texto():
+    """Traduce CONFIG['horario'] a una frase legible, coherente con el schema
+    (openingHoursSpecification lee la misma lista, así que nunca quedan desincronizados)."""
+    dias = list(CONFIG["horario"][0])
+    if set(dias) == set(_ORDEN_DIAS):
+        rango = "Todos los días"
+    elif set(dias) == set(_ORDEN_DIAS[:5]):
+        rango = "Lunes a viernes"
+    elif set(dias) == set(_ORDEN_DIAS[:6]):
+        rango = "Lunes a sábado"
+    else:
+        rango = ", ".join(_DIAS_ES[d].capitalize() for d in dias)
+    return f'{rango}, {CONFIG["hora_apertura"]} a {CONFIG["hora_cierre"]}'
+
+
+# Se repite igual en varios lugares (tabla de precios, "desde $X", calculadora)
+# para que quede claro en cualquier punto donde el visitante vea un número.
+NOTA_VALOR_CONVERSABLE = ("Estos valores son de referencia: el precio final se conversa según el "
+                          "requerimiento exacto, el plazo, la extensión real del terreno y el formato "
+                          "de entrega que necesites.")
+
+
+def tabla_precios():
+    """Valores de referencia en la Región Metropolitana, calculados con el modelo real."""
+    km_rm = COTIZADOR["zonas"][0][1]
+    # El valor mínimo cubre todo lo que se resuelve en una jornada de vuelo, así que
+    # sitios urbanos, parcelas y predios chicos quedan en una sola fila.
+    filas = [
+        ("Sitio urbano, parcela o predio chico", "hasta 60 ha", 60),
+        ("Predio mediano", "100 ha", 100),
+        ("Fundo", "200 ha", 200),
+        ("Fundo grande", "400 ha", 400),
+        ("Gran extensión", "800 ha", 800),
+    ]
+    cuerpo = "\n".join(
+        f'      <tr><td>{nombre}</td><td>{detalle}</td><td>{pesos(precio_estimado(ha, km_rm))}</td></tr>'
+        for nombre, detalle, ha in filas
+    )
+    return f'''<div class="tabla-envoltura">
+  <table>
+    <caption>Valores de referencia en la Región Metropolitana, neto y sin IVA. Fuera de la RM se agrega el traslado.</caption>
+    <thead><tr><th scope="col">Tipo de terreno</th><th scope="col">Superficie</th><th scope="col">Valor estimado</th></tr></thead>
+    <tbody>
+{cuerpo}
+    </tbody>
+  </table>
+</div>
+<p class="nota">{NOTA_VALOR_CONVERSABLE}</p>'''
+
+
+def bloque_precio(ha_referencia=5):
+    """Línea 'desde $X' con enlace a la calculadora, para páginas de servicio."""
+    desde = precio_estimado(ha_referencia, COTIZADOR["zonas"][0][1])
+    return f'''<div class="precio-desde">
+  {icono("calculo")}
+  <div>
+    <p class="precio-desde__valor">Desde {pesos(desde)}<span> + IVA</span></p>
+    <p class="precio-desde__nota">Valor de referencia para un terreno de hasta 60 hectáreas en la Región
+    Metropolitana. <a href="{{{{P}}}}cotizador/">Calcula el valor exacto del tuyo</a> según superficie y
+    ubicación, sin dejar datos. El precio final siempre se puede conversar según el requerimiento, el
+    plazo, la extensión real del terreno y el formato de entrega.</p>
+  </div>
+</div>'''
+
+
 def cotizador_html():
     """Formulario + panel de resultado + lógica. El modelo de costos no se muestra."""
     opciones = "\n".join(
@@ -564,7 +743,8 @@ def cotizador_html():
 
     <button class="boton boton--acento boton--ancho" type="submit">Calcular valor estimado</button>
     <p class="cotizador__legal">Valor referencial calculado con los mismos criterios que usamos para
-    cotizar. La propuesta formal se confirma tras revisar el terreno y el objetivo del trabajo.</p>
+    cotizar. La propuesta formal se confirma tras revisar el terreno, y el valor se puede conversar según
+    el plazo, la extensión exacta y el formato de entrega que necesites.</p>
   </form>
 
   <div class="cotizador__resultado" id="cot-resultado" aria-live="polite">
@@ -578,6 +758,8 @@ def cotizador_html():
       <p class="resultado__etiqueta">Valor estimado</p>
       <p class="resultado__cifra" id="cot-precio">—</p>
       <p class="resultado__nota" id="cot-nota"></p>
+      <p class="resultado__conversable">El valor final se puede conversar según el requerimiento, el
+      plazo, la extensión real del terreno y el tipo de archivo de entrega.</p>
       <div class="resultado__incluye">
         <p class="resultado__subtitulo">Incluye</p>
         <ul class="lista-check">
@@ -746,8 +928,17 @@ def cotizador_html():
 # --------------------------------------------------------------------------
 # SCHEMA / JSON-LD
 # --------------------------------------------------------------------------
+def imagen_og():
+    """Usa una imagen social real (JPG/PNG/WebP) si existe; si no, el SVG de respaldo."""
+    for nombre in ("og-portada.jpg", "og-portada.jpeg", "og-portada.png", "og-portada.webp"):
+        ruta = os.path.join(OUT, "assets", "img", nombre)
+        if os.path.isfile(ruta):
+            return "assets/img/" + nombre, (_dimensiones(ruta) or (1200, 630))
+    return CONFIG["og_image"], (1200, 630)
+
+
 def schema_negocio():
-    return {
+    negocio = {
         "@context": "https://schema.org",
         "@type": "ProfessionalService",
         "@id": CONFIG["dominio"] + "/#negocio",
@@ -773,6 +964,44 @@ def schema_negocio():
                        "Modelación hidráulica", "EPANET", "SWMM", "HEC-RAS", "Drenaje pluvial",
                        "Agua potable", "Alcantarillado"],
         "priceRange": "$$",
+        "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": CONFIG["lat"],
+            "longitude": CONFIG["lon"],
+        },
+        "openingHoursSpecification": [{
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": list(CONFIG["horario"][0]),
+            "opens": CONFIG["hora_apertura"],
+            "closes": CONFIG["hora_cierre"],
+        }],
+        "hasOfferCatalog": {
+            "@type": "OfferCatalog",
+            "name": "Servicios",
+            "itemListElement": [
+                {"@type": "Offer", "itemOffered": {"@type": "Service", "name": t,
+                 "url": CONFIG["dominio"] + "/" + h}}
+                for t, h in (NAV[0][2] + NAV[1][2]) if not esta_oculto(h)
+            ],
+        },
+    }
+    if CONFIG["redes"]:
+        negocio["sameAs"] = CONFIG["redes"]
+    return negocio
+
+
+def schema_zona(nombre, descripcion, comunas):
+    """Servicio acotado a una zona: refuerza el posicionamiento local de esa página."""
+    return {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": nombre,
+        "description": descripcion,
+        "serviceType": "Levantamiento topográfico con dron e ingeniería hidráulica",
+        "provider": {"@type": "ProfessionalService", "@id": CONFIG["dominio"] + "/#negocio",
+                     "name": CONFIG["marca"]},
+        "areaServed": [{"@type": "City", "name": c} for c in comunas],
+        "availableChannel": {"@type": "ServiceChannel", "serviceUrl": CONFIG["dominio"] + "/contacto/"},
     }
 
 
@@ -856,14 +1085,14 @@ def render_footer(P):
 
     dron = columna(NAV[0][2]) if not esta_oculto(NAV[0][1]) else ""
     hidro = columna(NAV[1][2]) if not esta_oculto(NAV[1][1]) else ""
-    zonas = columna(NAV[3][2]) if not esta_oculto(NAV[3][1]) else ""
+    zonas = columna(PIE_ENLACES)
     return f'''<footer class="pie">
   <div class="contenedor pie__grid">
     <div class="pie__col">
       <p class="pie__marca">{CONFIG["marca"]}</p>
       <p class="pie__descriptor">{CONFIG["descriptor"]}</p>
-      <p class="pie__texto">Topografía con dron e ingeniería hidráulica. Terreno y gabinete
-      desde {CONFIG["ciudad_base"]} hacia todo Chile central y sur.</p>
+      <p class="pie__texto">Trabajamos con base en {CONFIG["ciudad_base"]}, con cobertura desde la
+      Región de Coquimbo hasta La Araucanía.</p>
       <ul class="pie__contacto">
         <li>{icono("telefono", "icono icono--sm")}<a href="tel:{CONFIG['telefono_link']}">{CONFIG["telefono_display"]}</a></li>
         <li>{icono("mail", "icono icono--sm")}<a href="mailto:{CONFIG['email']}">{CONFIG["email"]}</a></li>
@@ -878,13 +1107,13 @@ def render_footer(P):
       <ul>{hidro}</ul>
     </div>
     <div class="pie__col">
-      <p class="pie__titulo">Zonas de cobertura</p>
+      <p class="pie__titulo">Más</p>
       <ul>{zonas}</ul>
     </div>
   </div>
   <div class="contenedor pie__legal">
     <p>© {CONFIG["anio"]} {CONFIG["marca"]}. Todos los derechos reservados.</p>
-    <p><a href="{P}capacidades/">Capacidades</a> · <a href="{P}empresa/">Empresa</a> · <a href="{P}contacto/">Contacto</a></p>
+    <p><a href="{P}dron-fotogrametria/">Dron y topografía</a> · <a href="{P}ingenieria-hidraulica/">Ingeniería hidráulica</a> · <a href="{P}contacto/">Contacto</a></p>
   </div>
 </footer>'''
 
@@ -924,7 +1153,11 @@ PLANTILLA = """<!DOCTYPE html>
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{canonical}">
 <meta property="og:image" content="{og_image}">
+<meta property="og:image:width" content="{og_ancho}">
+<meta property="og:image:height" content="{og_alto}">
+<meta property="og:image:alt" content="{marca} — topografía con dron e ingeniería hidráulica">
 <meta name="twitter:card" content="summary_large_image">
+{seo_extra}
 <link rel="icon" href="{P}assets/img/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="{P}assets/css/estilos.css?v={css_v}">
 {extra_head}
@@ -946,7 +1179,7 @@ PLANTILLA = """<!DOCTYPE html>
     <nav id="nav-principal" class="nav" aria-label="Navegación principal">
       <ul class="nav__lista">
 {nav}
-        <li class="nav__item nav__item--cta"><a class="boton boton--acento boton--sm" href="{P}contacto/">Cotizar</a></li>
+        <li class="nav__item nav__item--cta"><a class="boton boton--acento boton--sm" href="{P}contacto/">Contacto</a></li>
       </ul>
     </nav>
   </div>
@@ -956,6 +1189,7 @@ PLANTILLA = """<!DOCTYPE html>
 {body}
 </main>
 {footer}
+{analitica}
 <script>
 (function () {{
   var b = document.querySelector('.menu-boton');
@@ -970,6 +1204,29 @@ PLANTILLA = """<!DOCTYPE html>
 </body>
 </html>
 """
+
+
+def seo_extra(p):
+    """Verificación de Search Console y metadatos de artículo."""
+    partes = []
+    if CONFIG["gsc_verificacion"]:
+        partes.append(f'<meta name="google-site-verification" content="{CONFIG["gsc_verificacion"]}">')
+    if p.get("schema_articulo"):
+        fecha = p["schema_articulo"][1]
+        partes.append(f'<meta property="article:published_time" content="{fecha}">')
+        partes.append(f'<meta property="article:modified_time" content="{fecha}">')
+        partes.append(f'<meta property="article:author" content="{CONFIG["marca"]}">')
+    return "\n".join(partes)
+
+
+def analitica():
+    """Google Analytics 4, solo si hay identificador configurado."""
+    if not CONFIG["ga4_id"]:
+        return ""
+    gid = CONFIG["ga4_id"]
+    return (f'<script async src="https://www.googletagmanager.com/gtag/js?id={gid}"></script>\n'
+            "<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}"
+            f"gtag('js',new Date());gtag('config','{gid}');</script>")
 
 
 def version_css():
@@ -997,6 +1254,8 @@ def construir_pagina(p):
         esquemas.append(schema_servicio(*p["schema_servicio"]))
     if p.get("schema_articulo"):
         esquemas.append(schema_articulo(*p["schema_articulo"], ruta=ruta))
+    if p.get("schema_zona"):
+        esquemas.append(schema_zona(*p["schema_zona"]))
     if p.get("crumbs"):
         esquemas.append(schema_breadcrumb(p["crumbs"], ruta))
     if p.get("faq"):
@@ -1007,16 +1266,19 @@ def construir_pagina(p):
 
     body = p["body"] + faq_html(p.get("faq", [])) + (p.get("cierre") or cta())
 
+    og_ruta, og_dim = imagen_og()
     html = PLANTILLA.format(
         title=p["title"], desc=p["desc"], canonical=canonical,
         robots=p.get("robots", "index, follow"),
         og_type="article" if (ruta.startswith("blog/") and profundidad > 1) else "website",
-        og_image=CONFIG["dominio"] + "/" + CONFIG["og_image"],
+        og_image=CONFIG["dominio"] + "/" + og_ruta,
+        og_ancho=og_dim[0], og_alto=og_dim[1],
         marca=CONFIG["marca"], descriptor=CONFIG["descriptor"], logo=LOGO_SVG,
         P=P, nav=render_nav(P, p.get("nav_activa")),
         migas=render_breadcrumbs(P, p.get("crumbs", [])),
         body=body, footer=render_footer(P), jsonld=jsonld,
         extra_head=p.get("extra_head", ""), css_v=version_css(),
+        seo_extra=seo_extra(p), analitica=analitica(),
     )
     html = desactivar_enlaces(html.replace("{{P}}", P))
     salida = (ruta + "/index.html") if ruta else "index.html"
@@ -1408,6 +1670,22 @@ a.contacto__valor:hover { color: var(--acento-txt); }
 .form textarea { min-height: 130px; resize: vertical; }
 .form__nota { font-size: .83rem; color: var(--suave); margin: 0; }
 
+/* ---------- Acciones bajo el título de una página de servicio ---------- */
+.encabezado__acciones { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
+
+/* ---------- Precio de referencia ---------- */
+.precio-desde {
+  display: flex; gap: 18px; align-items: flex-start;
+  background: var(--papel-2); border: 1px solid var(--linea);
+  border-left: 3px solid var(--acento); border-radius: var(--radio);
+  padding: 22px 24px; margin: 0 0 28px;
+}
+.precio-desde > .icono { color: var(--acento-txt); flex: none; margin-top: 4px; }
+.precio-desde__valor { font-size: 1.5rem; font-weight: 720; color: var(--tinta-900);
+  letter-spacing: -.03em; margin: 0 0 4px; }
+.precio-desde__valor span { font-size: .95rem; font-weight: 500; color: var(--suave); letter-spacing: 0; }
+.precio-desde__nota { font-size: .89rem; color: var(--suave); margin: 0; max-width: 62ch; }
+
 /* ---------- Calculadora de cotización ---------- */
 .cotizador { display: grid; gap: 26px; grid-template-columns: 1fr; align-items: start; }
 @media (min-width: 940px) { .cotizador { grid-template-columns: 1fr 1fr; gap: 34px; } }
@@ -1456,7 +1734,9 @@ a.contacto__valor:hover { color: var(--acento-txt); }
 .resultado--valor > * { position: relative; z-index: 2; }
 .resultado__etiqueta { text-transform: uppercase; letter-spacing: .13em; font-size: .7rem; font-weight: 700; color: var(--acento); margin: 0 0 6px; }
 .resultado__cifra { font-size: clamp(2.1rem, 1.4rem + 3vw, 3rem); font-weight: 720; color: #fff; letter-spacing: -.035em; line-height: 1.05; margin: 0 0 10px; }
-.resultado__nota { font-size: .83rem; color: rgba(255,255,255,.55); margin: 0 0 24px; }
+.resultado__nota { font-size: .83rem; color: rgba(255,255,255,.55); margin: 0 0 10px; }
+.resultado__conversable { font-size: .83rem; color: rgba(255,255,255,.55); margin: 0 0 24px;
+  padding-top: 10px; border-top: 1px dashed rgba(255,255,255,.14); }
 .resultado__subtitulo { text-transform: uppercase; letter-spacing: .1em; font-size: .7rem; font-weight: 700; color: rgba(255,255,255,.5); margin: 0 0 12px; }
 .resultado__incluye { border-top: 1px solid rgba(255,255,255,.12); padding-top: 22px; }
 .resultado__incluye .lista-check { gap: 9px; margin-bottom: 0; }
@@ -1666,14 +1946,41 @@ que en un dominio propio.
 
 ## Antes de publicar en el dominio definitivo
 
-- [ ] Cambiar `CONFIG["dominio"]` al dominio real y volver a ejecutar `python build.py`
-      (afecta a `canonical`, Open Graph, sitemap y JSON-LD).
+Ordenado por impacto en visibilidad:
+
+- [ ] **Subir las fotos a `assets/img/`.** Hoy el sitio no tiene ni una imagen real, y Google Imágenes es
+      una fuente de tráfico relevante para este rubro. Los nombres esperados aparecen en cada recuadro
+      punteado del sitio.
+- [ ] **Crear `assets/img/og-portada.jpg` de 1200x630 px.** Se detecta sola: basta dejarla ahí y
+      reconstruir. Sin ella, los enlaces compartidos por WhatsApp o LinkedIn no muestran vista previa,
+      porque el respaldo actual es un SVG y varias plataformas no lo renderizan.
+- [ ] Cambiar `CONFIG["dominio"]` al dominio real y reconstruir (afecta canonical, Open Graph, sitemap
+      y JSON-LD).
 - [ ] Completar teléfono, email y razón social en `CONFIG`.
+- [ ] Ajustar `CONFIG["lat"]` y `CONFIG["lon"]` a la ubicación real de la base (hoy apuntan al centro de
+      Santiago). Van al schema de negocio y ayudan al posicionamiento local.
+- [ ] Agregar las URLs de LinkedIn e Instagram en `CONFIG["redes"]` cuando existan: se publican como
+      `sameAs`, que es una señal de entidad para Google y para los buscadores de IA.
+- [ ] Pegar el código de verificación en `CONFIG["gsc_verificacion"]`, registrar el sitio en
+      **Google Search Console** y enviar el `sitemap.xml`.
+- [ ] Pegar el identificador en `CONFIG["ga4_id"]` para activar Google Analytics 4.
 - [ ] Completar la página `empresa/` con datos verificables (título profesional, registro DGAC, RUT).
-- [ ] Crear `assets/img/og-portada.jpg` de 1200x630 px y cambiar `CONFIG["og_image"]`
-      (el SVG actual es un marcador de posición: WhatsApp y varias redes no lo previsualizan).
-- [ ] Registrar el sitio en Google Search Console y enviar el `sitemap.xml`.
-- [ ] Crear el perfil de Google Business como *negocio con área de servicio*.
+- [ ] Crear el perfil de **Google Business** como *negocio con área de servicio*, declarando todas las
+      comunas de `ZONAS_SERVICIO`.
+
+## Qué SEO ya está resuelto en el generador
+
+No hay que hacer nada de esto a mano: se genera solo en cada `python build.py`.
+
+- Un `<h1>` único por página y jerarquía de encabezados sin saltos.
+- `title` y `meta description` únicos, dentro de los rangos recomendados.
+- `canonical` autorreferente y Open Graph completo (incluidas dimensiones y `alt` de la imagen).
+- JSON-LD: `ProfessionalService` con geo, horario, catálogo de servicios y `areaServed` por comuna;
+  `Service` por cada servicio y por cada zona; `BreadcrumbList`; `FAQPage`; `BlogPosting`.
+- `sitemap.xml` y `robots.txt` sincronizados con las páginas realmente publicadas.
+- Cero peticiones a servidores externos: todo el CSS, los iconos y los gráficos van en el propio dominio.
+- Versionado automático del CSS para que los cambios de diseño no queden ocultos por la caché.
+- `404.html` con `noindex, follow`.
 
 ## Cuando tengas proyectos que mostrar
 
@@ -1682,6 +1989,31 @@ metodología y herramientas. Cuando existan trabajos publicables:
 
 1. Agrega los ejemplos en la sección "Desarrollos propios" de `capacidades/` (en `contenido.py`), o
 2. Crea una página `proyectos/` nueva agregando su diccionario a la lista `PAGINAS` y su entrada al `NAV`.
+
+## Imágenes que el sitio está esperando
+
+Deja el archivo en `assets/img/` con el nombre exacto y ejecuta `python build.py`: el recuadro punteado se
+reemplaza solo por la foto, con sus medidas y carga diferida. Acepta `.webp`, `.avif`, `.jpg` y `.png`.
+
+| Archivo | Qué mostrar | Dónde aparece |
+|---|---|---|
+| `dron-en-vuelo-terreno` | El dron operando en terreno real | Pilar de dron |
+| `modelo-digital-elevacion` | Modelo de elevación en escala de colores | Home · Nube de puntos |
+| `curvas-de-nivel` | Plano de curvas sobre foto aérea | Home · Curvas de nivel |
+| `rectificacion-deslindes` | Plano de deslindes con vértices marcados | Deslindes · Capacidades |
+| `ortomosaico-predio` | Ortomosaico real de un vuelo hecho | Mapas y ortomosaicos |
+| `captura-modelacion-hidraulica` | Pantalla de EPANET o HEC-RAS | Pilar de hidráulica |
+| `modelacion-redes-epanet` | Red modelada en EPANET | Home · Modelación de redes |
+| `modelacion-golpe-de-ariete` | Gráfico de presión transitoria | Bombas · Capacidades |
+| `mapa-inundacion-hecras` | Mancha de inundación por profundidad | Estudios de inundación |
+| `drenaje-pluvial` | Plano de colectores o cámara en terreno | Drenaje · Capacidades |
+| `plano-red-agua-potable` | Plano de red domiciliaria | Proyectos sanitarios |
+| `retrato-profesional-rckt` | Tu foto, retrato o en terreno | Empresa |
+| `og-portada.jpg` | Composición 1200×630 para compartir | Todo el sitio (redes) |
+
+Si prefieres nombres que incluyan la zona del proyecto —recomendable para Google Imágenes, por ejemplo
+`ortomosaico-predio-pucon-2026.webp`— renombra el archivo y cambia el nombre en la llamada a `figura(...)`
+correspondiente dentro de `contenido.py`.
 
 ## Cómo poner las imágenes
 
@@ -1715,10 +2047,12 @@ def main():
     # Borra de la carpeta las páginas que quedaron ocultas en una ejecución anterior.
     # Solo se elimina el index.html generado; la carpeta se quita si queda vacía
     # (en OneDrive a veces está bloqueada, y eso no debe detener la construcción).
-    for p in contenido.PAGINAS:
+    # Se procesan primero las rutas más profundas para que, al llegar a una página
+    # pilar oculta (ej. "blog"), sus subpáginas ya hayan liberado la carpeta.
+    ocultas = sorted((p for p in contenido.PAGINAS if p["path"].strip("/") and esta_oculto(p["path"])),
+                     key=lambda p: -p["path"].count("/"))
+    for p in ocultas:
         ruta = p["path"].strip("/")
-        if not ruta or not esta_oculto(ruta):
-            continue
         carpeta = os.path.join(OUT, ruta)
         archivo = os.path.join(carpeta, "index.html")
         if os.path.isfile(archivo):
@@ -1735,11 +2069,12 @@ def main():
         title="Página no encontrada | " + CONFIG["marca"],
         desc="La página que buscas no existe o cambió de dirección. Revisa las secciones del sitio o escríbenos.",
         canonical=CONFIG["dominio"] + "/404.html", robots="noindex, follow", og_type="website",
-        og_image=CONFIG["dominio"] + "/" + CONFIG["og_image"],
+        og_image=CONFIG["dominio"] + "/" + imagen_og()[0],
+        og_ancho=imagen_og()[1][0], og_alto=imagen_og()[1][1],
         marca=CONFIG["marca"], descriptor=CONFIG["descriptor"], logo=LOGO_SVG,
         P="", nav=render_nav("", None), migas="",
         body=PAGINA_404, footer=render_footer(""), jsonld="", extra_head="",
-        css_v=version_css(),
+        css_v=version_css(), seo_extra=seo_extra({}), analitica=analitica(),
     ).replace("{{P}}", "")
     escribir("404.html", desactivar_enlaces(html404))
 
