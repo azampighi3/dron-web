@@ -25,7 +25,7 @@ CONFIG = {
     "marca": "RCKT",
     "descriptor": "Topografía e Ingeniería Hidráulica",  # bajada de la marca (logo, pie, schema)
     "marca_legal": "RCKT SpA",                     # razón social — ajustar cuando exista
-    "dominio": "https://www.rckt.cl",              # sin barra final. Cambiar al registrar el dominio
+    "dominio": "https://rckt.cl",                   # sin barra final. Cambiar al registrar el dominio
     "telefono_display": "+56 9 9224 1636",
     "telefono_link": "+56992241636",
     "whatsapp": "56992241636",
