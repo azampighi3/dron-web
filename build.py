@@ -1393,7 +1393,7 @@ a:hover { color: var(--tinta-800); }
   border-bottom: 1px solid rgba(255, 255, 255, .08);
   color: #fff;
 }
-.cabecera__barra { display: flex; align-items: center; gap: 16px; min-height: 70px; }
+.cabecera__barra { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; min-height: 70px; }
 
 .logo { display: inline-flex; align-items: center; gap: 11px; color: #fff; text-decoration: none; }
 .logo__marca { color: var(--acento); flex: none; }
