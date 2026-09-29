@@ -2,3 +2,6 @@ __pycache__/
 *.pyc
 .DS_Store
 Thumbs.db
+
+# Ilustraciones generadas por código para revisión: no forman parte del sitio publicado
+imagenes-propuestas/

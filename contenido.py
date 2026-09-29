@@ -13,18 +13,22 @@ Cada página es un diccionario:
   schema_articulo → (titular, fecha, descripción) → genera schema BlogPosting
 
 Componentes (definidos en build.py):
-  icono("dron")                        → SVG en línea
-  tarjetas([(icono, título, texto, href_o_None), ...])
-  datos([(cifra, etiqueta, icono), ...])
-  pasos([(título, descripción), ...])
-  lista_iconos([(icono, texto), ...])
-  patron("curvas") / patron("flujo")   → fondo suave
+  tarjetas([(título, texto, href_o_None), ...])   → índice con líneas finas
+  datos([(cifra, etiqueta), ...])                 → fila de ficha técnica
+  pasos([(título, descripción), ...])             → lista numerada
+  lista([texto, ...])                             → lista simple
+  patron("curvas") / patron("flujo")              → fondo tenue, solo en cabeceras
+  icono("chat")                                   → solo para íconos funcionales
+                                                    (WhatsApp, teléfono, correo)
   figura("nombre-archivo", "texto alternativo", "pie de foto")
       → si assets/img/nombre-archivo.webp (o .jpg/.png/.avif) existe, inserta la
-        imagen real; si no, deja un recuadro indicando qué archivo falta.
+        imagen; si no, no muestra nada y la lista al construir el sitio.
+
+Criterio de redacción: frases concretas, sin guiones largos para enfatizar, sin
+listas que empiezan con negrita, y nada que no se pueda sostener con un trabajo real.
 """
 
-from build import (CONFIG, icono, figura, pasos, datos, tarjetas, lista_iconos, patron,
+from build import (CONFIG, icono, figura, pasos, datos, tarjetas, lista, patron,
                    cotizador_html, opciones_consulta, acciones_encabezado, bloque_precio,
                    tabla_precios, horario_texto)
 
@@ -35,116 +39,138 @@ WSP = "https://wa.me/" + CONFIG["whatsapp"]
 # ==========================================================================
 HOME = '''
 <section class="hero">
-  ''' + patron("curvas") + '''
-  <div class="contenedor hero__caja">
-    <p class="hero__etiqueta">''' + icono("rayo", "icono icono--sm") + ''' Dron · Topografía · Ingeniería hidráulica</p>
-    <h1>Levantamiento de terreno e ingeniería hidráulica</h1>
-    <p class="hero__bajada">Topografía con dron y proyectos hidráulicos en una sola oficina. Calcula el
-    precio exacto de tu levantamiento en línea —un valor, no un rango— sin dejar tus datos.</p>
-    <div class="hero__acciones">
-      <a class="boton boton--acento" href="{{P}}cotizador/">Calcular mi precio ''' + icono("flecha", "icono icono--sm") + '''</a>
-      <a class="boton boton--fantasma" href="''' + WSP + '''" rel="nofollow noopener" target="_blank">''' + icono("chat", "icono icono--sm") + ''' WhatsApp</a>
+  <div class="contenedor hero__grilla">
+    <div class="hero__texto">
+      <h1>Levantamiento de terreno e ingeniería hidráulica</h1>
+      <p class="hero__bajada">Hacemos topografía con dron, ingeniería hidráulica y proyectos sanitarios de
+      agua potable y alcantarillado para la SEREMI de Salud. El mismo levantamiento sirve de base para el
+      cálculo, así que no hay que coordinar a dos oficinas.</p>
+      <div class="hero__acciones">
+        <a class="boton boton--acento" href="{{P}}cotizador/">Calcular el valor de un levantamiento</a>
+        <a class="boton boton--fantasma" href="''' + WSP + '''" rel="nofollow noopener" target="_blank">''' + icono("chat", "icono icono--sm") + ''' WhatsApp</a>
+      </div>
+      <p class="hero__nota">Oficina en ''' + CONFIG["ciudad_base"] + '''. Terreno entre Coquimbo y La Araucanía.</p>
     </div>
-    <ul class="hero__chips">
-      <li>''' + icono("objetivo", "icono icono--sm") + ''' Precisión de 2 a 5 cm</li>
-      <li>''' + icono("reloj", "icono icono--sm") + ''' Entrega en 5 a 10 días</li>
-      <li>''' + icono("escudo", "icono icono--sm") + ''' RPAS registrado ante la DGAC</li>
-    </ul>
+    <div class="hero__imagen">
+      ''' + figura("curvas-de-nivel-modelo-elevacion-dron-patagua",
+                   "Modelo digital de elevación con curvas de nivel cada 5 metros sobre el ortomosaico "
+                   "de un predio en Patagua, levantado con dron",
+                   "Patagua. Modelo de elevación y curvas cada 5 m sobre el ortomosaico del vuelo, "
+                   "entre 175 y 270 m de altitud.",
+                   prioritaria=True) + '''
+    </div>
   </div>
 </section>
 
 <section class="seccion">
   <div class="contenedor">
-    <h2 class="seccion__titulo">Dron y topografía</h2>
-    ''' + tarjetas([
-    ("dron", "Nube de puntos y modelo de terreno",
-     "Nube de puntos y modelo digital de terreno para cubicar, diseñar y controlar obra.",
+    <h2>Servicios</h2>
+    <div class="tres-columnas">
+      <div>
+        <h3 class="columna__titulo"><a href="{{P}}dron-fotogrametria/">Topografía con dron</a></h3>
+        ''' + tarjetas([
+    ("Nube de puntos y modelo de terreno",
+     "Para cubicar movimientos de tierra, diseñar y controlar avance de obra.",
      "dron-fotogrametria/fotogrametria/"),
-    ("curvas", "Curvas de nivel",
-     "Cada 0,25 · 0,5 o 1 m, en DWG listo para Civil 3D.",
+    ("Curvas de nivel",
+     "Cada 0,25, 0,5 o 1 m, en DWG listo para Civil 3D.",
      "dron-fotogrametria/curvas-de-nivel/"),
-    ("deslindes", "Rectificación de deslindes",
-     "Límites reales del predio, con coordenadas por vértice.",
+    ("Rectificación de deslindes",
+     "Dónde están de verdad los límites del predio, con coordenadas por vértice.",
      "dron-fotogrametria/rectificacion-deslindes/"),
-    ("mapa", "Mapas y ortomosaicos",
-     "Imagen georreferenciada de 2 a 5 cm/píxel, medible a escala.",
+    ("Mapas y ortomosaicos",
+     "Imagen aérea a escala, de 2 a 5 cm por píxel, sobre la que se puede medir.",
      "dron-fotogrametria/mapas-ortomosaicos/"),
-    ("calculo", "Calculadora de cotización",
-     "Ingresa superficie y ubicación y obtén el valor al instante.",
-     "cotizador/"),
-]) + '''
+], nivel=4, clase="tarjetas tarjetas--columna") + '''
+      </div>
+      <div>
+        <h3 class="columna__titulo"><a href="{{P}}ingenieria-hidraulica/">Ingeniería hidráulica</a></h3>
+        ''' + tarjetas([
+    ("Modelación de redes",
+     "Presiones, velocidades y diámetros verificados en EPANET.",
+     "ingenieria-hidraulica/modelacion-redes/"),
+    ("Bombas e impulsiones",
+     "Punto de operación, golpe de ariete y consumo de energía.",
+     "ingenieria-hidraulica/dimensionamiento-bombas-impulsiones/"),
+    ("Estudios de inundación",
+     "Hasta dónde llega una crecida y a qué cota conviene construir.",
+     "ingenieria-hidraulica/estudios-inundacion/"),
+    ("Drenaje pluvial",
+     "Colectores y obras de retención o infiltración para urbanizaciones.",
+     "ingenieria-hidraulica/drenaje-pluvial/"),
+], nivel=4, clase="tarjetas tarjetas--columna") + '''
+      </div>
+      <div>
+        <h3 class="columna__titulo"><a href="{{P}}proyecto-sanitario/">Proyecto sanitario</a></h3>
+        ''' + tarjetas([
+    ("Agua potable particular",
+     "Pozo, noria o vertiente, con el proyecto que pide la SEREMI de Salud.",
+     "proyecto-sanitario/agua-potable-particular/"),
+    ("Alcantarillado particular",
+     "Fosa séptica y drenes dimensionados con prueba de infiltración.",
+     "proyecto-sanitario/alcantarillado-particular/"),
+    ("Agua potable sin fuente propia",
+     "Estanque abastecido por camión aljibe.",
+     "proyecto-sanitario/agua-potable-sin-fuente-propia/"),
+    ("Autorización de funcionamiento",
+     "La resolución final, con la obra construida.",
+     "proyecto-sanitario/autorizacion-de-funcionamiento/"),
+], nivel=4, clase="tarjetas tarjetas--columna") + '''
+      </div>
+    </div>
   </div>
 </section>
 
 <section class="seccion seccion--clara">
   <div class="contenedor">
-    <h2 class="seccion__titulo">Ingeniería hidráulica</h2>
-    ''' + tarjetas([
-    ("red", "Modelación de redes",
-     "Presiones, velocidades y diámetros verificados en EPANET.",
-     "ingenieria-hidraulica/modelacion-redes/"),
-    ("bomba", "Bombas e impulsiones",
-     "Punto de operación, golpe de ariete y eficiencia energética.",
-     "ingenieria-hidraulica/dimensionamiento-bombas-impulsiones/"),
-    ("inundacion", "Estudios de inundación",
-     "Áreas inundables y cota de seguridad con HEC-RAS.",
-     "ingenieria-hidraulica/estudios-inundacion/"),
-    ("drenaje", "Drenaje pluvial",
-     "Escorrentía, colectores y obras de retención o infiltración.",
-     "ingenieria-hidraulica/drenaje-pluvial/"),
-    ("sanitario", "Proyectos sanitarios",
-     "Agua potable y alcantarillado con memoria y planos.",
-     "ingenieria-hidraulica/proyectos-sanitarios/"),
-]) + '''
-  </div>
-</section>
-
-<section class="seccion">
-  <div class="contenedor">
-    <h2 class="seccion__titulo">Cómo se ve el trabajo</h2>
-    <div class="galeria">
-      ''' + figura("modelo-digital-elevacion",
-                   "Modelo digital de elevación en escala de colores generado con dron",
-                   "Modelo digital de elevación") + '''
-      ''' + figura("curvas-de-nivel",
-                   "Plano de curvas de nivel obtenidas de un levantamiento con dron",
-                   "Curvas de nivel restituidas") + '''
-      ''' + figura("modelacion-redes-epanet",
-                   "Modelación hidráulica de una red de agua potable en EPANET",
-                   "Modelación de red en EPANET") + '''
+    <h2>Trabajos realizados</h2>
+    <div class="galeria galeria--2">
+      ''' + figura("modelo-digital-elevacion-dron-ortomosaico",
+                   "Modelo digital de elevación sobre ortomosaico, con cotas entre 85,3 y 136,4 metros",
+                   "Modelo de elevación sobre el ortomosaico. En rojo las cotas más bajas (85,3 m), "
+                   "en azul las más altas (136,4 m).") + '''
+      ''' + figura("rectificacion-deslindes-ortomosaico-dron",
+                   "Rectificación de deslindes dibujada sobre ortomosaico con grilla de coordenadas UTM",
+                   "Rectificación de deslindes sobre ortomosaico, con grilla de coordenadas UTM.") + '''
+      ''' + figura("modelacion-red-agua-potable-presiones",
+                   "Modelación de presiones de una red de agua potable dibujada sobre imagen aérea de un "
+                   "sector agrícola",
+                   "Modelación de presiones de una red de agua potable, con las tuberías y nudos del "
+                   "modelo sobre la imagen aérea.",
+                   ancha=True) + '''
     </div>
   </div>
 </section>
 
-<section class="seccion seccion--oscura">
-  ''' + patron("flujo") + '''
-  <div class="contenedor">
-    <h2 class="seccion__titulo">Por qué las dos especialidades juntas</h2>
-    <p class="seccion__bajada">Todo cálculo hidráulico depende de la cota. Al levantar el terreno nosotros
-    mismos, el modelo se construye sobre datos medidos con precisión centimétrica.</p>
-    ''' + datos([
-    ("2–5 cm", "Precisión con puntos de control", "objetivo"),
-    ("60 ha", "Cubiertas por jornada de vuelo", "mapa"),
-    ("5–10 días", "Plazo de entrega habitual", "reloj"),
-    ("DWG · LAS", "Formatos editables", "archivo"),
+<section class="seccion">
+  <div class="contenedor dos-columnas">
+    <div>
+      <h2>Topografía e hidráulica en la misma oficina</h2>
+    </div>
+    <div>
+      <p>Casi todos los proyectos de agua dependen de una buena topografía. La presión en una red, la
+      pendiente de un colector o el límite de una zona inundable se deciden por diferencias de
+      centímetros.</p>
+      <p>Cuando el levantamiento lo hacemos nosotros, el modelo hidráulico parte de cotas medidas en
+      terreno y no de cartografía antigua. Y hablas con una sola contraparte de principio a fin.</p>
+      ''' + datos([
+    ("2 a 5 cm", "de precisión con puntos de control"),
+    ("60 ha", "por jornada de vuelo"),
+    ("5 a 10 días", "hábiles de entrega"),
 ]) + '''
+    </div>
   </div>
 </section>
 
-<section class="seccion">
+<section class="seccion seccion--clara">
   <div class="contenedor">
-    <h2 class="seccion__titulo">Dónde trabajamos</h2>
-    <p class="seccion__bajada">Base en ''' + CONFIG["ciudad_base"] + ''', con proyectos entre la Región de
-    Coquimbo y La Araucanía. El terreno se concentra en una sola visita planificada y el resto se desarrolla
-    en gabinete, así el traslado queda acotado y en un solo ítem informado por adelantado.</p>
-    ''' + lista_iconos([
-    ("pin", "<strong>Región Metropolitana.</strong> Santiago y comunas periurbanas, sin costo de traslado."),
-    ("pin", "<strong>Coquimbo.</strong> La Serena, Coquimbo, Ovalle, Illapel y los valles de Elqui, Limarí y Choapa."),
-    ("pin", "<strong>Valparaíso.</strong> Valparaíso, Viña del Mar, Casablanca, San Antonio y el litoral."),
-    ("pin", "<strong>O'Higgins y Maule.</strong> Rancagua, San Fernando, Santa Cruz, Curicó, Talca y Linares."),
-    ("pin", "<strong>La Araucanía.</strong> Temuco, Angol, Villarrica, Pucón y toda la región."),
-    ("chat", "¿Tu proyecto está fuera de estas zonas? <a href='{{P}}contacto/'>Escríbenos</a> y lo evaluamos."),
-]) + '''
+    <h2>Dónde trabajamos</h2>
+    <p class="seccion__bajada">Tenemos oficina en ''' + CONFIG["ciudad_base"] + ''' y hacemos terreno entre la
+    Región de Coquimbo y La Araucanía: La Serena y los valles de Elqui, Limarí y Choapa; Valparaíso, Viña
+    del Mar y el litoral; Rancagua, San Fernando y Santa Cruz; Curicó, Talca y Linares; Temuco, Angol,
+    Villarrica y Pucón. Fuera de Santiago el terreno se hace en una sola salida, y el traslado va como un
+    ítem aparte en la propuesta.</p>
+    <p>¿Tu terreno está en otra zona? <a href="{{P}}contacto/">Escríbenos</a> y lo vemos.</p>
   </div>
 </section>
 '''
@@ -158,8 +184,8 @@ HOME_FAQ = [
      "dron: 1 a 3 m, útil como referencia pero no para diseño ni deslindes."),
     ("¿El levantamiento con dron reemplaza a un topógrafo?",
      "En superficies medianas y grandes entrega mucha más información en el mismo tiempo, pero necesita "
-     "apoyo en terreno para georreferenciar. Hay casos —vegetación densa, deslindes con validez legal— que "
-     "requieren medición directa."),
+     "apoyo en terreno para georreferenciar. Hay casos, como vegetación densa o deslindes con validez legal, "
+     "que requieren medición directa."),
     ("¿Entregan archivos editables?",
      "Sí: DWG y DXF para curvas y planimetría, GeoTIFF para el ortomosaico, LAS/LAZ para la nube de puntos. "
      "Listos para importar en Civil 3D, QGIS o ArcGIS."),
@@ -172,7 +198,6 @@ DRON_PILAR = '''
 <section class="encabezado">
   ''' + patron("curvas") + '''
   <div class="contenedor">
-    <p class="encabezado__etiqueta">Dron y topografía</p>
     <h1>Fotogrametría y topografía con dron</h1>
     <p class="encabezado__bajada">Fotografiamos el terreno desde el aire y procesamos esas imágenes para
     obtener un modelo tridimensional medible. De ahí salen el plano de curvas de nivel, la imagen aérea a
@@ -184,15 +209,17 @@ DRON_PILAR = '''
 
 <section class="seccion">
   <div class="contenedor">
-    ''' + figura("dron-en-vuelo-terreno",
-                 "Operación de dron RPAS durante un levantamiento topográfico en terreno",
-                 "Operación en terreno con RPAS registrado ante la DGAC",
-                 "16 / 9") + '''
+    ''' + figura("curvas-de-nivel-modelo-elevacion-dron-patagua",
+                 "Modelo digital de elevación con curvas de nivel cada 5 metros sobre el ortomosaico "
+                 "de un predio en Patagua, levantado con dron",
+                 "Patagua. Del mismo vuelo salen el ortomosaico, el modelo de elevación y las curvas "
+                 "cada 5 m.",
+                 prioritaria=True) + '''
     ''' + datos([
-    ("2–5 cm", "Precisión con puntos de control", "objetivo"),
-    ("2 cm/píxel", "Resolución del ortomosaico", "mapa"),
-    ("60 ha", "Por jornada de vuelo", "capas"),
-    ("5–10 días", "Plazo de entrega", "reloj"),
+    ("2 a 5 cm", "de precisión con puntos de control"),
+    ("2 cm/píxel", "de resolución del ortomosaico"),
+    ("60 ha", "por jornada de vuelo"),
+    ("5 a 10 días", "hábiles de entrega"),
 ]) + '''
   </div>
 </section>
@@ -202,20 +229,20 @@ DRON_PILAR = '''
     <h2 class="seccion__titulo">Qué servicio necesitas</h2>
     <p class="seccion__bajada">Todos parten del mismo vuelo; cambia el procesamiento y el entregable.</p>
     ''' + tarjetas([
-    ("dron", "Nube de puntos y modelo de terreno",
-     "El servicio base: nube de puntos y modelo digital de terreno. Para cubicar, diseñar y controlar obra.",
+    ("Nube de puntos y modelo de terreno",
+     "La base de todo lo demás. Sirve para cubicar movimientos de tierra, diseñar y controlar obra.",
      "dron-fotogrametria/fotogrametria/"),
-    ("curvas", "Curvas de nivel",
-     "Restitución a la equidistancia que necesite el proyecto. Es lo que pide un arquitecto o un proyectista de riego.",
+    ("Curvas de nivel",
+     "A la equidistancia que pida el proyecto. Es lo que suele pedir un arquitecto o un proyectista de riego.",
      "dron-fotogrametria/curvas-de-nivel/"),
-    ("deslindes", "Rectificación de deslindes",
-     "Cercos, muros y ocupación real contrastados con los planos existentes.",
+    ("Rectificación de deslindes",
+     "Cercos, muros y ocupación real comparados con los planos existentes.",
      "dron-fotogrametria/rectificacion-deslindes/"),
-    ("mapa", "Mapas y ortomosaicos",
-     "Imagen aérea corregida y georreferenciada, medible a escala real.",
+    ("Mapas y ortomosaicos",
+     "Imagen aérea corregida y georreferenciada, sobre la que se puede medir.",
      "dron-fotogrametria/mapas-ortomosaicos/"),
-    ("calculo", "Calculadora de cotización",
-     "Superficie y ubicación, y obtienes el valor estimado al instante.",
+    ("Calculadora de cotización",
+     "Con la superficie y la ubicación te da un valor estimado.",
      "cotizador/"),
 ]) + '''
   </div>
@@ -276,7 +303,6 @@ FOTOGRAMETRIA = '''
 <section class="encabezado">
   ''' + patron("curvas") + '''
   <div class="contenedor">
-    <p class="encabezado__etiqueta">Dron y topografía</p>
     <h1>Nube de puntos y modelo digital de terreno con dron</h1>
     <p class="encabezado__bajada">Convertimos cientos de fotografías aéreas en un modelo tridimensional
     medible del terreno. De esa nube de puntos salen el modelo digital de superficie, el de terreno y todos
@@ -286,17 +312,18 @@ FOTOGRAMETRIA = '''
 
 <section class="seccion">
   <div class="contenedor">
-    ''' + figura("modelo-digital-elevacion",
-                 "Modelo digital de elevación en escala de colores obtenido por fotogrametría con dron",
-                 "Modelo digital de elevación: cada color representa una cota distinta del terreno",
-                 "16 / 9") + '''
+    ''' + figura("modelo-digital-elevacion-dron-ortomosaico",
+                 "Modelo digital de elevación sobre ortomosaico, con cotas entre 85,3 y 136,4 metros",
+                 "Modelo de elevación sobre el ortomosaico. En rojo las cotas más bajas (85,3 m), en "
+                 "azul las más altas (136,4 m).",
+                 estrecha=True) + '''
     <h2>Qué incluye el entregable</h2>
-    ''' + lista_iconos([
-    ("mapa", "<strong>Ortomosaico</strong> en GeoTIFF, de 2 a 5 cm/píxel."),
-    ("capas", "<strong>Nube de puntos</strong> en LAS/LAZ, clasificada en suelo y no-suelo."),
-    ("montana", "<strong>Modelo digital de superficie y de terreno</strong> en formato ráster."),
-    ("curvas", "<strong>Curvas de nivel</strong> en DWG/DXF."),
-    ("archivo", "<strong>Informe técnico</strong> con parámetros de vuelo y error verificado."),
+    ''' + lista([
+    ("Ortomosaico en GeoTIFF, de 2 a 5 cm/píxel."),
+    ("Nube de puntos en LAS/LAZ, clasificada en suelo y no-suelo."),
+    ("Modelo digital de superficie y de terreno en formato ráster."),
+    ("Curvas de nivel en DWG/DXF."),
+    ("Informe técnico con parámetros de vuelo y error verificado."),
 ]) + '''
   </div>
 </section>
@@ -345,7 +372,6 @@ CURVAS = '''
 <section class="encabezado">
   ''' + patron("curvas") + '''
   <div class="contenedor">
-    <p class="encabezado__etiqueta">Dron y topografía</p>
     <h1>Levantamiento de curvas de nivel con dron</h1>
     <p class="encabezado__bajada">El plano que muestra cómo sube y baja tu terreno. Es lo que te van a pedir
     para subdividir un predio, diseñar el riego, emplazar una casa en pendiente o presentar un proyecto en la
@@ -357,17 +383,17 @@ CURVAS = '''
 
 <section class="seccion">
   <div class="contenedor">
+    ''' + figura("curvas-de-nivel-modelo-elevacion-dron-patagua",
+                 "Curvas de nivel cada 5 metros sobre el modelo de elevación y el ortomosaico de un "
+                 "predio en Patagua",
+                 "Patagua. Curvas cada 5 m entre 175 y 270 m, sobre el ortomosaico del vuelo.",
+                 prioritaria=True) + '''
     ''' + bloque_precio() + '''
-    ''' + figura("curvas-de-nivel",
-                 "Plano de curvas de nivel sobre ortomosaico levantado con dron",
-                 "Curvas de nivel restituidas sobre el ortomosaico del predio",
-                 "16 / 9") + '''
     <h2>Para qué se piden</h2>
-    <p>Las razones más habituales: <strong>subdividir un terreno</strong> y presentar el plano ante la
-    Dirección de Obras o el Conservador de Bienes Raíces; <strong>diseñar el riego</strong> de un predio
-    agrícola; <strong>emplazar una construcción</strong> en pendiente y calcular cuánta excavación implica;
-    o cumplir con lo que exige un trámite ante el SAG o el municipio. Cada uno necesita un nivel de detalle
-    distinto, y por eso lo primero que preguntamos es para qué lo vas a usar.</p>
+    <p>Lo más común es para subdividir un terreno y presentar el plano en la Dirección de Obras o en el
+    Conservador de Bienes Raíces. También para diseñar el riego de un predio agrícola, para emplazar una
+    casa en pendiente y saber cuánto hay que excavar, o para un trámite en el SAG o la municipalidad. Cada
+    caso pide un nivel de detalle distinto, por eso lo primero que preguntamos es para qué lo vas a usar.</p>
     <h2>Qué equidistancia necesitas</h2>
     <div class="tabla-envoltura">
     <table>
@@ -389,12 +415,12 @@ CURVAS = '''
 <section class="seccion seccion--clara">
   <div class="contenedor">
     <h2>Qué incluye el entregable</h2>
-    ''' + lista_iconos([
-    ("archivo", "Curvas en <strong>DWG y DXF</strong>, organizadas por capas."),
-    ("mapa", "Curvas superpuestas al <strong>ortomosaico georreferenciado</strong>."),
-    ("objetivo", "<strong>Puntos acotados</strong> en vértices, cámaras, cauces y accesos."),
-    ("reglas", "<strong>Plano en PDF</strong> a escala, con coordenadas y grilla UTM."),
-    ("montana", "<strong>Modelo digital de terreno</strong> del que se derivan las curvas."),
+    ''' + lista([
+    ("Curvas en <strong>DWG y DXF</strong>, organizadas por capas."),
+    ("Curvas superpuestas al <strong>ortomosaico georreferenciado</strong>."),
+    ("Puntos acotados en vértices, cámaras, cauces y accesos."),
+    ("Plano en PDF a escala, con coordenadas y grilla UTM."),
+    ("Modelo digital de terreno del que se derivan las curvas."),
 ]) + '''
     <p><strong>Servicios relacionados:</strong> se generan del mismo vuelo de
     <a href="{{P}}dron-fotogrametria/fotogrametria/">fotogrametría aérea</a> y alimentan el
@@ -421,7 +447,6 @@ DESLINDES = '''
 <section class="encabezado">
   ''' + patron("curvas") + '''
   <div class="contenedor">
-    <p class="encabezado__etiqueta">Dron y topografía</p>
     <h1>Rectificación de deslindes con dron</h1>
     <p class="encabezado__bajada">Para saber exactamente dónde terminan los límites de tu terreno. Volamos
     el predio y medimos dónde están hoy los cercos, muros y canales, para compararlos con lo que dice la
@@ -434,10 +459,10 @@ DESLINDES = '''
 <section class="seccion">
   <div class="contenedor">
     ''' + bloque_precio() + '''
-    ''' + figura("rectificacion-deslindes",
-                 "Rectificación de deslindes: plano de título superpuesto al ortomosaico del predio",
-                 "Deslindes materializados contrastados con el plano de título",
-                 "16 / 9") + '''
+    ''' + figura("rectificacion-deslindes-ortomosaico-dron",
+                 "Rectificación de deslindes dibujada sobre ortomosaico con grilla de coordenadas UTM",
+                 "Rectificación de deslindes sobre ortomosaico, con grilla de coordenadas UTM.",
+                 estrecha=True) + '''
     <h2>Cuándo se pide</h2>
     <p>Los motivos más frecuentes son concretos: <strong>antes de comprar o vender</strong> un terreno, para
     verificar que la superficie sea la que dice el papel; <strong>antes de subdividir</strong> un predio;
@@ -445,15 +470,14 @@ DESLINDES = '''
     existe es antiguo y describe los límites por referencias ("hasta el canal", "siguiendo el camino") en
     vez de coordenadas.</p>
     <h2>Qué incluye el entregable</h2>
-    ''' + lista_iconos([
-    ("mapa", "<strong>Ortomosaico</strong> del predio y su entorno inmediato."),
-    ("deslindes", "<strong>Coordenadas UTM</strong> de cada vértice materializado."),
-    ("calculo", "<strong>Superficie real</strong> ocupada, comparada con la del título."),
-    ("capas", "<strong>Superposición</strong> del plano de escritura sobre la imagen."),
-    ("archivo", "<strong>Informe técnico</strong> con metodología y diferencias detectadas."),
+    ''' + lista([
+    ("Ortomosaico del predio y su entorno inmediato."),
+    ("Coordenadas UTM de cada vértice materializado."),
+    ("Superficie real ocupada, comparada con la del título."),
+    ("Superposición del plano de escritura sobre la imagen."),
+    ("Informe técnico con metodología y diferencias detectadas."),
 ]) + '''
     <div class="aviso">
-      ''' + icono("escudo") + '''
       <p><strong>Importante:</strong> entregamos el levantamiento técnico y su respaldo gráfico. La fijación
       legal de deslindes y la regularización de títulos requieren además la intervención de los organismos
       competentes.</p>
@@ -465,13 +489,13 @@ DESLINDES = '''
   <div class="contenedor">
     <h2 class="seccion__titulo">Cuándo conviene hacerlo</h2>
     ''' + tarjetas([
-    ("escudo", "Antes de comprar",
+    ("Antes de comprar",
      "Verificar que la superficie y los límites que se venden coincidan con lo cercado y ocupado.", None),
-    ("deslindes", "Diferencias con un vecino",
+    ("Diferencias con un vecino",
      "Un cerco corrido o un canal desviado quedan documentados con precisión y fecha cierta.", None),
-    ("archivo", "Regularización o subdivisión",
+    ("Regularización o subdivisión",
      "Base topográfica para el plano que exige el trámite, con las superficies calculadas.", None),
-    ("mapa", "Predios rurales grandes",
+    ("Predios rurales grandes",
      "Kilómetros de cerco que a pie tomarían días se cubren en una jornada.", None),
 ]) + '''
     <p><strong>Servicios relacionados:</strong> se apoya en el mismo vuelo de
@@ -502,7 +526,6 @@ ORTOMOSAICOS = '''
 <section class="encabezado">
   ''' + patron("curvas") + '''
   <div class="contenedor">
-    <p class="encabezado__etiqueta">Dron y topografía</p>
     <h1>Mapas y ortomosaicos georreferenciados con dron</h1>
     <p class="encabezado__bajada">Un ortomosaico es una imagen aérea corregida geométricamente: queda a
     escala constante y georreferenciada, así que se pueden medir distancias, superficies y coordenadas con
@@ -513,10 +536,10 @@ ORTOMOSAICOS = '''
 <section class="seccion">
   <div class="contenedor">
     ''' + datos([
-    ("2–5 cm/píxel", "Resolución del ortomosaico", "objetivo"),
-    ("30–50×", "Más detalle que una imagen satelital libre", "capas"),
-    ("UTM 19S", "Sistema de referencia", "mapa"),
-    ("GeoTIFF", "Compatible con CAD y SIG", "archivo"),
+    ("2–5 cm/píxel", "Resolución del ortomosaico"),
+    ("30–50×", "Más detalle que una imagen satelital libre"),
+    ("UTM 19S", "Sistema de referencia"),
+    ("GeoTIFF", "Compatible con CAD y SIG"),
 ]) + '''
     ''' + figura("ortomosaico-predio",
                  "Ortomosaico georreferenciado de alta resolución de un predio levantado con dron",
@@ -532,13 +555,13 @@ ORTOMOSAICOS = '''
   <div class="contenedor">
     <h2 class="seccion__titulo">Para qué se usa</h2>
     ''' + tarjetas([
-    ("reglas", "Base cartográfica",
+    ("Base cartográfica",
      "Todo proyecto parte de una imagen real y medible, no de una referencia satelital desactualizada.", None),
-    ("pin", "Venta de terrenos",
+    ("Venta de terrenos",
      "Una imagen nítida con la subdivisión dibujada encima comunica mucho mejor que un plano de líneas.", None),
-    ("reloj", "Seguimiento de obra",
+    ("Seguimiento de obra",
      "Vuelos periódicos permiten comparar el avance mes a mes con evidencia visual.", None),
-    ("capas", "Catastro agrícola",
+    ("Catastro agrícola",
      "Superficie efectiva por cuartel, conteo de plantas y detección de fallas.", None),
 ]) + '''
     <p><strong>Servicios relacionados:</strong> es un subproducto del mismo vuelo de
@@ -569,10 +592,9 @@ COTIZADOR_PAGINA = '''
 <section class="encabezado">
   ''' + patron("curvas") + '''
   <div class="contenedor">
-    <p class="encabezado__etiqueta">Calculadora</p>
     <h1>Calcula el valor de tu levantamiento con dron</h1>
-    <p class="encabezado__bajada">Ingresa la superficie del terreno —o la longitud, si es un trabajo lineal
-    como un camino o un canal— y la zona donde está. Obtienes al instante un valor estimado con los mismos
+    <p class="encabezado__bajada">Ingresa la superficie del terreno (o la longitud, si es un trabajo lineal
+    como un camino o un canal) y la zona donde está. Obtienes al instante un valor estimado con los mismos
     criterios que usamos para cotizar.</p>
   </div>
 </section>
@@ -588,11 +610,11 @@ COTIZADOR_PAGINA = '''
     <h2 class="seccion__titulo">Qué considera el valor</h2>
     <p class="seccion__bajada">Un levantamiento tiene una parte fija que no depende del tamaño del predio y
     una variable que sí. Por eso 200 hectáreas cuestan bastante menos por hectárea que 20.</p>
-    ''' + lista_iconos([
-    ("dron", "<strong>Terreno.</strong> Planificación, traslado, puntos de control y vuelo."),
-    ("calculo", "<strong>Gabinete.</strong> Procesamiento, restitución y control de calidad."),
-    ("pin", "<strong>Ubicación.</strong> Define traslados y, en zonas lejanas, estadía."),
-    ("capas", "<strong>Escala.</strong> Superficies mayores rinden más por jornada."),
+    ''' + lista([
+    ("Terreno. Planificación, traslado, puntos de control y vuelo."),
+    ("Gabinete. Procesamiento, restitución y control de calidad."),
+    ("Ubicación. Define traslados y, en zonas lejanas, estadía."),
+    ("Escala. Superficies mayores rinden más por jornada."),
 ]) + '''
     <p>La calculadora cubre solo el levantamiento con dron:
     <a href="{{P}}dron-fotogrametria/fotogrametria/">fotogrametría aérea</a>,
@@ -632,8 +654,7 @@ HIDRO_PILAR = '''
 <section class="encabezado">
   ''' + patron("flujo") + '''
   <div class="contenedor">
-    <p class="encabezado__etiqueta">Ingeniería hidráulica</p>
-    <h1>Ingeniería hidráulica y sanitaria</h1>
+    <h1>Ingeniería hidráulica</h1>
     <p class="encabezado__bajada">Resolvemos cómo se conduce, se almacena, se impulsa y se evacúa el agua:
     la red que abastece un loteo, la bomba que eleva a un estanque, el colector que recibe la lluvia o el
     estudio que determina hasta dónde llega una crecida.</p>
@@ -643,44 +664,44 @@ HIDRO_PILAR = '''
 
 <section class="seccion">
   <div class="contenedor">
-    ''' + figura("captura-modelacion-hidraulica",
-                 "Modelación hidráulica de una red de agua potable en EPANET",
-                 "Modelación hidráulica: cada tramo verificado antes de construir",
-                 "16 / 9") + '''
+    ''' + figura("modelacion-red-agua-potable-presiones",
+                 "Modelación de presiones de una red de agua potable dibujada sobre imagen aérea de un "
+                 "sector agrícola",
+                 "Modelación de presiones de una red de agua potable, con las tuberías y nudos del modelo "
+                 "sobre la imagen aérea.",
+                 prioritaria=True) + '''
     <h2 class="seccion__titulo">Servicios</h2>
     ''' + tarjetas([
-    ("red", "Modelación de redes de agua potable",
+    ("Modelación de redes de agua potable",
      "Presiones y velocidades verificadas en demanda de punta y escenario de incendio.",
      "ingenieria-hidraulica/modelacion-redes/"),
-    ("bomba", "Bombas e impulsiones",
+    ("Bombas e impulsiones",
      "Curva del sistema, punto de operación, NPSH y golpe de ariete.",
      "ingenieria-hidraulica/dimensionamiento-bombas-impulsiones/"),
-    ("inundacion", "Estudios de inundación",
+    ("Estudios de inundación",
      "Caudales de crecida, áreas inundables y cota de seguridad.",
      "ingenieria-hidraulica/estudios-inundacion/"),
-    ("drenaje", "Drenaje pluvial",
+    ("Drenaje pluvial",
      "Escorrentía, colectores, sumideros y obras de retención.",
      "ingenieria-hidraulica/drenaje-pluvial/"),
-    ("sanitario", "Proyectos sanitarios",
-     "Agua potable y alcantarillado con memoria, planos y especificaciones.",
-     "ingenieria-hidraulica/proyectos-sanitarios/"),
 ]) + '''
+    <p>Los sistemas particulares de agua potable y alcantarillado que aprueba la SEREMI de Salud están en
+    <a href="{{P}}proyecto-sanitario/">proyecto sanitario</a>.</p>
   </div>
 </section>
 
-<section class="seccion seccion--oscura">
-  ''' + patron("flujo") + '''
+<section class="seccion seccion--clara">
   <div class="contenedor">
     <h2 class="seccion__titulo">La topografía como punto de partida</h2>
     <p class="seccion__bajada">Una presión mal estimada, un colector con pendiente insuficiente o un área
     inundable mal delimitada casi siempre tienen el mismo origen: una base topográfica pobre. Al levantar el
     terreno con <a href="{{P}}dron-fotogrametria/">dron</a> antes de calcular, el modelo se construye sobre
     cotas reales y no sobre cartografía antigua.</p>
-    ''' + lista_iconos([
-    ("red", "<strong>EPANET</strong> para redes a presión: agua potable, riego e impulsiones."),
-    ("drenaje", "<strong>SWMM</strong> para drenaje urbano y aguas lluvia."),
-    ("inundacion", "<strong>HEC-RAS</strong> para escurrimiento en cauces, 1D y 2D."),
-    ("escudo", "Diseño conforme a la normativa chilena aplicable (NCh, SISS, MOP–DOH)."),
+    ''' + lista([
+    ("EPANET para redes a presión: agua potable, riego e impulsiones."),
+    ("SWMM para drenaje urbano y aguas lluvia."),
+    ("HEC-RAS para escurrimiento en cauces, 1D y 2D."),
+    ("Diseño conforme a la normativa chilena aplicable (NCh, SISS, MOP–DOH)."),
 ]) + '''
   </div>
 </section>
@@ -688,7 +709,7 @@ HIDRO_PILAR = '''
 
 HIDRO_FAQ = [
     ("¿Qué necesito antes de encargar un proyecto?",
-     "Topografía del terreno —si no la tienes, la levantamos—, el plano de loteo o arquitectura, la ubicación "
+     "Topografía del terreno (si no la tienes, la levantamos), el plano de loteo o arquitectura, la ubicación "
      "del empalme o de la fuente, y el uso previsto. Con eso definimos alcance y valor sin ambigüedades."),
     ("¿Los proyectos quedan aptos para tramitar?",
      "Sí. Incluyen memoria de cálculo, planos y especificaciones en el formato que exige el organismo revisor."),
@@ -706,7 +727,6 @@ REDES = '''
 <section class="encabezado">
   ''' + patron("flujo") + '''
   <div class="contenedor">
-    <p class="encabezado__etiqueta">Ingeniería hidráulica</p>
     <h1>Modelación de redes de agua potable con EPANET</h1>
     <p class="encabezado__bajada">Reproducimos en un modelo matemático cómo se comporta el agua dentro de las
     tuberías: cuánta presión llega a cada arranque en el máximo consumo y qué pasa cuando se abre un grifo de
@@ -716,17 +736,19 @@ REDES = '''
 
 <section class="seccion">
   <div class="contenedor">
-    ''' + figura("modelacion-redes-epanet",
-                 "Modelo hidráulico de una red de agua potable en EPANET con presiones por nudo",
-                 "Modelación de red de agua potable en EPANET",
-                 "16 / 9") + '''
+    ''' + figura("modelacion-red-agua-potable-presiones",
+                 "Modelación de presiones de una red de agua potable dibujada sobre imagen aérea de un "
+                 "sector agrícola",
+                 "Modelación de presiones de una red de agua potable, con las tuberías y nudos del modelo "
+                 "sobre la imagen aérea.",
+                 prioritaria=True) + '''
     <h2>Qué incluye el entregable</h2>
-    ''' + lista_iconos([
-    ("red", "<strong>Modelo en EPANET</strong> del sistema completo, como archivo editable."),
-    ("objetivo", "<strong>Presiones verificadas</strong> en demanda máxima horaria."),
-    ("calculo", "<strong>Velocidades y pérdidas de carga</strong> por tramo."),
-    ("rayo", "<strong>Escenario de incendio</strong> con grifo en operación."),
-    ("archivo", "<strong>Memoria de cálculo y planos</strong> de planta y perfiles."),
+    ''' + lista([
+    ("Modelo en EPANET del sistema completo, como archivo editable."),
+    ("Presiones verificadas en demanda máxima horaria."),
+    ("Velocidades y pérdidas de carga por tramo."),
+    ("Escenario de incendio con grifo en operación."),
+    ("Memoria de cálculo y planos de planta y perfiles."),
 ]) + '''
   </div>
 </section>
@@ -748,7 +770,8 @@ REDES = '''
     </div>
     <p><strong>Servicios relacionados:</strong> suele ir junto al
     <a href="{{P}}ingenieria-hidraulica/dimensionamiento-bombas-impulsiones/">dimensionamiento de bombas</a> y
-    forma parte de los <a href="{{P}}ingenieria-hidraulica/proyectos-sanitarios/">proyectos sanitarios</a>.</p>
+    en sistemas rurales forma parte del <a href="{{P}}proyecto-sanitario/agua-potable-particular/">proyecto de
+    agua potable particular</a>.</p>
   </div>
 </section>
 '''
@@ -770,7 +793,6 @@ BOMBAS = '''
 <section class="encabezado">
   ''' + patron("flujo") + '''
   <div class="contenedor">
-    <p class="encabezado__etiqueta">Ingeniería hidráulica</p>
     <h1>Dimensionamiento de bombas e impulsiones</h1>
     <p class="encabezado__bajada">Determinamos qué diámetro debe tener la tubería y qué bomba instalar para
     elevar un caudal a una altura dada, al menor costo total entre inversión y energía. El cálculo correcto
@@ -785,18 +807,17 @@ BOMBAS = '''
                  "Modelación de golpe de ariete en una impulsión",
                  "16 / 9") + '''
     <h2>Qué incluye el entregable</h2>
-    ''' + lista_iconos([
-    ("calculo", "<strong>Curva del sistema</strong>: altura estática más pérdidas según caudal."),
-    ("bomba", "<strong>Punto de operación</strong> y rendimiento del equipo seleccionado."),
-    ("gota", "<strong>Verificación de NPSH</strong> para descartar cavitación."),
-    ("rayo", "<strong>Golpe de ariete</strong> y protecciones necesarias."),
-    ("archivo", "<strong>Especificación técnica</strong> y consumo energético estimado."),
+    ''' + lista([
+    ("Curva del sistema: altura estática más pérdidas según caudal."),
+    ("Punto de operación y rendimiento del equipo seleccionado."),
+    ("Verificación de NPSH para descartar cavitación."),
+    ("Golpe de ariete y protecciones necesarias."),
+    ("Especificación técnica y consumo energético estimado."),
 ]) + '''
   </div>
 </section>
 
-<section class="seccion seccion--oscura">
-  ''' + patron("flujo") + '''
+<section class="seccion seccion--clara">
   <div class="contenedor">
     <h2 class="seccion__titulo">Los errores más frecuentes</h2>
     ''' + pasos([
@@ -815,8 +836,8 @@ BOMBAS = '''
 <section class="seccion">
   <div class="contenedor">
     <p><strong>Servicios relacionados:</strong> se calcula junto con la
-    <a href="{{P}}ingenieria-hidraulica/modelacion-redes/">modelación de la red</a> y forma parte de los
-    <a href="{{P}}ingenieria-hidraulica/proyectos-sanitarios/">proyectos sanitarios</a>.</p>
+    <a href="{{P}}ingenieria-hidraulica/modelacion-redes/">modelación de la red</a> y se usa en los
+    <a href="{{P}}proyecto-sanitario/agua-potable-particular/">sistemas de agua potable con pozo</a>.</p>
   </div>
 </section>
 '''
@@ -838,7 +859,6 @@ INUNDACION = '''
 <section class="encabezado">
   ''' + patron("flujo") + '''
   <div class="contenedor">
-    <p class="encabezado__etiqueta">Ingeniería hidráulica</p>
     <h1>Estudios de inundación y modelación hidráulica de cauces</h1>
     <p class="encabezado__bajada">Determinamos hasta dónde llega el agua cuando el río, estero o quebrada
     crece, con qué profundidad y a qué velocidad. Es lo que exige la autoridad cuando un proyecto se emplaza
@@ -849,22 +869,22 @@ INUNDACION = '''
 <section class="seccion">
   <div class="contenedor">
     ''' + datos([
-    ("T = 100 años", "Período de retorno habitual", "inundacion"),
-    ("HEC-RAS", "Modelación 1D y 2D", "calculo"),
-    ("2–5 cm", "Precisión del terreno con dron", "objetivo"),
-    ("3–6 sem", "Plazo típico del estudio", "reloj"),
+    ("T = 100 años", "Período de retorno habitual"),
+    ("HEC-RAS", "Modelación 1D y 2D"),
+    ("2–5 cm", "Precisión del terreno con dron"),
+    ("3–6 sem", "Plazo típico del estudio"),
 ]) + '''
     ''' + figura("mapa-inundacion-hecras",
                  "Mapa de inundación con la mancha coloreada por profundidad, modelado en HEC-RAS",
                  "Mancha de inundación por período de retorno, coloreada por profundidad",
                  "16 / 9") + '''
     <h2>Qué incluye el entregable</h2>
-    ''' + lista_iconos([
-    ("gota", "<strong>Estudio hidrológico</strong>: caudales de crecida por período de retorno."),
-    ("calculo", "<strong>Modelo del cauce</strong> en HEC-RAS sobre topografía propia."),
-    ("mapa", "<strong>Mapas de área inundable</strong> con profundidad y velocidad."),
-    ("objetivo", "<strong>Cota de seguridad</strong> para el emplazamiento."),
-    ("escudo", "<strong>Obras de mitigación</strong> evaluadas si el proyecto queda comprometido."),
+    ''' + lista([
+    ("Estudio hidrológico: caudales de crecida por período de retorno."),
+    ("Modelo del cauce en HEC-RAS sobre topografía propia."),
+    ("Mapas de área inundable con profundidad y velocidad."),
+    ("Cota de seguridad para el emplazamiento."),
+    ("Obras de mitigación evaluadas si el proyecto queda comprometido."),
 ]) + '''
   </div>
 </section>
@@ -910,7 +930,6 @@ DRENAJE = '''
 <section class="encabezado">
   ''' + patron("flujo") + '''
   <div class="contenedor">
-    <p class="encabezado__etiqueta">Ingeniería hidráulica</p>
     <h1>Proyectos de drenaje pluvial y aguas lluvia</h1>
     <p class="encabezado__bajada">Al pavimentar calles y construir techos, el agua que antes se infiltraba
     pasa a escurrir: el caudal máximo aumenta varias veces y llega mucho más rápido al punto bajo. El
@@ -926,18 +945,17 @@ DRENAJE = '''
                  "Trazado de drenaje pluvial sobre el modelo de terreno",
                  "16 / 9") + '''
     <h2>Qué incluye el entregable</h2>
-    ''' + lista_iconos([
-    ("gota", "<strong>Estudio hidrológico</strong> con curvas intensidad–duración–frecuencia."),
-    ("calculo", "<strong>Caudal de diseño</strong> antes y después de urbanizar."),
-    ("drenaje", "<strong>Red de colectores</strong>: trazado, diámetros, pendientes y descargas."),
-    ("capas", "<strong>Obras de retención o infiltración</strong> cuando se exige no aumentar el caudal."),
-    ("archivo", "<strong>Planos, memoria y especificaciones</strong> aptos para construcción."),
+    ''' + lista([
+    ("Estudio hidrológico con curvas intensidad–duración–frecuencia."),
+    ("Caudal de diseño antes y después de urbanizar."),
+    ("Red de colectores: trazado, diámetros, pendientes y descargas."),
+    ("Obras de retención o infiltración cuando se exige no aumentar el caudal."),
+    ("Planos, memoria y especificaciones aptos para construcción."),
 ]) + '''
   </div>
 </section>
 
-<section class="seccion seccion--oscura">
-  ''' + patron("flujo") + '''
+<section class="seccion seccion--clara">
   <div class="contenedor">
     <h2 class="seccion__titulo">El principio de fondo</h2>
     <p class="seccion__bajada">Todo proyecto moderno de aguas lluvia parte de no aumentar el caudal máximo que
@@ -969,100 +987,488 @@ DRENAJE_FAQ = [
      "descarga controlada, por eso el proyecto parte con el reconocimiento del suelo."),
 ]
 
-SANITARIOS = '''
+# ==========================================================================
+# PILAR: PROYECTO SANITARIO (SEREMI de Salud)
+# Fuentes: fichas ChileAtiende 16614 y 16932, preguntas frecuentes de Seremi en
+# Línea (asdigital.minsal.cl) e instructivos regionales. Aranceles 2026.
+# ==========================================================================
+SANITARIO_PILAR = '''
 <section class="encabezado">
   ''' + patron("flujo") + '''
   <div class="contenedor">
-    <p class="encabezado__etiqueta">Ingeniería hidráulica</p>
-    <h1>Proyectos sanitarios: agua potable y alcantarillado</h1>
-    <p class="encabezado__bajada">El proyecto que te piden para tener agua y alcantarillado aprobados, sea
-    para una casa, una ampliación o un loteo completo. Definimos de dónde viene el agua, cómo llega a cada
-    unidad y cómo se evacúan las aguas servidas, con la memoria de cálculo, los planos y las
-    especificaciones que exige el organismo revisor.</p>
+    <h1>Proyecto sanitario de agua potable y alcantarillado particular</h1>
+    <p class="encabezado__bajada">Cuando el terreno no tiene red de una empresa sanitaria, el agua potable y
+    el tratamiento de las aguas servidas se resuelven con un sistema propio. La SEREMI de Salud tiene que
+    aprobar ese proyecto antes de construir y autorizar su funcionamiento antes de usarlo. Preparamos el
+    proyecto, lo firma un ingeniero civil hidráulico inscrito como proyectista y lo tramitamos en las dos
+    etapas.</p>
     ''' + acciones_encabezado("proyecto sanitario", calculadora=False) + '''
   </div>
 </section>
 
 <section class="seccion">
   <div class="contenedor">
-    <h2 class="seccion__titulo">Trámites en los que te podemos ayudar</h2>
-    ''' + lista_iconos([
-    ("archivo", "<strong>Certificado de factibilidad.</strong> El documento con que la empresa sanitaria declara si hay red disponible para tu terreno, y en qué condiciones."),
-    ("gota", "<strong>Certificado de dotación sanitaria.</strong> Requerido cuando no hay red pública y hay que acreditar una solución particular de agua."),
-    ("check", "<strong>Recepción final de obras.</strong> Preparación del expediente sanitario para que la obra quede recibida sin observaciones pendientes."),
-    ("engranaje", "<strong>Regularización de ampliaciones.</strong> Levantamiento de lo ya construido, verificación del cálculo y expediente para regularizarlo."),
-    ("sanitario", "<strong>Instalaciones domiciliarias.</strong> Proyecto de agua potable y alcantarillado de una vivienda o local, con sus planos y memoria."),
-    ("mapa", "<strong>Loteos y parcelaciones.</strong> Sistema completo: fuente, estanque, red de distribución y disposición de aguas servidas."),
+    <h2 class="seccion__titulo">Qué necesitas tramitar</h2>
+    ''' + tarjetas([
+    ("Agua potable particular",
+     "Pozo, noria o vertiente: captación, desinfección, estanque y red.",
+     "proyecto-sanitario/agua-potable-particular/"),
+    ("Alcantarillado particular",
+     "Fosa séptica con drenes o pozo absorbente, o planta de tratamiento.",
+     "proyecto-sanitario/alcantarillado-particular/"),
+    ("Agua potable sin fuente propia",
+     "Estanque abastecido por camión aljibe, con desinfección y distribución.",
+     "proyecto-sanitario/agua-potable-sin-fuente-propia/"),
+    ("Autorización de funcionamiento",
+     "La segunda etapa: inspección de la obra construida y análisis del agua.",
+     "proyecto-sanitario/autorizacion-de-funcionamiento/"),
+    ("Reutilización de aguas grises",
+     "Agua de duchas y lavamanos tratada para riego o inodoros, según la Ley 21.075.",
+     "proyecto-sanitario/reutilizacion-aguas-grises/"),
 ]) + '''
-    <p>Si no sabes cuál de estos corresponde a tu caso —es lo más común—, cuéntanos qué te pidieron y en qué
-    oficina, y te decimos exactamente qué se necesita.</p>
+  </div>
+</section>
+
+<section class="seccion seccion--clara">
+  <div class="contenedor">
+    <h2 class="seccion__titulo">Cuándo se necesita</h2>
+    <p class="seccion__bajada">El artículo 71 del Código Sanitario (DFL 725 de 1968) entrega a la autoridad
+    sanitaria la aprobación de toda obra, pública o privada, que provea agua potable o que evacúe y trate
+    aguas servidas. En la práctica el trámite aparece en estos casos:</p>
+    ''' + lista([
+    "Una casa en una parcela o un sector rural sin red pública de agua ni alcantarillado.",
+    "La recepción final de una vivienda o una ampliación, cuando la Dirección de Obras pide acreditar la "
+    "solución sanitaria.",
+    "Un local, restaurante, cabaña de turismo o sala de procesos que necesita resolución sanitaria para "
+    "funcionar.",
+    "Un condominio o loteo rural que se abastece de un pozo común.",
+    "Un sistema que ya está construido y nunca se aprobó.",
+]) + '''
+    <p>Si el terreno está dentro del área de concesión de una empresa sanitaria, el camino es otro: la casa se
+    conecta a la red y el proyecto se tramita ante esa empresa. Lo primero que hacemos es confirmar cuál de los
+    dos corresponde.</p>
   </div>
 </section>
 
 <section class="seccion">
   <div class="contenedor">
-    ''' + figura("plano-red-agua-potable",
-                 "Plano de red domiciliaria de agua potable y alcantarillado",
-                 "Plano de red de agua potable y alcantarillado listo para tramitar",
+    <h2 class="seccion__titulo">Cómo es el trámite</h2>
+    ''' + pasos([
+    ("Factibilidad",
+     "La empresa sanitaria o la DOH certifica que no puede dar servicio al terreno. Ese certificado negativo "
+     "es la puerta de entrada al proyecto particular."),
+    ("Proyecto",
+     "Memoria técnica, memoria de cálculo, planos y especificaciones. Para el agua potable se suma el análisis "
+     "del agua de la fuente."),
+    ("Aprobación del proyecto",
+     "Se ingresa en Seremi en Línea con ClaveÚnica. La SEREMI revisa los antecedentes y emite la resolución "
+     "que aprueba el proyecto, o las observaciones que hay que responder."),
+    ("Construcción",
+     "La obra se ejecuta según los planos aprobados. Si algo cambia en terreno, conviene resolverlo antes de "
+     "pedir la inspección."),
+    ("Autorización de funcionamiento",
+     "Con la obra terminada se pide la visita. La SEREMI inspecciona, puede tomar muestras y emite la "
+     "resolución que autoriza usar el sistema."),
+]) + '''
+    <p>Las fichas oficiales están en ChileAtiende:
+    <a href="https://www.chileatiende.gob.cl/fichas/16614-aprobacion-de-proyectos-de-agua-potable-o-aguas-servidas-domesticas-particular" rel="noopener" target="_blank">aprobación
+    de proyectos</a> y
+    <a href="https://www.chileatiende.gob.cl/fichas/16932" rel="noopener" target="_blank">autorización de
+    funcionamiento</a>.</p>
+  </div>
+</section>
+
+<section class="seccion seccion--clara">
+  <div class="contenedor">
+    ''' + figura("plano-proyecto-sanitario-agua-potable-alcantarillado",
+                 "Plano de emplazamiento de un proyecto de agua potable y alcantarillado particular con "
+                 "pozo, estanque, fosa séptica y drenes",
+                 "Plano de emplazamiento de un sistema particular de agua potable y alcantarillado.",
                  "16 / 9") + '''
-    <h2 class="seccion__titulo">Qué incluye el entregable</h2>
-    <div class="bloques">
-      <div class="bloque">
-        <div class="bloque__cabecera">''' + icono("gota") + '''<h3>Agua potable</h3></div>
-        <ul class="lista-check">
-          <li>Dotación y demanda de diseño.</li>
-          <li>Fuente: pozo, noria o empalme a red pública.</li>
-          <li>Estanque de regulación y cota de fondo.</li>
-          <li>Impulsión y equipos de bombeo.</li>
-          <li>Red de distribución modelada y arranques.</li>
-        </ul>
+    <div class="dos-columnas">
+      <div>
+        <h2>Qué preparamos</h2>
+        ''' + lista([
+    "Memoria técnica y memoria de cálculo.",
+    "Planos de ubicación, emplazamiento, planta general y detalles.",
+    "Perfil de canalizaciones con materiales, diámetros y pendientes.",
+    "Especificaciones técnicas.",
+    "Firma del proyecto por un ingeniero civil hidráulico inscrito como proyectista.",
+    "Solicitud del certificado de factibilidad.",
+    "Coordinación del análisis de agua con un laboratorio.",
+    "Respuesta a las observaciones de la SEREMI hasta la aprobación.",
+]) + '''
       </div>
-      <div class="bloque">
-        <div class="bloque__cabecera">''' + icono("sanitario") + '''<h3>Alcantarillado</h3></div>
-        <ul class="lista-check">
-          <li>Caudales y verificación de pendientes.</li>
-          <li>Red de recolección por gravedad y cámaras.</li>
-          <li>Planta elevadora si la topografía la exige.</li>
-          <li>Empalme a colector o tratamiento particular.</li>
-          <li>Planos de planta, perfiles y detalles.</li>
-        </ul>
+      <div>
+        <h2>Qué necesitamos de ti</h2>
+        ''' + lista([
+    "Certificado de dominio vigente del terreno.",
+    "La ubicación y, si existe, el plano de arquitectura.",
+    "Cuántas personas van a usar el sistema y para qué.",
+    "De dónde sale el agua: pozo, noria, vertiente o camión aljibe.",
+    "Si el pozo ya existe, sus antecedentes ante la DGA.",
+]) + '''
       </div>
+    </div>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor">
+    <h2 class="seccion__titulo">Cuánto cuesta</h2>
+    <div class="precio-desde">
+      <p class="precio-desde__valor">Desde $400.000</p>
+      <p class="precio-desde__nota">El valor depende del tamaño del sistema, de si incluye agua potable,
+      alcantarillado o ambos, y de dónde está el terreno. Antes de empezar te enviamos una propuesta cerrada,
+      que también detalla el arancel que cobra la SEREMI en cada etapa.</p>
+    </div>
+    <h2 class="seccion__titulo">Normas que aplican</h2>
+    <div class="tabla-envoltura">
+    <table>
+      <caption>Normativa de los sistemas sanitarios particulares</caption>
+      <thead><tr><th scope="col">Norma</th><th scope="col">Qué regula</th></tr></thead>
+      <tbody>
+        <tr><td>Código Sanitario (DFL 725 de 1968), art. 71</td><td>Aprobación de proyectos y autorización de funcionamiento por la autoridad sanitaria</td></tr>
+        <tr><td>DFL 1 de 1989, Minsal</td><td>Materias que requieren autorización sanitaria expresa</td></tr>
+        <tr><td>DS 735 de 1969</td><td>Servicios de agua destinados al consumo humano</td></tr>
+        <tr><td>NCh 409/1</td><td>Calidad del agua potable</td></tr>
+        <tr><td>DS 236 de 1926</td><td>Alcantarillados particulares: fosas sépticas y disposición de aguas servidas</td></tr>
+        <tr><td>DS 41 de 2016, Minsal</td><td>Provisión de agua potable con camiones aljibe</td></tr>
+        <tr><td>Ley 21.075 y Decreto 40, Minsal</td><td>Reutilización de aguas grises</td></tr>
+      </tbody>
+    </table>
     </div>
   </div>
 </section>
 
 <section class="seccion seccion--clara">
   <div class="contenedor">
-    <h2 class="seccion__titulo">La secuencia del proyecto</h2>
-    ''' + pasos([
-    ("Factibilidad",
-     "Determinar si hay red pública disponible o si el proyecto requiere fuente propia. Esta definición cambia por completo el alcance."),
-    ("Topografía",
-     "Sin cotas confiables no se puede definir la cota del estanque ni verificar que el alcantarillado escurra por gravedad."),
-    ("Diseño y cálculo",
-     "Dimensionamiento de cada componente y verificación de todos los escenarios de operación."),
-    ("Planos, memoria y tramitación",
-     "Documentación en el formato exigido y acompañamiento hasta la aprobación."),
-]) + '''
-    <p><strong>Servicios relacionados:</strong> integra la
-    <a href="{{P}}ingenieria-hidraulica/modelacion-redes/">modelación de la red</a> y el
-    <a href="{{P}}ingenieria-hidraulica/dimensionamiento-bombas-impulsiones/">dimensionamiento de bombas</a>,
-    y en loteos se desarrolla junto al
-    <a href="{{P}}ingenieria-hidraulica/drenaje-pluvial/">drenaje pluvial</a>.</p>
+    <h2 class="seccion__titulo">De Coquimbo a La Araucanía</h2>
+    <p class="seccion__bajada">Cada SEREMI de Salud publica su propio instructivo, con exigencias de formato
+    que cambian de una región a otra. Armamos el expediente según el de la región donde está tu terreno.</p>
+    <p>El plano de emplazamiento tiene que mostrar las distancias entre el pozo, la fosa, los drenes, las
+    construcciones y los deslindes. Si no tienes un plano confiable del terreno, lo levantamos con
+    <a href="{{P}}dron-fotogrametria/curvas-de-nivel/">curvas de nivel</a> o una
+    <a href="{{P}}dron-fotogrametria/rectificacion-deslindes/">rectificación de deslindes</a>. Si el sistema
+    necesita bomba, el cálculo va con el
+    <a href="{{P}}ingenieria-hidraulica/dimensionamiento-bombas-impulsiones/">dimensionamiento de bombas e
+    impulsiones</a>.</p>
   </div>
 </section>
 '''
 
-SANITARIOS_FAQ = [
-    ("¿Cómo sé si mi terreno tiene factibilidad?",
-     "Consultando a la empresa sanitaria de la zona. Si no hay red disponible, el proyecto debe resolver "
-     "fuente propia —con sus derechos de aprovechamiento— y tratamiento particular de aguas servidas."),
-    ("¿Y si el terreno queda más bajo que el colector?",
-     "Se requiere una planta elevadora. Es una solución habitual, pero encarece la operación y exige "
-     "mantención, por lo que conviene verificarlo con topografía antes de comprometer el trazado."),
-    ("¿Cuánto demora la aprobación?",
-     "El desarrollo toma entre 4 y 6 semanas. La revisión del organismo es un plazo aparte que suele incluir "
-     "al menos una ronda de observaciones."),
+SANITARIO_FAQ = [
+    ("¿Qué es la resolución sanitaria de agua potable y alcantarillado?",
+     "Es como se conoce a las resoluciones de la SEREMI de Salud sobre un sistema particular. Son dos: la que "
+     "aprueba el proyecto antes de construir y la que autoriza el funcionamiento cuando la obra está "
+     "terminada."),
+    ("¿Cuánto cuesta un proyecto sanitario?",
+     "Desde $400.000. El valor final depende del tamaño del sistema, de si incluye agua potable, "
+     "alcantarillado o ambos, y de la ubicación del terreno. El arancel de la SEREMI se paga aparte y va "
+     "detallado en la propuesta."),
+    ("¿Quién firma el proyecto?",
+     "Un ingeniero civil hidráulico inscrito como proyectista, que es quien responde por el proyecto ante la "
+     "SEREMI de Salud."),
+    ("¿Puedo construir antes de tener el proyecto aprobado?",
+     "No conviene. La norma pide la aprobación antes de construir, y una obra que no coincide con los planos "
+     "aprobados es la causa más común de problemas en la inspección final."),
+    ("¿Se puede regularizar un sistema que ya está construido?",
+     "Sí. Se revisa lo construido, se verifica si cumple y se presenta el proyecto. Si algo no cumple, como la "
+     "distancia entre el pozo y los drenes, el proyecto incluye la corrección."),
+    ("¿Cuánto demora?",
+     "Preparar el proyecto de una vivienda o un local nos toma entre 2 y 4 semanas desde que tenemos los "
+     "antecedentes. El plazo de revisión de la SEREMI es aparte y varía según la región."),
+]
+
+# ==========================================================================
+# PROYECTO SANITARIO — SUBPAGINAS
+# ==========================================================================
+AGUA_PARTICULAR = '''
+<section class="encabezado">
+  ''' + patron("flujo") + '''
+  <div class="contenedor">
+    <h1>Proyecto de agua potable particular con pozo, noria o vertiente</h1>
+    <p class="encabezado__bajada">Cuando el agua sale de una fuente propia, la SEREMI de Salud necesita saber
+    que llega potable a cada llave: de dónde se capta, cómo se desinfecta, dónde se almacena y cómo se
+    reparte. Eso es lo que define el proyecto.</p>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor">
+    <h2>Qué incluye el proyecto</h2>
+    ''' + lista([
+    "Captación: pozo profundo, noria o vertiente, con su caudal y ubicación.",
+    "Bombeo y conducción hasta el estanque.",
+    "Desinfección con cloro y, si el análisis lo exige, tratamiento de hierro, manganeso o arsénico.",
+    "Estanque de regulación con su volumen y cota.",
+    "Red de distribución con las pérdidas de carga verificadas.",
+    "Distancias a fosas, drenes y descargas del propio predio y de los vecinos.",
+]) + '''
+  </div>
+</section>
+
+<section class="seccion seccion--clara">
+  <div class="contenedor">
+    <h2 class="seccion__titulo">El análisis del agua</h2>
+    <p class="seccion__bajada">El proyecto se acompaña con un análisis físico-químico y bacteriológico del
+    agua de la fuente, hecho por un laboratorio. Se compara con la NCh 409/1, la norma chilena de calidad del
+    agua potable, y de ese resultado depende el tratamiento. Si solo aparecen coliformes, basta con
+    desinfectar. Si hay hierro, manganeso o arsénico sobre el límite, el proyecto tiene que incluir un
+    tratamiento específico. Para la autorización de funcionamiento el análisis no puede tener más de un
+    año.</p>
+    <h2 class="seccion__titulo">Los derechos de agua</h2>
+    <p>La SEREMI pide acreditar que el agua del pozo se puede usar. Para bebida y uso doméstico en suelo
+    propio, el Código de Aguas permite pozos con requisitos más simples (artículo 56). Para otros usos se
+    necesita un derecho de aprovechamiento. Lo revisamos al principio, porque condiciona todo lo demás.</p>
+    <p><strong>Servicios relacionados:</strong> casi siempre va junto al
+    <a href="{{P}}proyecto-sanitario/alcantarillado-particular/">alcantarillado particular</a>. Si el sistema
+    abastece varias casas, la red se verifica con
+    <a href="{{P}}ingenieria-hidraulica/modelacion-redes/">modelación hidráulica</a>. Si no hay pozo, la
+    alternativa es un <a href="{{P}}proyecto-sanitario/agua-potable-sin-fuente-propia/">sistema sin fuente
+    propia</a>.</p>
+  </div>
+</section>
+'''
+
+AGUA_PARTICULAR_FAQ = [
+    ("¿Por qué importa dónde está la fosa del vecino?",
+     "Porque un dren de infiltración contamina el agua subterránea a su alrededor. El plano de emplazamiento "
+     "muestra las fosas, drenes y descargas cercanas, propias y del vecino, y la SEREMI revisa que la captación "
+     "quede a distancia segura."),
+    ("¿Sirve una noria?",
+     "Sí, si el análisis cumple y la captación queda protegida de las aguas que escurren por la superficie: "
+     "brocal, tapa y sello sanitario."),
+    ("¿Y si varias casas comparten el pozo?",
+     "Se proyecta un sistema común. El diseño crece con el número de personas, y la red de distribución pasa "
+     "a necesitar cálculo hidráulico."),
+]
+
+ALCANTARILLADO = '''
+<section class="encabezado">
+  ''' + patron("flujo") + '''
+  <div class="contenedor">
+    <h1>Proyecto de alcantarillado particular: fosa séptica y drenes</h1>
+    <p class="encabezado__bajada">Sin colector público, las aguas servidas se tratan en el mismo terreno. El
+    proyecto dimensiona la fosa séptica y la infiltración al suelo, o una planta de tratamiento cuando el
+    caudal es mayor, y ubica todo a distancia segura de pozos, construcciones y deslindes.</p>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor">
+    ''' + figura("fosa-septica-drenes-alcantarillado-particular",
+                 "Detalle de fosa séptica y drenes de infiltración de un alcantarillado particular",
+                 "Detalle de fosa séptica y drenes de infiltración.",
+                 "16 / 9") + '''
+    <h2>Qué incluye el proyecto</h2>
+    ''' + lista([
+    "Caudal de aguas servidas según el número de personas y el uso.",
+    "Fosa séptica dimensionada, con sus cámaras de inspección.",
+    "Disposición del efluente: drenes, zanjas de infiltración o pozo absorbente.",
+    "Prueba de infiltración del suelo y profundidad de la napa.",
+    "Planta general, detalles, perfil de canalizaciones y especificaciones.",
+    "Manual de operación y mantención del sistema.",
+]) + '''
+  </div>
+</section>
+
+<section class="seccion seccion--clara">
+  <div class="contenedor">
+    <h2 class="seccion__titulo">Todo depende del suelo</h2>
+    <p class="seccion__bajada">La fosa séptica retiene los sólidos, pero el líquido que sale todavía tiene que
+    infiltrarse. Un suelo arcilloso o una napa alta obligan a alargar los drenes o a cambiar de solución. Por
+    eso el proyecto parte con una prueba de infiltración donde irán los drenes, y no con un valor de
+    tabla.</p>
+    <h2 class="seccion__titulo">Fosa séptica o planta de tratamiento</h2>
+    <p>Para una vivienda o un local pequeño lo habitual es fosa séptica con drenes. Cuando el caudal es mayor,
+    como en un condominio o un restaurante, o cuando el suelo no infiltra, conviene una planta de tratamiento
+    compacta. Si el efluente se descarga a un curso de agua, además tiene que cumplir la norma de emisión
+    (DS 90) y contar con la autorización de descarga.</p>
+    <p><strong>Servicios relacionados:</strong> el agua de la casa se tramita con el
+    <a href="{{P}}proyecto-sanitario/agua-potable-particular/">proyecto de agua potable particular</a>. Las
+    pendientes de la red salen de las <a href="{{P}}dron-fotogrametria/curvas-de-nivel/">curvas de
+    nivel</a>. Con la obra construida sigue la
+    <a href="{{P}}proyecto-sanitario/autorizacion-de-funcionamiento/">autorización de funcionamiento</a>.</p>
+  </div>
+</section>
+'''
+
+ALCANTARILLADO_FAQ = [
+    ("¿Qué es la prueba de infiltración?",
+     "Una excavación de prueba donde se llena de agua y se mide cuánto demora en bajar el nivel. Con ese tiempo "
+     "se calcula la superficie de infiltración que necesitan los drenes."),
+    ("¿Cada cuánto hay que limpiar la fosa?",
+     "Depende de su volumen y del uso. El manual de mantención del proyecto indica la frecuencia y cómo revisar "
+     "el nivel de lodos. La limpieza la hace un camión limpiafosas que cumpla las condiciones sanitarias de la "
+     "SEREMI."),
+    ("¿Sirve la fosa que ya tengo?",
+     "Si funciona y cumple las distancias, se incorpora al proyecto. Si no, el proyecto define qué hay que "
+     "reemplazar."),
+]
+
+SIN_FUENTE = '''
+<section class="encabezado">
+  ''' + patron("flujo") + '''
+  <div class="contenedor">
+    <h1>Agua potable sin fuente propia: estanque abastecido por camión aljibe</h1>
+    <p class="encabezado__bajada">En sectores sin red y sin pozo, el agua llega en camión aljibe a un estanque
+    del terreno. La SEREMI de Salud trata ese estanque y su distribución como un sistema particular de agua
+    potable, así que también necesita proyecto aprobado y autorización de funcionamiento.</p>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor">
+    <h2>Qué incluye el proyecto</h2>
+    <p>La revisión de la SEREMI se concentra en el tratamiento, la desinfección, la regulación y la
+    distribución del agua.</p>
+    ''' + lista([
+    "Volumen del estanque según personas, consumo y frecuencia de recarga.",
+    "Estanque de material apto para agua potable, con tapa, ventilación y rebalse protegidos.",
+    "Punto de carga accesible para el camión.",
+    "Desinfección y control del cloro libre residual.",
+    "Presurización y red de distribución hasta cada artefacto.",
+]) + '''
+  </div>
+</section>
+
+<section class="seccion seccion--clara">
+  <div class="contenedor">
+    <h2 class="seccion__titulo">El camión también tiene que estar autorizado</h2>
+    <p class="seccion__bajada">El DS 41 del Minsal regula la provisión de agua potable con camiones aljibe:
+    el proveedor necesita autorización sanitaria para ese transporte. El proyecto se acompaña con los
+    antecedentes del proveedor autorizado que va a abastecer el sistema.</p>
+    <p>Si después se perfora un pozo o llega la red pública, el sistema cambia de fuente y hay que tramitar el
+    proyecto que corresponda.</p>
+    <p><strong>Servicios relacionados:</strong> si hay agua subterránea disponible, compara con un
+    <a href="{{P}}proyecto-sanitario/agua-potable-particular/">sistema con pozo o noria</a>. Las aguas
+    servidas se resuelven con el
+    <a href="{{P}}proyecto-sanitario/alcantarillado-particular/">alcantarillado particular</a>, y al terminar
+    la obra sigue la <a href="{{P}}proyecto-sanitario/autorizacion-de-funcionamiento/">autorización de
+    funcionamiento</a>.</p>
+  </div>
+</section>
+'''
+
+SIN_FUENTE_FAQ = [
+    ("¿De qué tamaño debe ser el estanque?",
+     "Se calcula con el número de personas, el consumo diario y los días entre cargas, más una reserva. "
+     "Tampoco conviene sobredimensionarlo: el agua pasa más días guardada y pierde el cloro."),
+    ("¿Puedo comprar el agua a cualquier camión?",
+     "No. Tiene que ser un proveedor con autorización sanitaria para transportar agua potable."),
+    ("¿Qué normas aplican?",
+     "El Código Sanitario, el DS 735 sobre servicios de agua para consumo humano y el DS 41 sobre provisión "
+     "de agua con camiones aljibe."),
+]
+
+AUTORIZACION = '''
+<section class="encabezado">
+  ''' + patron("flujo") + '''
+  <div class="contenedor">
+    <h1>Autorización de funcionamiento de sistema particular de agua potable y alcantarillado</h1>
+    <p class="encabezado__bajada">Es la segunda resolución del trámite. Con la obra construida, la SEREMI de
+    Salud verifica en terreno que el sistema coincide con el proyecto aprobado y que el agua cumple. Recién
+    entonces autoriza su uso.</p>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor">
+    <h2>Qué se presenta</h2>
+    ''' + lista([
+    "Copia de la resolución que aprobó el proyecto.",
+    "Copia de los planos timbrados en la aprobación.",
+    "Análisis físico-químico y bacteriológico del agua de la fuente, con menos de un año.",
+    "Autorización de descarga a un curso de agua, cuando corresponde.",
+    "Los antecedentes adicionales que haya pedido la resolución de aprobación.",
+]) + '''
+  </div>
+</section>
+
+<section class="seccion seccion--clara">
+  <div class="contenedor">
+    <h2 class="seccion__titulo">Qué hacemos antes de pedir la visita</h2>
+    ''' + pasos([
+    ("Revisión de la obra",
+     "Comparamos lo construido con los planos aprobados: ubicación de la fosa y los drenes, estanque, "
+     "cloración y cámaras."),
+    ("Correcciones",
+     "Si algo cambió en terreno, se corrige la obra o se regulariza el cambio antes de la inspección."),
+    ("Análisis del agua",
+     "Coordinamos la toma de muestra con el laboratorio para que el resultado esté vigente al ingresar."),
+    ("Ingreso y visita",
+     "Preparamos el ingreso en Seremi en Línea y acompañamos la inspección."),
+]) + '''
+    <p>La resolución que aprueba el proyecto rige hasta que se autoriza el funcionamiento. Desde ahí, la
+    autorización se mantiene mientras exista la fuente de agua y las instalaciones sigan en regla.</p>
+    <p><strong>Servicios relacionados:</strong> la primera etapa es la
+    <a href="{{P}}proyecto-sanitario/">aprobación del proyecto sanitario</a>, ya sea de
+    <a href="{{P}}proyecto-sanitario/agua-potable-particular/">agua potable particular</a> o de
+    <a href="{{P}}proyecto-sanitario/alcantarillado-particular/">alcantarillado particular</a>.</p>
+  </div>
+</section>
+'''
+
+AUTORIZACION_FAQ = [
+    ("¿Qué pasa si la obra no quedó igual al plano?",
+     "Depende del cambio. Uno menor se puede aclarar en la inspección; uno que afecta distancias o dimensiones "
+     "obliga a modificar antes el proyecto aprobado. Revisarlo antes de pedir la visita evita una segunda "
+     "inspección."),
+    ("¿La SEREMI toma muestras?",
+     "Puede hacerlo. La inspección verifica la obra y su funcionamiento, y puede incluir muestras del agua."),
+    ("¿Hay que pagar de nuevo?",
+     "Sí. La autorización de funcionamiento tiene su propio arancel de la SEREMI, que va detallado en nuestra "
+     "propuesta."),
+]
+
+AGUAS_GRISES = '''
+<section class="encabezado">
+  ''' + patron("flujo") + '''
+  <div class="contenedor">
+    <h1>Proyecto de reutilización de aguas grises</h1>
+    <p class="encabezado__bajada">Las aguas grises son las que salen de duchas, tinas, lavamanos y lavadoras.
+    Tratadas, sirven para regar el jardín o descargar los inodoros. La Ley 21.075 permite reutilizarlas con un
+    sistema aprobado por la SEREMI de Salud, en zonas urbanas y rurales.</p>
+  </div>
+</section>
+
+<section class="seccion">
+  <div class="contenedor">
+    <h2>Qué incluye el proyecto</h2>
+    ''' + lista([
+    "Separación de la red de aguas grises y la de aguas negras.",
+    "Tratamiento según el uso: filtración y desinfección.",
+    "Estanque de acumulación y rebalse hacia el alcantarillado o la disposición final.",
+    "Red de reutilización identificada y separada de la de agua potable.",
+    "Manual de operación y mantención.",
+]) + '''
+  </div>
+</section>
+
+<section class="seccion seccion--clara">
+  <div class="contenedor">
+    <h2 class="seccion__titulo">Para qué se pueden usar</h2>
+    <p class="seccion__bajada">La ley permite usos como el riego de áreas verdes y la descarga de inodoros.
+    Prohíbe, entre otros, el consumo humano y el riego de frutas y hortalizas que crecen a ras de suelo y se
+    comen crudas. El tratamiento se diseña para el uso que se declara.</p>
+    <p>El trámite tiene las mismas dos etapas ante la SEREMI de Salud: aprobación del proyecto y autorización
+    de funcionamiento.</p>
+    <p><strong>Servicios relacionados:</strong> en terrenos sin colector se proyecta junto al
+    <a href="{{P}}proyecto-sanitario/alcantarillado-particular/">alcantarillado particular</a>. Revisa también
+    cómo funciona la <a href="{{P}}proyecto-sanitario/autorizacion-de-funcionamiento/">autorización de
+    funcionamiento</a> o <a href="{{P}}contacto/">escríbenos</a> con los datos de tu casa.</p>
+  </div>
+</section>
+'''
+
+AGUAS_GRISES_FAQ = [
+    ("¿Sirve en una casa conectada al alcantarillado público?",
+     "Sí. La ley se aplica en zonas urbanas y rurales. Lo que cambia es hacia dónde descarga el rebalse del "
+     "sistema."),
+    ("¿Qué norma lo regula?",
+     "La Ley 21.075 de 2018 y su reglamento, el Decreto 40 del Minsal, que fija las condiciones sanitarias del "
+     "sistema."),
 ]
 
 # ==========================================================================
@@ -1072,7 +1478,6 @@ CAPACIDADES = '''
 <section class="encabezado">
   ''' + patron("curvas") + '''
   <div class="contenedor">
-    <p class="encabezado__etiqueta">Capacidades</p>
     <h1>Qué entregamos, con qué herramientas y en qué formatos</h1>
     <p class="encabezado__bajada">RCKT es una oficina nueva con foco en hacer bien dos cosas: levantar
     terreno con dron y resolver ingeniería hidráulica. Acá está el detalle técnico de lo que recibes.</p>
@@ -1084,7 +1489,7 @@ CAPACIDADES = '''
     <h2 class="seccion__titulo">Entregables por área</h2>
     <div class="bloques">
       <div class="bloque">
-        <div class="bloque__cabecera">''' + icono("dron") + '''<h3>Topografía y fotogrametría</h3></div>
+        <div class="bloque__cabecera"><h3>Topografía y fotogrametría</h3></div>
         <ul class="lista-check">
           <li>Ortomosaico en GeoTIFF, 2 a 5 cm/píxel.</li>
           <li>Nube de puntos en LAS/LAZ clasificada.</li>
@@ -1094,7 +1499,7 @@ CAPACIDADES = '''
         </ul>
       </div>
       <div class="bloque">
-        <div class="bloque__cabecera">''' + icono("red") + '''<h3>Ingeniería hidráulica</h3></div>
+        <div class="bloque__cabecera"><h3>Ingeniería hidráulica</h3></div>
         <ul class="lista-check">
           <li>Memoria con criterios y referencias normativas explícitas.</li>
           <li>Modelo hidráulico entregado como archivo editable.</li>
@@ -1132,7 +1537,7 @@ CAPACIDADES = '''
     <p class="seccion__bajada">Trabajos y ejercicios técnicos desarrollados por cuenta propia, que son la
     base metodológica de la oficina.</p>
     <div class="galeria">
-      ''' + figura("rectificacion-deslindes",
+      ''' + figura("rectificacion-deslindes-ortomosaico-dron",
                    "Rectificación de deslindes de un predio levantado con dron",
                    "Rectificación de deslindes") + '''
       ''' + figura("modelacion-golpe-de-ariete",
@@ -1170,11 +1575,10 @@ EMPRESA = '''
 <section class="encabezado">
   ''' + patron("curvas") + '''
   <div class="contenedor">
-    <p class="encabezado__etiqueta">La empresa</p>
     <h1>RCKT: topografía con dron e ingeniería hidráulica</h1>
-    <p class="encabezado__bajada">Combinamos dos capacidades que normalmente se contratan por separado: el
-    levantamiento topográfico con dron y el diseño hidráulico y sanitario. Alcance cerrado por escrito, un
-    solo interlocutor técnico y entregables editables.</p>
+    <p class="encabezado__bajada">Hacemos dos cosas que normalmente se contratan por separado:
+    levantamientos topográficos con dron y proyectos de ingeniería hidráulica y sanitaria, incluidos los
+    sistemas particulares de agua potable y alcantarillado que aprueba la SEREMI de Salud.</p>
   </div>
 </section>
 
@@ -1187,21 +1591,20 @@ EMPRESA = '''
     <div class="dos-columnas">
       <div>
         <h2>Por qué las dos juntas</h2>
-        <p>Los proyectos hidráulicos tropiezan casi siempre con lo mismo: la topografía no existe, es antigua
-        o tiene una resolución que no sirve para calcular. Y sin cotas confiables, cualquier modelo es una
-        estimación con apariencia de cálculo.</p>
-        <p>Al levantar el terreno nosotros mismos, con la precisión que el cálculo va a necesitar, el proyecto
-        avanza sin la coordinación —y las esperas— entre dos proveedores que no hablan el mismo idioma
-        técnico.</p>
+        <p>En los proyectos de agua el problema suele empezar por la topografía: no existe, es antigua o no
+        tiene el detalle necesario para calcular. Sin cotas confiables, el cálculo hidráulico queda apoyado en
+        supuestos.</p>
+        <p>Por eso levantamos el terreno nosotros mismos, con la precisión que va a necesitar el cálculo. Así
+        no hay que coordinar a una oficina de topografía con otra de ingeniería, ni esperar a que se
+        entiendan.</p>
       </div>
       <div>
         <h2>Cómo trabajamos</h2>
-        ''' + lista_iconos([
-    ("archivo", "<strong>Alcance por escrito antes de empezar.</strong> Qué recibes, en qué formato, en qué plazo y a qué precio."),
-    ("chat", "<strong>Un solo interlocutor técnico.</strong> Quien responde el correo es quien hace el trabajo."),
-    ("capas", "<strong>Entregables editables.</strong> En el formato que usa tu equipo, no PDF que hay que redibujar."),
-    ("escudo", "<strong>Decir que no cuando corresponde.</strong> Si el dron no es la herramienta adecuada, lo decimos."),
-]) + '''
+        <p>Antes de empezar te enviamos por escrito qué vas a recibir, en qué formato, en qué plazo y cuánto
+        cuesta. La persona que conversa contigo el proyecto es la misma que hace el terreno y el cálculo.</p>
+        <p>Entregamos los archivos de trabajo (DWG, nubes de puntos, modelos hidráulicos) y no solo PDF, para
+        que tu equipo pueda seguir usándolos. Y si un levantamiento con dron no es lo que tu caso necesita, te
+        lo decimos antes de cotizar.</p>
       </div>
     </div>
   </div>
@@ -1219,17 +1622,16 @@ EMPRESA = '''
         <tr><td>Razón social</td><td>''' + CONFIG["marca_legal"] + '''</td></tr>
         <tr><td>Base de operaciones</td><td>''' + CONFIG["ciudad_base"] + ", " + CONFIG["region_base"] + '''</td></tr>
         <tr><td>Cobertura</td><td>Coquimbo, Valparaíso, Metropolitana, O'Higgins, Maule y La Araucanía</td></tr>
-        <tr><td>Especialidades</td><td>Topografía y fotogrametría con dron · Ingeniería hidráulica y sanitaria</td></tr>
+        <tr><td>Título profesional</td><td>Ingeniero civil hidráulico, inscrito como proyectista</td></tr>
+        <tr><td>Especialidades</td><td>Topografía y fotogrametría con dron · Ingeniería hidráulica · Proyectos sanitarios particulares</td></tr>
       </tbody>
     </table>
     </div>
-    <p>Trabajamos en dos líneas: <a href="{{P}}dron-fotogrametria/">topografía con dron</a> e
-    <a href="{{P}}ingenieria-hidraulica/">ingeniería hidráulica</a>. Puedes estimar un levantamiento en la
+    <p>Trabajamos en tres líneas: <a href="{{P}}dron-fotogrametria/">topografía con dron</a>,
+    <a href="{{P}}ingenieria-hidraulica/">ingeniería hidráulica</a> y
+    <a href="{{P}}proyecto-sanitario/">proyectos sanitarios</a> para la SEREMI de Salud. Puedes estimar un levantamiento en la
     <a href="{{P}}cotizador/">calculadora de cotización</a> o <a href="{{P}}contacto/">escribirnos</a>
     directamente.</p>
-    <p class="nota">Completa esta tabla con los datos definitivos —RUT, razón social inscrita, registro DGAC
-    del operador y del RPAS, título profesional— editando la sección <code>EMPRESA</code> en
-    <code>contenido.py</code>.</p>
   </div>
 </section>
 '''
@@ -1241,7 +1643,6 @@ CONTACTO = '''
 <section class="encabezado">
   ''' + patron("flujo") + '''
   <div class="contenedor">
-    <p class="encabezado__etiqueta">Contacto</p>
     <h1>Conversemos sobre tu proyecto</h1>
     <p class="encabezado__bajada">Cuéntanos qué necesitas y dónde está el terreno. Te respondemos con
     alcance, plazo y valor en menos de 24 horas hábiles.</p>
@@ -1283,8 +1684,9 @@ CONTACTO = '''
       </ul>
       <p>Si es un levantamiento con dron, puedes estimar el valor tú mismo en la
       <a href="{{P}}cotizador/">calculadora de cotización</a>. También puedes revisar los servicios de
-      <a href="{{P}}dron-fotogrametria/">topografía con dron</a> y de
-      <a href="{{P}}ingenieria-hidraulica/">ingeniería hidráulica</a>.</p>
+      <a href="{{P}}dron-fotogrametria/">topografía con dron</a>,
+      <a href="{{P}}ingenieria-hidraulica/">ingeniería hidráulica</a> y
+      <a href="{{P}}proyecto-sanitario/">proyecto sanitario</a>.</p>
     </div>
 
     <div class="contacto__form">
@@ -1347,7 +1749,6 @@ BLOG_INDEX = '''
 <section class="encabezado">
   ''' + patron("curvas") + '''
   <div class="contenedor">
-    <p class="encabezado__etiqueta">Blog técnico</p>
     <h1>Artículos sobre fotogrametría con dron e ingeniería hidráulica</h1>
     <p class="encabezado__bajada">Explicaciones claras sobre cómo se hacen las cosas y qué conviene pedir en
     cada caso. Escrito para quien contrata el servicio, no para quien lo ejecuta.</p>
@@ -1358,7 +1759,7 @@ BLOG_INDEX = '''
   <div class="contenedor">
   <div class="lista-posts">
     <article class="post-tarjeta">
-      <p class="post-tarjeta__meta">''' + icono("deslindes", "icono icono--sm") + ''' Fotogrametría · 7 min</p>
+      <p class="post-tarjeta__meta">Fotogrametría · 7 min</p>
       <h2><a href="{{P}}blog/levantamiento-fotogrametrico-deslindes/">Cómo se hace un levantamiento fotogramétrico para deslindes</a></h2>
       <p>Desde la planificación del vuelo y los puntos de control hasta la superposición del plano de título
       sobre el ortomosaico.</p>
@@ -1366,14 +1767,14 @@ BLOG_INDEX = '''
     </article>
 
     <article class="post-tarjeta">
-      <p class="post-tarjeta__meta">''' + icono("red", "icono icono--sm") + ''' Hidráulica · 6 min</p>
+      <p class="post-tarjeta__meta">Hidráulica · 6 min</p>
       <h2><a href="{{P}}blog/que-es-modelacion-redes-agua-potable/">Qué es la modelación de redes de agua potable y cuándo se necesita</a></h2>
       <p>Qué hace un modelo hidráulico y por qué el diámetro elegido "por costumbre" suele salir caro.</p>
       <p><a class="enlace-fuerte" href="{{P}}blog/que-es-modelacion-redes-agua-potable/">Leer ''' + icono("flecha", "icono icono--sm") + '''</a></p>
     </article>
 
     <article class="post-tarjeta">
-      <p class="post-tarjeta__meta">''' + icono("curvas", "icono icono--sm") + ''' Topografía · 5 min</p>
+      <p class="post-tarjeta__meta">Topografía · 5 min</p>
       <h2><a href="{{P}}blog/curvas-de-nivel-cada-cuanto/">Curvas de nivel: ¿cada 0,25, 0,5 o 1 metro?</a></h2>
       <p>Cómo elegir la equidistancia según la pendiente del terreno y el uso del plano.</p>
       <p><a class="enlace-fuerte" href="{{P}}blog/curvas-de-nivel-cada-cuanto/">Leer ''' + icono("flecha", "icono icono--sm") + '''</a></p>
@@ -1387,7 +1788,6 @@ POST_DESLINDES = '''
 <section class="encabezado encabezado--post">
   ''' + patron("curvas") + '''
   <div class="contenedor">
-    <p class="encabezado__etiqueta">Blog · Fotogrametría</p>
     <h1>Cómo se hace un levantamiento fotogramétrico para deslindes</h1>
     <p class="encabezado__meta"><time datetime="2026-08-11">11 de agosto de 2026</time> · 7 min de lectura</p>
   </div>
@@ -1434,9 +1834,9 @@ POST_DESLINDES = '''
 
   <h2>Qué no puede resolver un dron</h2>
   <ul class="lista-check">
-    <li><strong>Cercos bajo copa cerrada.</strong> Si el límite corre bajo bosque denso, hay que medirlo en terreno.</li>
-    <li><strong>Hitos no materializados.</strong> Un vértice sin materialización debe replantearse desde coordenadas.</li>
-    <li><strong>La definición legal del deslinde.</strong> El levantamiento entrega evidencia técnica; la determinación jurídica es otro ámbito.</li>
+    <li>Cercos bajo copa cerrada. Si el límite corre bajo bosque denso, hay que medirlo en terreno.</li>
+    <li>Hitos no materializados. Un vértice sin materialización debe replantearse desde coordenadas.</li>
+    <li>La definición legal del deslinde. El levantamiento entrega evidencia técnica; la determinación jurídica es otro ámbito.</li>
   </ul>
 
   <p class="articulo__cierre">¿Necesitas verificar los deslindes de un predio? Revisa el
@@ -1452,7 +1852,6 @@ POST_REDES = '''
 <section class="encabezado encabezado--post">
   ''' + patron("flujo") + '''
   <div class="contenedor">
-    <p class="encabezado__etiqueta">Blog · Ingeniería hidráulica</p>
     <h1>Qué es la modelación de redes de agua potable y cuándo se necesita</h1>
     <p class="encabezado__meta"><time datetime="2026-08-11">11 de agosto de 2026</time> · 6 min de lectura</p>
   </div>
@@ -1511,7 +1910,6 @@ POST_CURVAS = '''
 <section class="encabezado encabezado--post">
   ''' + patron("curvas") + '''
   <div class="contenedor">
-    <p class="encabezado__etiqueta">Blog · Topografía</p>
     <h1>Curvas de nivel: ¿cada 0,25, 0,5 o 1 metro?</h1>
     <p class="encabezado__meta"><time datetime="2026-08-11">11 de agosto de 2026</time> · 5 min de lectura</p>
   </div>
@@ -1578,7 +1976,7 @@ PAGINAS = [
     {
         "path": "",
         "title": "RCKT | Topografía con dron e ingeniería hidráulica",
-        "desc": "RCKT: levantamientos con dron, curvas de nivel y deslindes + ingeniería hidráulica, drenaje y estudios de inundación en Chile. Calcula tu cotización en línea.",
+        "desc": "RCKT: levantamientos con dron, curvas de nivel y deslindes, ingeniería hidráulica y proyectos sanitarios para la SEREMI de Salud. Cotiza en línea.",
         "body": HOME,
         "faq": HOME_FAQ,
         "nav_activa": None,
@@ -1659,14 +2057,14 @@ PAGINAS = [
     # ---- HIDRAULICA ----
     {
         "path": "ingenieria-hidraulica",
-        "title": "Ingeniería hidráulica y sanitaria | Proyectos y modelación",
-        "desc": "Redes de agua potable, impulsiones, drenaje pluvial, estudios de inundación y proyectos sanitarios con memoria, planos y modelación. Consulta tu proyecto.",
+        "title": "Ingeniería hidráulica | Redes, bombas, drenaje e inundación",
+        "desc": "Modelación de redes de agua potable, impulsiones, drenaje pluvial y estudios de inundación, con memoria, planos y cálculo sobre topografía propia. Consúltanos.",
         "body": HIDRO_PILAR,
         "faq": HIDRO_FAQ,
         "crumbs": [("Ingeniería hidráulica", None)],
         "nav_activa": "ingenieria-hidraulica/",
-        "schema_servicio": ("Ingeniería hidráulica y sanitaria",
-                            "Diseño, cálculo y modelación de sistemas de agua: redes de agua potable, impulsiones, drenaje pluvial, estudios de inundación y proyectos sanitarios.",
+        "schema_servicio": ("Ingeniería hidráulica",
+                            "Diseño, cálculo y modelación de sistemas de agua: redes de agua potable, impulsiones, drenaje pluvial y estudios de inundación.",
                             "Ingeniería hidráulica"),
     },
     {
@@ -1717,17 +2115,78 @@ PAGINAS = [
                             "Estudio hidrológico, cálculo de caudales de diseño y diseño de redes de drenaje, sumideros y obras de retención o infiltración para urbanizaciones.",
                             "Diseño de drenaje pluvial"),
     },
+    # ---- PROYECTO SANITARIO ----
     {
-        "path": "ingenieria-hidraulica/proyectos-sanitarios",
-        "title": "Proyectos sanitarios: agua potable y alcantarillado",
-        "desc": "Proyectos de agua potable y alcantarillado para loteos, parcelaciones y edificaciones, con memoria de cálculo, planos y especificaciones. Consulta aquí.",
-        "body": SANITARIOS,
-        "faq": SANITARIOS_FAQ,
-        "crumbs": [("Ingeniería hidráulica", "ingenieria-hidraulica/"), ("Proyectos sanitarios", None)],
-        "nav_activa": "ingenieria-hidraulica/",
-        "schema_servicio": ("Proyectos sanitarios de agua potable y alcantarillado",
-                            "Diseño de sistemas de agua potable y alcantarillado para loteos, parcelaciones y edificaciones, con memoria de cálculo, planos y especificaciones técnicas.",
+        "path": "proyecto-sanitario",
+        "title": "Proyecto sanitario particular: agua potable y alcantarillado",
+        "desc": "Proyecto de agua potable y alcantarillado particular para la SEREMI de Salud, firmado por ingeniero civil hidráulico. Desde $400.000. Consúltanos.",
+        "body": SANITARIO_PILAR,
+        "faq": SANITARIO_FAQ,
+        "crumbs": [("Proyecto sanitario", None)],
+        "nav_activa": "proyecto-sanitario/",
+        "schema_servicio": ("Proyecto sanitario de agua potable y alcantarillado particular",
+                            "Proyecto y tramitación ante la SEREMI de Salud de sistemas particulares de agua potable y alcantarillado, según el artículo 71 del Código Sanitario: aprobación del proyecto y autorización de funcionamiento.",
                             "Proyecto sanitario"),
+    },
+    {
+        "path": "proyecto-sanitario/agua-potable-particular",
+        "title": "Proyecto de agua potable particular con pozo o noria",
+        "desc": "Proyecto de agua potable particular con pozo, noria o vertiente para la SEREMI de Salud: captación, cloración, estanque, red y análisis de agua. Consúltanos.",
+        "body": AGUA_PARTICULAR,
+        "faq": AGUA_PARTICULAR_FAQ,
+        "crumbs": [("Proyecto sanitario", "proyecto-sanitario/"), ("Agua potable particular", None)],
+        "nav_activa": "proyecto-sanitario/",
+        "schema_servicio": ("Proyecto de agua potable particular",
+                            "Proyecto de sistema particular de agua potable con fuente propia (pozo, noria o vertiente): captación, desinfección, estanque de regulación y red de distribución, para aprobación de la SEREMI de Salud.",
+                            "Proyecto de agua potable particular"),
+    },
+    {
+        "path": "proyecto-sanitario/alcantarillado-particular",
+        "title": "Proyecto de fosa séptica y alcantarillado particular",
+        "desc": "Proyecto de alcantarillado particular con fosa séptica, drenes o pozo absorbente, con prueba de infiltración y planos para la SEREMI de Salud. Cotiza el tuyo.",
+        "body": ALCANTARILLADO,
+        "faq": ALCANTARILLADO_FAQ,
+        "crumbs": [("Proyecto sanitario", "proyecto-sanitario/"), ("Alcantarillado particular", None)],
+        "nav_activa": "proyecto-sanitario/",
+        "schema_servicio": ("Proyecto de alcantarillado particular y fosa séptica",
+                            "Proyecto de tratamiento particular de aguas servidas domésticas: fosa séptica, drenes, pozo absorbente o planta de tratamiento, con prueba de infiltración, para aprobación de la SEREMI de Salud.",
+                            "Proyecto de alcantarillado particular"),
+    },
+    {
+        "path": "proyecto-sanitario/agua-potable-sin-fuente-propia",
+        "title": "Agua potable sin fuente propia: estanque y camión aljibe",
+        "desc": "Proyecto de sistema de agua potable sin fuente propia, con estanque abastecido por camión aljibe, desinfección y red, para aprobación de la SEREMI de Salud.",
+        "body": SIN_FUENTE,
+        "faq": SIN_FUENTE_FAQ,
+        "crumbs": [("Proyecto sanitario", "proyecto-sanitario/"), ("Agua potable sin fuente propia", None)],
+        "nav_activa": "proyecto-sanitario/",
+        "schema_servicio": ("Proyecto de agua potable sin fuente propia",
+                            "Proyecto de sistema particular de agua potable sin fuente propia, abastecido por camión aljibe: estanque, desinfección, regulación y distribución, según el DS 735 y el DS 41 del Minsal.",
+                            "Proyecto de agua potable particular"),
+    },
+    {
+        "path": "proyecto-sanitario/autorizacion-de-funcionamiento",
+        "title": "Autorización de funcionamiento: agua potable y alcantarillado",
+        "desc": "Autorización de funcionamiento de sistemas particulares de agua potable y alcantarillado ante la SEREMI de Salud: revisión de obra, análisis de agua e ingreso.",
+        "body": AUTORIZACION,
+        "faq": AUTORIZACION_FAQ,
+        "crumbs": [("Proyecto sanitario", "proyecto-sanitario/"), ("Autorización de funcionamiento", None)],
+        "nav_activa": "proyecto-sanitario/",
+        "schema_servicio": ("Autorización de funcionamiento de sistema sanitario particular",
+                            "Preparación y tramitación de la autorización de funcionamiento de sistemas particulares de agua potable y aguas servidas ante la SEREMI de Salud: revisión de obra, análisis de agua e inspección.",
+                            "Tramitación sanitaria"),
+    },
+    {
+        "path": "proyecto-sanitario/reutilizacion-aguas-grises",
+        "title": "Proyecto de reutilización de aguas grises | Ley 21.075",
+        "desc": "Proyecto de reutilización de aguas grises según la Ley 21.075: separación de redes, tratamiento y riego o inodoros, con aprobación de la SEREMI de Salud.",
+        "body": AGUAS_GRISES,
+        "faq": AGUAS_GRISES_FAQ,
+        "crumbs": [("Proyecto sanitario", "proyecto-sanitario/"), ("Reutilización de aguas grises", None)],
+        "nav_activa": "proyecto-sanitario/",
+        "schema_servicio": ("Proyecto de reutilización de aguas grises",
+                            "Proyecto de sistema de reutilización de aguas grises según la Ley 21.075 y el Decreto 40 del Minsal: recolección, tratamiento, reutilización y disposición, para aprobación de la SEREMI de Salud.",
+                            "Proyecto de aguas grises"),
     },
     # ---- OTRAS ----
     {

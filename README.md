@@ -129,9 +129,10 @@ que en un dominio propio.
 
 Ordenado por impacto en visibilidad:
 
-- [ ] **Subir las fotos a `assets/img/`.** Hoy el sitio no tiene ni una imagen real, y Google Imágenes es
-      una fuente de tráfico relevante para este rubro. Los nombres esperados aparecen en cada recuadro
-      punteado del sitio.
+- [ ] **Subir más imágenes reales a `assets/img/`.** Hoy hay cuatro (Patagua, modelo de elevación,
+      rectificación de deslindes y modelación de redes). Faltan las de bombas, inundación, drenaje y
+      proyecto sanitario. `python build.py`
+      lista al final las que faltan.
 - [ ] **Crear `assets/img/og-portada.jpg` de 1200x630 px.** Se detecta sola: basta dejarla ahí y
       reconstruir. Sin ella, los enlaces compartidos por WhatsApp o LinkedIn no muestran vista previa,
       porque el respaldo actual es un SVG y varias plataformas no lo renderizan.
@@ -145,7 +146,10 @@ Ordenado por impacto en visibilidad:
 - [ ] Pegar el código de verificación en `CONFIG["gsc_verificacion"]`, registrar el sitio en
       **Google Search Console** y enviar el `sitemap.xml`.
 - [ ] Pegar el identificador en `CONFIG["ga4_id"]` para activar Google Analytics 4.
-- [ ] Completar la página `empresa/` con datos verificables (título profesional, registro DGAC, RUT).
+- [ ] Completar la página `empresa/` con datos verificables (registro DGAC, RUT; el título de ingeniero civil
+      hidráulico ya está publicado) y
+      confirmar la razón social: hoy se publica `CONFIG["marca_legal"]` ("RCKT SpA") en esa página y en
+      el schema, aunque en `CONFIG` está marcada como pendiente.
 - [ ] Crear el perfil de **Google Business** como *negocio con área de servicio*, declarando todas las
       comunas de `ZONAS_SERVICIO`.
 
@@ -171,37 +175,37 @@ metodología y herramientas. Cuando existan trabajos publicables:
 1. Agrega los ejemplos en la sección "Desarrollos propios" de `capacidades/` (en `contenido.py`), o
 2. Crea una página `proyectos/` nueva agregando su diccionario a la lista `PAGINAS` y su entrada al `NAV`.
 
-## Imágenes que el sitio está esperando
+## Imágenes
 
-Deja el archivo en `assets/img/` con el nombre exacto y ejecuta `python build.py`: el recuadro punteado se
-reemplaza solo por la foto, con sus medidas y carga diferida. Acepta `.webp`, `.avif`, `.jpg` y `.png`.
+Deja el archivo en `assets/img/` con el nombre exacto y ejecuta `python build.py`: la imagen aparece sola en
+su lugar, con sus medidas y carga diferida. Mientras un archivo no exista, esa página simplemente no muestra
+imagen (nunca un recuadro vacío) y el build lo lista al final. Acepta `.webp`, `.avif`, `.jpg` y `.png`.
 
-| Archivo | Qué mostrar | Dónde aparece |
-|---|---|---|
-| `dron-en-vuelo-terreno` | El dron operando en terreno real | Pilar de dron |
-| `modelo-digital-elevacion` | Modelo de elevación en escala de colores | Home · Nube de puntos |
-| `curvas-de-nivel` | Plano de curvas sobre foto aérea | Home · Curvas de nivel |
-| `rectificacion-deslindes` | Plano de deslindes con vértices marcados | Deslindes · Capacidades |
-| `ortomosaico-predio` | Ortomosaico real de un vuelo hecho | Mapas y ortomosaicos |
-| `captura-modelacion-hidraulica` | Pantalla de EPANET o HEC-RAS | Pilar de hidráulica |
-| `modelacion-redes-epanet` | Red modelada en EPANET | Home · Modelación de redes |
-| `modelacion-golpe-de-ariete` | Gráfico de presión transitoria | Bombas · Capacidades |
-| `mapa-inundacion-hecras` | Mancha de inundación por profundidad | Estudios de inundación |
-| `drenaje-pluvial` | Plano de colectores o cámara en terreno | Drenaje · Capacidades |
-| `plano-red-agua-potable` | Plano de red domiciliaria | Proyectos sanitarios |
-| `retrato-profesional-rckt` | Tu foto, retrato o en terreno | Empresa |
-| `og-portada.jpg` | Composición 1200×630 para compartir | Todo el sitio (redes) |
+| Archivo | Qué mostrar | Dónde aparece | Estado |
+|---|---|---|---|
+| `curvas-de-nivel-modelo-elevacion-dron-patagua` | DEM y curvas cada 5 m, Patagua | Portada · Pilar de dron · Curvas de nivel | Listo |
+| `modelo-digital-elevacion-dron-ortomosaico` | DEM sobre ortomosaico | Portada · Nube de puntos | Listo |
+| `rectificacion-deslindes-ortomosaico-dron` | Deslindes con grilla UTM | Portada · Deslindes | Listo |
+| `modelacion-red-agua-potable-presiones` | Modelación de presiones de una red | Portada · Pilar de hidráulica · Modelación de redes | Listo |
+| `ortomosaico-predio` | Ortomosaico real de un vuelo hecho | Mapas y ortomosaicos | Falta |
+| `modelacion-golpe-de-ariete` | Gráfico de presión transitoria | Bombas e impulsiones | Falta |
+| `mapa-inundacion-hecras` | Mancha de inundación por profundidad | Estudios de inundación | Falta |
+| `drenaje-pluvial` | Plano de colectores o cámara en terreno | Drenaje pluvial | Falta |
+| `plano-proyecto-sanitario-agua-potable-alcantarillado` | Plano de emplazamiento: pozo, estanque, fosa y drenes | Pilar de proyecto sanitario | Falta |
+| `fosa-septica-drenes-alcantarillado-particular` | Detalle o foto de fosa séptica y drenes | Alcantarillado particular | Falta |
+| `retrato-profesional-rckt` | Tu foto, retrato o en terreno | Empresa | Falta |
+| `og-portada.jpg` | Composición 1200×630 para compartir | Todo el sitio (redes) | Falta |
 
-Si prefieres nombres que incluyan la zona del proyecto —recomendable para Google Imágenes, por ejemplo
-`ortomosaico-predio-pucon-2026.webp`— renombra el archivo y cambia el nombre en la llamada a `figura(...)`
-correspondiente dentro de `contenido.py`.
+Para agregar una imagen en una página nueva, usa `figura("nombre", "texto alternativo", "pie de foto")` en
+`contenido.py`. Opciones: `prioritaria=True` para la imagen principal de la página (se carga primero) y
+`estrecha=True` para imágenes cuadradas o verticales.
 
-## Cómo poner las imágenes
+Recomendaciones:
 
-Cada recuadro punteado tiene, justo debajo en el HTML generado, un comentario con el `<img>` que hay que
-dejar en su lugar. En `contenido.py` el bloque se genera con la función `figura(...)`.
+- Nombre descriptivo, idealmente con la zona: `ortomosaico-predio-maule-2026.webp`, nunca `IMG_4821.jpg`.
+- WebP, máximo 1600 px de ancho.
+- En el pie de foto, describe solo lo que la imagen muestra (lugar, escala, cotas). Nada inventado.
 
-- Guardar en `assets/img/` con nombre descriptivo: `ortomosaico-predio-maule-2026.webp`, nunca `IMG_4821.jpg`.
-- Convertir a **WebP**, máximo 1600 px de ancho.
-- Mantener `width`, `height`, `loading="lazy"` y `alt` descriptivo (80-140 caracteres).
-- La primera imagen visible de cada página no debe llevar `loading="lazy"`.
+La carpeta `imagenes-propuestas/` tiene ilustraciones técnicas dibujadas por código. No se usan en el sitio
+y está excluida en `.gitignore` para que no se publique: las imágenes reales pesan más en la confianza de
+un cliente que cualquier diagrama genérico.

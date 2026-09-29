@@ -84,7 +84,12 @@ CONFIG = {
 #   ingenieria-hidraulica/dimensionamiento-bombas-impulsiones
 #   ingenieria-hidraulica/estudios-inundacion
 #   ingenieria-hidraulica/drenaje-pluvial
-#   ingenieria-hidraulica/proyectos-sanitarios
+#   proyecto-sanitario                                   (pilar completo)
+#   proyecto-sanitario/agua-potable-particular
+#   proyecto-sanitario/alcantarillado-particular
+#   proyecto-sanitario/agua-potable-sin-fuente-propia
+#   proyecto-sanitario/autorizacion-de-funcionamiento
+#   proyecto-sanitario/reutilizacion-aguas-grises
 #   capacidades · blog · empresa
 #
 # Ejemplo — dejar de ofrecer estudios de inundación en temporada baja:
@@ -133,7 +138,11 @@ OPCIONES_CONSULTA = [
     ("Curvas de nivel", "dron-fotogrametria/curvas-de-nivel"),
     ("Rectificación de deslindes", "dron-fotogrametria/rectificacion-deslindes"),
     ("Ortomosaico / mapa", "dron-fotogrametria/mapas-ortomosaicos"),
-    ("Proyecto sanitario (agua potable / alcantarillado)", "ingenieria-hidraulica/proyectos-sanitarios"),
+    ("Proyecto de agua potable particular (pozo o noria)", "proyecto-sanitario/agua-potable-particular"),
+    ("Alcantarillado particular / fosa séptica", "proyecto-sanitario/alcantarillado-particular"),
+    ("Agua potable sin fuente propia (camión aljibe)", "proyecto-sanitario/agua-potable-sin-fuente-propia"),
+    ("Autorización de funcionamiento SEREMI", "proyecto-sanitario/autorizacion-de-funcionamiento"),
+    ("Reutilización de aguas grises", "proyecto-sanitario/reutilizacion-aguas-grises"),
     ("Drenaje pluvial", "ingenieria-hidraulica/drenaje-pluvial"),
     ("Estudio de inundación", "ingenieria-hidraulica/estudios-inundacion"),
     ("Modelación de redes / bombas", "ingenieria-hidraulica/modelacion-redes"),
@@ -248,7 +257,13 @@ NAV = [
         ("Bombas e impulsiones", "ingenieria-hidraulica/dimensionamiento-bombas-impulsiones/"),
         ("Estudios de inundación", "ingenieria-hidraulica/estudios-inundacion/"),
         ("Drenaje pluvial", "ingenieria-hidraulica/drenaje-pluvial/"),
-        ("Proyectos sanitarios", "ingenieria-hidraulica/proyectos-sanitarios/"),
+    ]),
+    ("Proyecto sanitario", "proyecto-sanitario/", [
+        ("Agua potable particular", "proyecto-sanitario/agua-potable-particular/"),
+        ("Alcantarillado y fosa séptica", "proyecto-sanitario/alcantarillado-particular/"),
+        ("Agua sin fuente propia", "proyecto-sanitario/agua-potable-sin-fuente-propia/"),
+        ("Autorización de funcionamiento", "proyecto-sanitario/autorizacion-de-funcionamiento/"),
+        ("Aguas grises", "proyecto-sanitario/reutilizacion-aguas-grises/"),
     ]),
     ("Capacidades", "capacidades/", []),
     ("Blog", "blog/", []),
@@ -407,38 +422,42 @@ def _dimensiones(ruta):
     return None
 
 
-def figura(nombre, alt, pie="", ratio="3 / 2", prioritaria=False):
+# Imágenes que alguna página pide pero que todavía no están en assets/img/.
+# Se listan al final de `python build.py`.
+IMAGENES_FALTANTES = []
+
+
+def figura(nombre, alt, pie="", ratio="3 / 2", prioritaria=False, estrecha=False, ancha=False):
     """
     Inserta una imagen del portafolio.
 
-    `nombre` es el archivo dentro de assets/img/ SIN extensión. Si el archivo existe
-    (webp, avif, jpg, jpeg o png) se inserta la imagen real; si todavía no está, se
-    deja un recuadro indicando qué falta. Basta con dejar el archivo en la carpeta y
-    volver a ejecutar `python build.py`.
+    `nombre` es el archivo dentro de assets/img/ SIN extensión (webp, avif, jpg, jpeg
+    o png). Si todavía no existe, la página no muestra nada en ese lugar: un visitante
+    nunca debe ver un recuadro vacío. Las que faltan se listan al construir el sitio.
+
+    `prioritaria=True` para la imagen principal de una página (se carga sin demora,
+    mejora el LCP). `estrecha=True` limita el ancho, para imágenes cuadradas o verticales.
+    `ancha=True` dentro de una galería, la imagen ocupa todas las columnas.
     """
     for ext in EXTENSIONES_IMAGEN:
         ruta = os.path.join(OUT, "assets", "img", nombre + ext)
         if os.path.isfile(ruta):
             dim = _dimensiones(ruta)
             medidas = f' width="{dim[0]}" height="{dim[1]}"' if dim else f' style="aspect-ratio: {ratio};"'
-            carga = "" if prioritaria else ' loading="lazy"'
-            return (f'<figure class="figura">\n'
+            carga = ' fetchpriority="high"' if prioritaria else ' loading="lazy"'
+            clase = "figura" + (" figura--estrecha" if estrecha else "") + (" figura--ancha" if ancha else "")
+            return (f'<figure class="{clase}">\n'
                     f'  <img src="{{{{P}}}}assets/img/{nombre}{ext}"{medidas}{carga} decoding="async" alt="{alt}">\n'
                     + (f'  <figcaption>{pie}</figcaption>\n' if pie else "")
                     + '</figure>')
 
-    return (f'<figure class="figura">\n'
-            f'  <div class="figura__placeholder" style="aspect-ratio: {ratio};">\n'
-            f'    {icono("capas", "icono icono--grande")}\n'
-            f'    <span class="figura__texto">{alt}</span>\n'
-            f'    <span class="figura__archivo">assets/img/{nombre}.webp</span>\n'
-            f'  </div>\n'
-            + (f'  <figcaption>{pie}</figcaption>\n' if pie else "")
-            + '</figure>')
+    if nombre not in IMAGENES_FALTANTES:
+        IMAGENES_FALTANTES.append(nombre)
+    return ""
 
 
-def cta(titulo="¿Tienes un terreno o un proyecto que evaluar?",
-        texto="Cuéntanos qué necesitas y te respondemos con alcance, plazo y valor en menos de 24 horas hábiles."):
+def cta(titulo="Cuéntanos de tu proyecto",
+        texto="Te respondemos en menos de 24 horas hábiles con alcance, plazo y valor."):
     return f'''<section class="cta">
   <div class="contenedor cta__caja">
     <div class="cta__texto">
@@ -446,8 +465,8 @@ def cta(titulo="¿Tienes un terreno o un proyecto que evaluar?",
       <p>{texto}</p>
     </div>
     <div class="cta__botones">
-      <a class="boton boton--acento" href="{{{{P}}}}contacto/">Solicitar cotización {icono("flecha", "icono icono--sm")}</a>
-      <a class="boton boton--fantasma" href="https://wa.me/{CONFIG['whatsapp']}" rel="nofollow noopener" target="_blank">{icono("chat", "icono icono--sm")} WhatsApp</a>
+      <a class="boton boton--acento" href="{{{{P}}}}contacto/">Solicitar cotización</a>
+      <a class="boton boton--claro" href="https://wa.me/{CONFIG['whatsapp']}" rel="nofollow noopener" target="_blank">{icono("chat", "icono icono--sm")} WhatsApp</a>
     </div>
   </div>
 </section>'''
@@ -461,34 +480,33 @@ def pasos(items):
 
 
 def datos(items):
-    """items: (cifra, etiqueta, icono)"""
+    """items: (cifra, etiqueta). Se muestra como una fila de ficha técnica."""
     lis = "\n".join(
-        f'  <div class="dato">{icono(i, "icono icono--sm")}'
-        f'<span class="dato__cifra">{c}</span><span class="dato__label">{l}</span></div>'
-        for c, l, i in items
+        f'  <div class="dato"><span class="dato__cifra">{c}</span><span class="dato__label">{l}</span></div>'
+        for c, l in items
     )
     return f'<div class="datos">\n{lis}\n</div>'
 
 
-def tarjetas(items, clase="tarjetas"):
-    """items: (icono, titulo, texto, href_o_None). Las que apuntan a un servicio oculto se omiten."""
+def tarjetas(items, clase="tarjetas", nivel=3):
+    """items: (título, texto, href_o_None). Lista separada por líneas finas, como un
+    índice: el título es el enlace. Los ítems de servicios ocultos se omiten.
+
+    `nivel` es el nivel de encabezado de cada título (3 bajo un h2; 4 cuando la lista
+    va dentro de una columna que ya tiene su propio h3)."""
     out = []
-    for ic, t, d, h in items:
+    for t, d, h in items:
         if esta_oculto(h):
             continue
-        cuerpo = f'<span class="tarjeta__icono">{icono(ic)}</span><h3>{t}</h3><p>{d}</p>'
-        if h:
-            out.append(f'  <a class="tarjeta" href="{{{{P}}}}{h}">{cuerpo}'
-                       f'<span class="tarjeta__mas">Ver más {icono("flecha", "icono icono--sm")}</span></a>')
-        else:
-            out.append(f'  <div class="tarjeta">{cuerpo}</div>')
-    return f'<div class="{clase}">\n' + "\n".join(out) + "\n</div>"
+        titulo = f'<a href="{{{{P}}}}{h}">{t}</a>' if h else t
+        out.append(f'  <li class="tarjeta"><h{nivel}>{titulo}</h{nivel}><p>{d}</p></li>')
+    return f'<ul class="{clase}">\n' + "\n".join(out) + "\n</ul>"
 
 
-def lista_iconos(items):
-    """items: (icono, texto)"""
-    lis = "\n".join(f'  <li>{icono(i, "icono icono--sm")}<span>{t}</span></li>' for i, t in items)
-    return f'<ul class="lista-iconos">\n{lis}\n</ul>'
+def lista(items):
+    """items: textos. Lista simple."""
+    lis = "\n".join(f"  <li>{t}</li>" for t in items)
+    return f'<ul class="lista">\n{lis}\n</ul>'
 
 
 def faq_html(faqs):
@@ -523,9 +541,9 @@ def acciones_encabezado(servicio, calculadora=True):
     mensaje = "Hola, me interesa el servicio de %s. ¿Podemos cotizarlo?" % servicio
     from urllib.parse import quote
     wsp = "https://wa.me/%s?text=%s" % (CONFIG["whatsapp"], quote(mensaje))
-    segundo = ('<a class="boton boton--fantasma" href="{{P}}cotizador/">Calcular el valor</a>'
+    segundo = ('<a class="boton boton--claro" href="{{P}}cotizador/">Calcular el valor</a>'
                if calculadora else
-               '<a class="boton boton--fantasma" href="{{P}}contacto/">Escribirnos</a>')
+               '<a class="boton boton--claro" href="{{P}}contacto/">Escribirnos</a>')
     return (f'<div class="encabezado__acciones">'
             f'<a class="boton boton--acento" href="{wsp}" rel="nofollow noopener" target="_blank">'
             f'{icono("chat", "icono icono--sm")} Consultar por WhatsApp</a>{segundo}</div>')
@@ -648,14 +666,11 @@ def bloque_precio(ha_referencia=5):
     """Línea 'desde $X' con enlace a la calculadora, para páginas de servicio."""
     desde = precio_estimado(ha_referencia, COTIZADOR["zonas"][0][1])
     return f'''<div class="precio-desde">
-  {icono("calculo")}
-  <div>
-    <p class="precio-desde__valor">Desde {pesos(desde)}<span> + IVA</span></p>
-    <p class="precio-desde__nota">Valor de referencia para un terreno de hasta 60 hectáreas en la Región
-    Metropolitana. <a href="{{{{P}}}}cotizador/">Calcula el valor exacto del tuyo</a> según superficie y
-    ubicación, sin dejar datos. El precio final siempre se puede conversar según el requerimiento, el
-    plazo, la extensión real del terreno y el formato de entrega.</p>
-  </div>
+  <p class="precio-desde__valor">Desde {pesos(desde)}<span> + IVA</span></p>
+  <p class="precio-desde__nota">Referencia para un terreno de hasta 60 hectáreas en la Región
+  Metropolitana. En la <a href="{{{{P}}}}cotizador/">calculadora</a> ves el valor de tu terreno según
+  superficie y ubicación. El precio final lo conversamos según lo que necesites, el plazo, la extensión
+  real y el formato de entrega.</p>
 </div>'''
 
 
@@ -962,7 +977,8 @@ def schema_negocio():
         },
         "knowsAbout": ["Fotogrametría con dron", "Topografía", "Curvas de nivel", "Ortomosaicos",
                        "Modelación hidráulica", "EPANET", "SWMM", "HEC-RAS", "Drenaje pluvial",
-                       "Agua potable", "Alcantarillado"],
+                       "Agua potable", "Alcantarillado", "Resolución sanitaria", "Fosa séptica",
+                       "Agua potable rural", "Aguas grises"],
         "priceRange": "$$",
         "geo": {
             "@type": "GeoCoordinates",
@@ -981,7 +997,7 @@ def schema_negocio():
             "itemListElement": [
                 {"@type": "Offer", "itemOffered": {"@type": "Service", "name": t,
                  "url": CONFIG["dominio"] + "/" + h}}
-                for t, h in (NAV[0][2] + NAV[1][2]) if not esta_oculto(h)
+                for t, h in (NAV[0][2] + NAV[1][2] + NAV[2][2]) if not esta_oculto(h)
             ],
         },
     }
@@ -1085,6 +1101,7 @@ def render_footer(P):
 
     dron = columna(NAV[0][2]) if not esta_oculto(NAV[0][1]) else ""
     hidro = columna(NAV[1][2]) if not esta_oculto(NAV[1][1]) else ""
+    sanitario = columna(NAV[2][2]) if not esta_oculto(NAV[2][1]) else ""
     zonas = columna(PIE_ENLACES)
     return f'''<footer class="pie">
   <div class="contenedor pie__grid">
@@ -1107,13 +1124,17 @@ def render_footer(P):
       <ul>{hidro}</ul>
     </div>
     <div class="pie__col">
+      <p class="pie__titulo">Proyecto sanitario</p>
+      <ul>{sanitario}</ul>
+    </div>
+    <div class="pie__col">
       <p class="pie__titulo">Más</p>
       <ul>{zonas}</ul>
     </div>
   </div>
   <div class="contenedor pie__legal">
     <p>© {CONFIG["anio"]} {CONFIG["marca"]}. Todos los derechos reservados.</p>
-    <p><a href="{P}dron-fotogrametria/">Dron y topografía</a> · <a href="{P}ingenieria-hidraulica/">Ingeniería hidráulica</a> · <a href="{P}contacto/">Contacto</a></p>
+    <p><a href="{P}dron-fotogrametria/">Dron y topografía</a> · <a href="{P}ingenieria-hidraulica/">Ingeniería hidráulica</a> · <a href="{P}proyecto-sanitario/">Proyecto sanitario</a> · <a href="{P}contacto/">Contacto</a></p>
   </div>
 </footer>'''
 
@@ -1318,13 +1339,17 @@ CSS = """/* ====================================================================
   --acento-txt:  #0c7c89;   /* sobre fondo claro (contraste AA) */
   --acento-sombra: rgba(23, 195, 212, .16);
 
-  --radio: 14px;
-  --radio-sm: 10px;
+  --radio: 6px;
+  --radio-sm: 4px;
   --ancho: 1160px;
   --fuente: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Rótulos técnicos (pies de figura, cifras): como en un plano */
+  --mono: ui-monospace, "Cascadia Mono", "SF Mono", Consolas, "Liberation Mono", monospace;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
+/* Un elemento con el atributo hidden no se muestra aunque su clase le dé display:flex */
+[hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 
 body {
@@ -1339,10 +1364,11 @@ body {
 
 img, svg, video { max-width: 100%; height: auto; }
 
-h1, h2, h3 { line-height: 1.15; margin: 0 0 .6em; font-weight: 680; letter-spacing: -.022em; }
-h1 { font-size: clamp(2rem, 1.3rem + 2.6vw, 3.15rem); }
-h2 { font-size: clamp(1.45rem, 1.15rem + 1.3vw, 2.05rem); }
-h3 { font-size: 1.1rem; letter-spacing: -.012em; }
+h1, h2, h3, h4 { line-height: 1.15; margin: 0 0 .6em; font-weight: 650; letter-spacing: -.02em; }
+h1 { font-size: clamp(2rem, 1.4rem + 2.4vw, 3rem); }
+h2 { font-size: clamp(1.4rem, 1.15rem + 1.1vw, 1.85rem); }
+h3 { font-size: 1.1rem; letter-spacing: -.01em; }
+h4 { font-size: 1.02rem; letter-spacing: -.005em; }
 p  { margin: 0 0 1.1em; }
 
 a { color: var(--acento-txt); text-decoration-thickness: 1px; text-underline-offset: 2px; }
@@ -1363,8 +1389,7 @@ a:hover { color: var(--tinta-800); }
 /* ---------- Cabecera ---------- */
 .cabecera {
   position: sticky; top: 0; z-index: 50;
-  background: rgba(5, 9, 13, .92);
-  backdrop-filter: saturate(160%) blur(10px);
+  background: var(--tinta-950);
   border-bottom: 1px solid rgba(255, 255, 255, .08);
   color: #fff;
 }
@@ -1420,25 +1445,27 @@ a:hover { color: var(--tinta-800); }
 /* ---------- Botones ---------- */
 .boton {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-  min-height: 48px; padding: 12px 22px; border-radius: var(--radio-sm);
-  font-weight: 650; font-size: .97rem; text-decoration: none; border: 1.5px solid transparent;
-  transition: background .15s ease, color .15s ease, border-color .15s ease, transform .15s ease;
+  min-height: 46px; padding: 11px 20px; border-radius: var(--radio-sm);
+  font-weight: 600; font-size: .96rem; text-decoration: none; border: 1px solid transparent;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
 }
-.boton:hover { transform: translateY(-1px); }
-.boton--sm { min-height: 40px; padding: 8px 16px; font-size: .9rem; }
+.boton--sm { min-height: 38px; padding: 7px 15px; font-size: .9rem; }
 .boton--ancho { width: 100%; }
-.boton--acento { background: var(--acento); color: #04191d; }
-.boton--acento:hover { background: #2fd6e6; color: #04191d; }
+/* Principal: tinta sobre fondo claro; blanco sobre fondo oscuro */
+.boton--acento { background: var(--tinta-950); color: #fff; }
+.boton--acento:hover { background: var(--tinta-700); color: #fff; }
+.cabecera .boton--acento, .hero .boton--acento, .resultado--valor .boton--acento { background: #fff; color: var(--tinta-950); }
+.cabecera .boton--acento:hover, .hero .boton--acento:hover, .resultado--valor .boton--acento:hover { background: #dfe7ec; color: var(--tinta-950); }
 .boton--claro { background: #fff; color: var(--tinta-900); border-color: var(--linea-2); }
-.boton--claro:hover { background: var(--papel-2); color: var(--tinta-900); }
-.boton--fantasma { background: transparent; color: #fff; border-color: rgba(255,255,255,.28); }
-.boton--fantasma:hover { background: rgba(255,255,255,.08); color: #fff; }
+.boton--claro:hover { border-color: var(--tinta-900); color: var(--tinta-900); }
+.boton--fantasma { background: transparent; color: #fff; border-color: rgba(255,255,255,.34); }
+.boton--fantasma:hover { border-color: #fff; color: #fff; }
 .boton--oscuro { background: var(--tinta-900); color: #fff; }
 .boton--oscuro:hover { background: var(--tinta-800); color: #fff; }
 
 /* ---------- Migas ---------- */
-.migas { background: var(--papel-2); border-bottom: 1px solid var(--linea); font-size: .85rem; }
-.migas ol { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 11px 0; }
+.migas { background: var(--papel-2); font-size: .85rem; }
+.migas ol { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 18px 0 0; }
 .migas li + li::before { content: "/"; margin-right: 6px; color: var(--linea-2); }
 .migas a { color: var(--suave); text-decoration: none; }
 .migas a:hover { color: var(--acento-txt); }
@@ -1447,143 +1474,113 @@ a:hover { color: var(--tinta-800); }
 /* ---------- Patrones de fondo ---------- */
 .patron { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .patron__svg { width: 100%; height: 100%; display: block; }
-.patron--curvas { color: var(--acento); opacity: .06; }
-.patron--flujo  { color: var(--acento); opacity: .055; }
-.seccion--clara .patron--curvas,
-.seccion--clara .patron--flujo { opacity: .06; color: var(--acento-txt); }
-/* El patrón se desvanece hacia abajo para que nunca compita con el texto */
-.patron__svg { mask-image: linear-gradient(to bottom, #000 0%, #000 45%, transparent 92%);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 45%, transparent 92%); }
+/* Solo en las cabeceras de páginas internas, en tinta y muy tenue */
+.patron--curvas, .patron--flujo { color: var(--tinta-950); opacity: .07; }
+/* El patrón se desvanece hacia la izquierda para que nunca quede detrás del texto */
+.patron__svg { mask-image: linear-gradient(to right, transparent 25%, #000 85%);
+  -webkit-mask-image: linear-gradient(to right, transparent 25%, #000 85%); }
 
-/* ---------- Hero ---------- */
-.hero { position: relative; background: var(--tinta-950); color: #fff; overflow: hidden; }
-.hero::after {
-  content: ""; position: absolute; inset: 0;
-  background: radial-gradient(75% 60% at 15% 0%, rgba(23,195,212,.14), transparent 70%);
-  pointer-events: none;
-}
-.hero__caja { position: relative; z-index: 2; padding: 74px 22px 78px; max-width: 830px; }
-.hero__etiqueta {
-  display: inline-flex; align-items: center; gap: 8px; margin: 0 0 20px;
-  text-transform: uppercase; letter-spacing: .14em; font-size: .7rem; font-weight: 700; color: var(--acento);
-  border: 1px solid rgba(23,195,212,.32); border-radius: 100px; padding: 7px 14px; background: rgba(23,195,212,.07);
-}
-.hero h1 { color: #fff; margin-bottom: .35em; }
-.hero__bajada { font-size: 1.1rem; color: rgba(255,255,255,.72); max-width: 60ch; }
-.hero__acciones { display: flex; flex-wrap: wrap; gap: 12px; margin: 28px 0 32px; }
-.hero__chips { list-style: none; display: flex; flex-wrap: wrap; gap: 20px; margin: 0; padding: 0; }
-.hero__chips li { display: inline-flex; align-items: center; gap: 8px; font-size: .87rem; color: rgba(255,255,255,.66); }
-.hero__chips .icono { color: var(--acento); }
+/* ---------- Hero (portada) ---------- */
+.hero { background: var(--tinta-950); color: #fff; }
+.hero__grilla { display: grid; gap: 34px; grid-template-columns: 1fr; padding-top: 56px; padding-bottom: 60px; align-items: center; }
+@media (min-width: 980px) { .hero__grilla { grid-template-columns: 1fr 1.08fr; gap: 56px; padding-top: 72px; padding-bottom: 76px; } }
+.hero h1 { color: #fff; margin-bottom: .45em; max-width: 16ch; }
+.hero__bajada { font-size: 1.08rem; color: rgba(255,255,255,.74); max-width: 52ch; }
+.hero__acciones { display: flex; flex-wrap: wrap; gap: 12px; margin: 28px 0 22px; }
+.hero__nota { font-size: .88rem; color: rgba(255,255,255,.5); margin: 0; }
+.hero .figura { margin: 0; }
+.hero .figura img { border-radius: var(--radio-sm); }
+.hero .figura figcaption { color: rgba(255,255,255,.52); }
 
 /* ---------- Encabezado de páginas internas ---------- */
-.encabezado { position: relative; background: var(--tinta-950); color: #fff; overflow: hidden; padding: 54px 0 50px; }
+.encabezado { position: relative; background: var(--papel-2); border-bottom: 1px solid var(--linea); overflow: hidden; padding: 50px 0 46px; }
 .encabezado > .contenedor { position: relative; z-index: 2; }
-.encabezado__etiqueta { text-transform: uppercase; letter-spacing: .13em; font-size: .71rem; font-weight: 700; color: var(--acento); margin: 0 0 14px; }
-.encabezado h1 { color: #fff; max-width: 20ch; }
-.encabezado__bajada { font-size: 1.04rem; color: rgba(255,255,255,.7); max-width: 72ch; margin: 0; }
+.encabezado h1 { color: var(--tinta-950); max-width: 22ch; }
+.encabezado__bajada { font-size: 1.05rem; color: var(--suave); max-width: 68ch; margin: 0; }
 .encabezado--post h1 { max-width: 26ch; }
-.encabezado__meta { font-size: .86rem; color: rgba(255,255,255,.5); margin: 0; }
+.encabezado__meta { font-size: .86rem; color: var(--suave); margin: 0; }
+/* Migas y cabecera se leen como un solo bloque */
+.migas + main > .encabezado:first-child { padding-top: 26px; }
 
 /* ---------- Secciones ---------- */
-.seccion { position: relative; padding: 58px 0; }
+.seccion { position: relative; padding: 60px 0; }
 .seccion > .contenedor, .seccion.contenedor { position: relative; z-index: 2; }
-.seccion--clara { background: var(--papel-2); border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); overflow: hidden; }
-.seccion--oscura { background: var(--tinta-950); color: rgba(255,255,255,.74); overflow: hidden; }
-.seccion--oscura h2, .seccion--oscura h3 { color: #fff; }
+.seccion--clara { background: var(--papel-2); border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
 .seccion__bajada { color: var(--suave); max-width: 70ch; }
-.seccion--oscura .seccion__bajada { color: rgba(255,255,255,.6); }
 .seccion__titulo { max-width: 26ch; }
 
-/* ---------- Tarjetas ---------- */
-.tarjetas { display: grid; gap: 16px; grid-template-columns: 1fr; margin-top: 30px; }
-@media (min-width: 620px) { .tarjetas { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1000px) { .tarjetas { grid-template-columns: repeat(3, 1fr); } }
-.tarjeta {
-  display: flex; flex-direction: column; align-items: flex-start;
-  background: var(--papel); border: 1px solid var(--linea); border-radius: var(--radio);
-  padding: 24px; text-decoration: none; color: inherit;
-  transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
-}
-a.tarjeta:hover { border-color: var(--acento); box-shadow: 0 10px 30px var(--acento-sombra); transform: translateY(-3px); }
-.tarjeta__icono {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 46px; height: 46px; border-radius: 12px; margin-bottom: 16px;
-  background: rgba(23,195,212,.1); color: var(--acento-txt);
-}
-.tarjeta h3 { margin-bottom: .4em; color: var(--tinta-900); }
-.tarjeta p { color: var(--suave); font-size: .94rem; margin-bottom: .8em; }
-.tarjeta__mas { margin-top: auto; display: inline-flex; align-items: center; gap: 6px; color: var(--acento-txt); font-weight: 650; font-size: .89rem; }
-.seccion--oscura .tarjeta { background: rgba(255,255,255,.035); border-color: rgba(255,255,255,.1); }
-.seccion--oscura .tarjeta h3 { color: #fff; }
-.seccion--oscura .tarjeta p { color: rgba(255,255,255,.6); }
-.seccion--oscura .tarjeta__icono, .seccion--oscura .tarjeta__mas { color: var(--acento); }
+/* ---------- Índice de servicios (títulos enlazados separados por líneas finas) ---------- */
+.tarjetas { list-style: none; margin: 22px 0 0; padding: 0; display: grid; column-gap: 48px;
+  grid-template-columns: 1fr; border-top: 1px solid var(--linea); }
+@media (min-width: 760px) { .tarjetas { grid-template-columns: repeat(2, 1fr); } }
+.tarjetas--columna { grid-template-columns: 1fr !important; }
+.tarjeta { padding: 16px 0 15px; border-bottom: 1px solid var(--linea); }
+.tarjeta h3, .tarjeta h4 { margin: 0 0 .25em; font-size: 1.04rem; color: var(--tinta-900); }
+.tarjeta h3 a, .tarjeta h4 a { color: inherit; text-decoration: none; }
+.tarjeta h3 a::after, .tarjeta h4 a::after { content: " →"; color: var(--acento-txt); font-weight: 400;
+  opacity: 0; transition: opacity .15s ease; }
+.tarjeta h3 a:hover, .tarjeta h4 a:hover { color: var(--acento-txt); }
+.tarjeta h3 a:hover::after, .tarjeta h4 a:hover::after { opacity: 1; }
+.tarjeta p { color: var(--suave); font-size: .94rem; margin: 0; }
+.columna__titulo { font-size: .8rem; font-weight: 600; letter-spacing: .02em; color: var(--suave);
+  margin: 0 0 4px; font-family: var(--mono); }
+.columna__titulo a { color: inherit; text-decoration: none; }
+.columna__titulo a:hover { color: var(--acento-txt); }
 
 .pilar__cabecera { max-width: 62ch; }
 .pilar__pie { margin-top: 26px; }
-.enlace-fuerte { display: inline-flex; align-items: center; gap: 7px; font-weight: 650; text-decoration: none; }
+.enlace-fuerte { display: inline-flex; align-items: center; gap: 7px; font-weight: 600; text-decoration: none; }
 .enlace-fuerte:hover { text-decoration: underline; }
 
-/* ---------- Datos ---------- */
-.datos { display: grid; gap: 14px; grid-template-columns: repeat(2, 1fr); margin: 0 0 8px; }
-@media (min-width: 860px) { .datos { grid-template-columns: repeat(4, 1fr); } }
-.dato { background: var(--papel-2); border: 1px solid var(--linea); border-radius: var(--radio); padding: 20px; }
-.dato .icono { color: var(--acento-txt); margin-bottom: 10px; }
-.dato__cifra { display: block; font-size: 1.45rem; font-weight: 700; color: var(--tinta-900); letter-spacing: -.03em; }
-.dato__label { display: block; font-size: .84rem; color: var(--suave); line-height: 1.4; margin-top: 3px; }
-.seccion--oscura .dato { background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.1); }
-.seccion--oscura .dato .icono { color: var(--acento); }
-.seccion--oscura .dato__cifra { color: #fff; }
-.seccion--oscura .dato__label { color: rgba(255,255,255,.58); }
+/* ---------- Ficha técnica (cifras) ---------- */
+.datos { display: grid; grid-template-columns: repeat(2, 1fr); margin: 22px 0 8px;
+  border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
+@media (min-width: 700px) { .datos { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); } }
+.dato { padding: 16px 18px 15px 0; }
+.dato + .dato { padding-left: 18px; border-left: 1px solid var(--linea); }
+.dato__cifra { display: block; font-size: 1.35rem; font-weight: 650; color: var(--tinta-900);
+  letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.dato__label { display: block; font-size: .84rem; color: var(--suave); line-height: 1.4; margin-top: 2px; }
 
 /* ---------- Pasos ---------- */
-.pasos { list-style: none; counter-reset: paso; margin: 28px 0 0; padding: 0; display: grid; gap: 2px; }
-.pasos__item { position: relative; padding: 20px 0 20px 56px; border-top: 1px solid var(--linea); }
-.seccion--oscura .pasos__item { border-color: rgba(255,255,255,.12); }
-.pasos__item:first-child { border-top: 0; }
+.pasos { list-style: none; counter-reset: paso; margin: 24px 0 0; padding: 0; display: grid;
+  border-top: 1px solid var(--linea); }
+.pasos__item { position: relative; padding: 17px 0 17px 40px; border-bottom: 1px solid var(--linea); }
 .pasos__item::before {
-  counter-increment: paso; content: counter(paso, decimal-leading-zero);
-  position: absolute; left: 0; top: 20px; font-size: .82rem; font-weight: 700;
-  color: var(--acento-txt); background: rgba(23,195,212,.1);
-  width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  counter-increment: paso; content: counter(paso);
+  position: absolute; left: 2px; top: 18px; font-family: var(--mono); font-size: .9rem; color: var(--suave);
 }
-.seccion--oscura .pasos__item::before { color: var(--acento); background: rgba(23,195,212,.14); }
-.pasos__item h3 { margin-bottom: .25em; }
+.pasos__item h3 { margin-bottom: .2em; font-size: 1.04rem; }
 .pasos__item p { margin: 0; color: var(--suave); font-size: .95rem; }
-.seccion--oscura .pasos__item p { color: rgba(255,255,255,.62); }
 
 /* ---------- Listas ---------- */
-.lista-check { list-style: none; padding: 0; margin: 0 0 1.4em; display: grid; gap: 11px; }
-.lista-check li { position: relative; padding-left: 28px; }
-.lista-check li::before {
-  content: ""; position: absolute; left: 3px; top: .5em; width: 12px; height: 7px;
-  border-left: 2px solid var(--acento-txt); border-bottom: 2px solid var(--acento-txt);
-  transform: rotate(-45deg);
+.lista-check, .lista { list-style: none; padding: 0; margin: 18px 0 1.4em; display: grid; gap: 9px; }
+.lista-check li, .lista li { position: relative; padding-left: 20px; }
+.lista-check li::before, .lista li::before {
+  content: ""; position: absolute; left: 2px; top: .72em; width: 8px; height: 1.5px; background: var(--acento-txt);
 }
-.seccion--oscura .lista-check li::before { border-color: var(--acento); }
-
-.lista-iconos { list-style: none; padding: 0; margin: 24px 0; display: grid; gap: 14px; grid-template-columns: 1fr; }
-@media (min-width: 700px) { .lista-iconos { grid-template-columns: repeat(2, 1fr); } }
-.lista-iconos li { display: flex; align-items: flex-start; gap: 12px; font-size: .96rem; }
-.lista-iconos .icono { color: var(--acento-txt); margin-top: 3px; }
-.seccion--oscura .lista-iconos .icono { color: var(--acento); }
+/* En pantalla ancha la lista fluye en dos columnas, sin huecos cuando un ítem ocupa dos líneas */
+@media (min-width: 760px) {
+  .lista { display: block; columns: 2; column-gap: 40px; }
+  .lista li { break-inside: avoid; margin-bottom: 9px; }
+}
 
 .dos-columnas { display: grid; gap: 36px; grid-template-columns: 1fr; }
-@media (min-width: 880px) { .dos-columnas { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 880px) { .dos-columnas { grid-template-columns: 1fr 1fr; gap: 56px; } }
+.dos-columnas .lista { columns: 1; }
+.tres-columnas { display: grid; gap: 36px; grid-template-columns: 1fr; }
+@media (min-width: 760px) { .tres-columnas { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1060px) { .tres-columnas { grid-template-columns: repeat(3, 1fr); gap: 40px; } }
 
 /* ---------- Figuras ---------- */
 .figura { margin: 26px 0; }
-.figura img { width: 100%; border-radius: var(--radio); display: block; }
-.figura__placeholder {
-  width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
-  background: var(--papel-2); border: 1.5px dashed var(--linea-2); border-radius: var(--radio);
-  color: var(--suave); text-align: center; padding: 24px;
-}
-.figura__texto { font-size: .87rem; max-width: 44ch; }
-.figura__archivo { font-size: .76rem; font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-  color: var(--acento-txt); background: rgba(23,195,212,.1); padding: 4px 10px; border-radius: 6px; }
-.figura figcaption { font-size: .85rem; color: var(--suave); margin-top: 9px; }
-.galeria { display: grid; gap: 18px; grid-template-columns: 1fr; margin-top: 30px; }
+.figura img { width: 100%; border-radius: var(--radio-sm); display: block; }
+.figura--estrecha { max-width: 620px; }
+.figura figcaption { font-family: var(--mono); font-size: .78rem; line-height: 1.5; color: var(--suave); margin-top: 10px; }
+.galeria { display: grid; gap: 28px; grid-template-columns: 1fr; margin-top: 24px; }
 @media (min-width: 760px) { .galeria { grid-template-columns: repeat(3, 1fr); } .galeria .figura { margin: 0; } }
+@media (min-width: 760px) { .galeria--2 { grid-template-columns: repeat(2, 1fr); } }
+.galeria .figura--ancha { grid-column: 1 / -1; }
 
 /* ---------- Tablas ---------- */
 .tabla-envoltura { overflow-x: auto; margin: 0 0 1.5em; -webkit-overflow-scrolling: touch; }
@@ -1593,10 +1590,8 @@ th, td { text-align: left; padding: 12px 15px; border-bottom: 1px solid var(--li
 thead th { background: var(--papel-2); color: var(--tinta-900); font-size: .78rem; text-transform: uppercase; letter-spacing: .07em; }
 
 /* ---------- Aviso / nota ---------- */
-.aviso { display: flex; gap: 14px; background: var(--papel-2); border: 1px solid var(--linea);
-  border-left: 3px solid var(--acento); border-radius: var(--radio); padding: 20px 22px; }
-.aviso .icono { color: var(--acento-txt); flex: none; margin-top: 2px; }
-.aviso p { margin: 0; font-size: .94rem; }
+.aviso { border-left: 2px solid var(--tinta-900); padding: 4px 0 4px 18px; margin: 26px 0; }
+.aviso p { margin: 0; font-size: .94rem; color: var(--suave); }
 .nota { font-size: .87rem; color: var(--suave); background: var(--papel-2); border: 1px solid var(--linea); border-radius: var(--radio-sm); padding: 15px 17px; }
 
 /* ---------- FAQ ---------- */
@@ -1614,22 +1609,17 @@ thead th { background: var(--papel-2); color: var(--tinta-900); font-size: .78re
 .faq__respuesta { padding: 0 36px 20px 0; color: var(--suave); max-width: 78ch; }
 
 /* ---------- CTA ---------- */
-.cta { position: relative; background: var(--tinta-900); color: #fff; overflow: hidden; }
-.cta::after { content: ""; position: absolute; inset: 0;
-  background: radial-gradient(60% 100% at 85% 50%, rgba(23,195,212,.16), transparent 70%); pointer-events: none; }
-.cta__caja { position: relative; z-index: 2; display: flex; flex-wrap: wrap; gap: 26px; align-items: center; justify-content: space-between; padding: 46px 22px; }
-.cta h2 { color: #fff; margin-bottom: .3em; }
-.cta p { color: rgba(255,255,255,.68); margin: 0; max-width: 56ch; }
+.cta { background: var(--papel); border-top: 1px solid var(--linea); }
+.cta__caja { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between; padding: 44px 22px; }
+.cta h2 { margin-bottom: .25em; }
+.cta p { color: var(--suave); margin: 0; max-width: 56ch; }
 .cta__texto { flex: 1 1 380px; }
 .cta__botones { display: flex; flex-wrap: wrap; gap: 12px; }
 
-/* ---------- Capacidades / entregables ---------- */
-.bloques { display: grid; gap: 18px; grid-template-columns: 1fr; margin-top: 28px; }
-@media (min-width: 780px) { .bloques { grid-template-columns: repeat(2, 1fr); } }
-.bloque { border: 1px solid var(--linea); border-radius: var(--radio); padding: 26px; background: var(--papel); }
-.bloque__cabecera { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-.bloque__cabecera .icono { color: var(--acento-txt); }
-.bloque__cabecera h3 { margin: 0; }
+/* ---------- Bloques (dos listas lado a lado) ---------- */
+.bloques { display: grid; gap: 36px; grid-template-columns: 1fr; margin-top: 22px; }
+@media (min-width: 780px) { .bloques { grid-template-columns: repeat(2, 1fr); gap: 56px; } }
+.bloque__cabecera h3 { margin: 0 0 4px; padding-bottom: 10px; border-bottom: 1px solid var(--linea); }
 .bloque .lista-check { margin-bottom: 0; }
 
 /* ---------- Blog ---------- */
@@ -1674,15 +1664,10 @@ a.contacto__valor:hover { color: var(--acento-txt); }
 .encabezado__acciones { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 26px; }
 
 /* ---------- Precio de referencia ---------- */
-.precio-desde {
-  display: flex; gap: 18px; align-items: flex-start;
-  background: var(--papel-2); border: 1px solid var(--linea);
-  border-left: 3px solid var(--acento); border-radius: var(--radio);
-  padding: 22px 24px; margin: 0 0 28px;
-}
-.precio-desde > .icono { color: var(--acento-txt); flex: none; margin-top: 4px; }
-.precio-desde__valor { font-size: 1.5rem; font-weight: 720; color: var(--tinta-900);
-  letter-spacing: -.03em; margin: 0 0 4px; }
+.precio-desde { border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea);
+  padding: 18px 0; margin: 0 0 28px; }
+.precio-desde__valor { font-size: 1.4rem; font-weight: 650; color: var(--tinta-900);
+  letter-spacing: -.02em; margin: 0 0 4px; font-variant-numeric: tabular-nums; }
 .precio-desde__valor span { font-size: .95rem; font-weight: 500; color: var(--suave); letter-spacing: 0; }
 .precio-desde__nota { font-size: .89rem; color: var(--suave); margin: 0; max-width: 62ch; }
 
@@ -1727,11 +1712,6 @@ a.contacto__valor:hover { color: var(--acento-txt); }
 .resultado--vacio .icono, .resultado--aviso .icono { color: var(--acento-txt); opacity: .55; }
 .resultado--vacio p, .resultado--aviso p { margin: 0; max-width: 40ch; }
 .resultado--valor { background: var(--tinta-950); color: rgba(255,255,255,.72); position: relative; overflow: hidden; }
-.resultado--valor::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(70% 60% at 90% 0%, rgba(23,195,212,.2), transparent 70%);
-}
-.resultado--valor > * { position: relative; z-index: 2; }
 .resultado__etiqueta { text-transform: uppercase; letter-spacing: .13em; font-size: .7rem; font-weight: 700; color: var(--acento); margin: 0 0 6px; }
 .resultado__cifra { font-size: clamp(2.1rem, 1.4rem + 3vw, 3rem); font-weight: 720; color: #fff; letter-spacing: -.035em; line-height: 1.05; margin: 0 0 10px; }
 .resultado__nota { font-size: .83rem; color: rgba(255,255,255,.55); margin: 0 0 10px; }
@@ -1748,7 +1728,7 @@ a.contacto__valor:hover { color: var(--acento-txt); }
 .pie { background: var(--tinta-950); color: rgba(255,255,255,.62); padding: 54px 0 26px; font-size: .92rem; }
 .pie__grid { display: grid; gap: 32px; grid-template-columns: 1fr; }
 @media (min-width: 720px) { .pie__grid { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1020px) { .pie__grid { grid-template-columns: 1.5fr 1fr 1fr 1fr; } }
+@media (min-width: 1020px) { .pie__grid { grid-template-columns: 1.4fr 1fr 1fr 1fr .8fr; } }
 .pie__marca { color: #fff; font-weight: 720; font-size: 1.3rem; letter-spacing: .06em; margin: 0; }
 .pie__descriptor { text-transform: uppercase; letter-spacing: .13em; font-size: .67rem; color: var(--acento); margin: 2px 0 14px; }
 .pie__titulo { color: #fff; font-weight: 650; margin: 0 0 14px; font-size: .93rem; }
@@ -1807,12 +1787,12 @@ PAGINA_404 = """<section class="encabezado">
 </section>
 <section class="seccion"><div class="contenedor">
 """ + tarjetas([
-    ("dron", "Dron y topografía", "Fotogrametría, curvas de nivel, deslindes y ortomosaicos.", "dron-fotogrametria/"),
-    ("red", "Ingeniería hidráulica", "Redes de agua, bombas, drenaje pluvial y estudios de inundación.", "ingenieria-hidraulica/"),
-    ("capas", "Capacidades", "Qué entregamos, con qué herramientas y en qué formatos.", "capacidades/"),
-    ("pin", "Zonas de cobertura", "Dónde trabajamos y qué se pide más en cada zona.", "zonas/"),
-    ("archivo", "Blog técnico", "Artículos sobre topografía e ingeniería hidráulica.", "blog/"),
-    ("chat", "Contacto", "Cuéntanos tu proyecto y te respondemos en 24 horas hábiles.", "contacto/"),
+    ("Dron y topografía", "Nube de puntos, curvas de nivel, deslindes y ortomosaicos.", "dron-fotogrametria/"),
+    ("Ingeniería hidráulica", "Redes de agua, bombas, drenaje pluvial y estudios de inundación.", "ingenieria-hidraulica/"),
+    ("Proyecto sanitario", "Agua potable y alcantarillado particular para la SEREMI de Salud.", "proyecto-sanitario/"),
+    ("Calculadora de cotización", "El valor de un levantamiento con dron según superficie y ubicación.", "cotizador/"),
+    ("Empresa", "Quiénes somos y cómo trabajamos.", "empresa/"),
+    ("Contacto", "Cuéntanos tu proyecto y te respondemos en 24 horas hábiles.", "contacto/"),
 ]) + """
 </div></section>
 """
@@ -1948,9 +1928,10 @@ que en un dominio propio.
 
 Ordenado por impacto en visibilidad:
 
-- [ ] **Subir las fotos a `assets/img/`.** Hoy el sitio no tiene ni una imagen real, y Google Imágenes es
-      una fuente de tráfico relevante para este rubro. Los nombres esperados aparecen en cada recuadro
-      punteado del sitio.
+- [ ] **Subir más imágenes reales a `assets/img/`.** Hoy hay cuatro (Patagua, modelo de elevación,
+      rectificación de deslindes y modelación de redes). Faltan las de bombas, inundación, drenaje y
+      proyecto sanitario. `python build.py`
+      lista al final las que faltan.
 - [ ] **Crear `assets/img/og-portada.jpg` de 1200x630 px.** Se detecta sola: basta dejarla ahí y
       reconstruir. Sin ella, los enlaces compartidos por WhatsApp o LinkedIn no muestran vista previa,
       porque el respaldo actual es un SVG y varias plataformas no lo renderizan.
@@ -1964,7 +1945,10 @@ Ordenado por impacto en visibilidad:
 - [ ] Pegar el código de verificación en `CONFIG["gsc_verificacion"]`, registrar el sitio en
       **Google Search Console** y enviar el `sitemap.xml`.
 - [ ] Pegar el identificador en `CONFIG["ga4_id"]` para activar Google Analytics 4.
-- [ ] Completar la página `empresa/` con datos verificables (título profesional, registro DGAC, RUT).
+- [ ] Completar la página `empresa/` con datos verificables (registro DGAC, RUT; el título de ingeniero civil
+      hidráulico ya está publicado) y
+      confirmar la razón social: hoy se publica `CONFIG["marca_legal"]` ("RCKT SpA") en esa página y en
+      el schema, aunque en `CONFIG` está marcada como pendiente.
 - [ ] Crear el perfil de **Google Business** como *negocio con área de servicio*, declarando todas las
       comunas de `ZONAS_SERVICIO`.
 
@@ -1990,46 +1974,47 @@ metodología y herramientas. Cuando existan trabajos publicables:
 1. Agrega los ejemplos en la sección "Desarrollos propios" de `capacidades/` (en `contenido.py`), o
 2. Crea una página `proyectos/` nueva agregando su diccionario a la lista `PAGINAS` y su entrada al `NAV`.
 
-## Imágenes que el sitio está esperando
+## Imágenes
 
-Deja el archivo en `assets/img/` con el nombre exacto y ejecuta `python build.py`: el recuadro punteado se
-reemplaza solo por la foto, con sus medidas y carga diferida. Acepta `.webp`, `.avif`, `.jpg` y `.png`.
+Deja el archivo en `assets/img/` con el nombre exacto y ejecuta `python build.py`: la imagen aparece sola en
+su lugar, con sus medidas y carga diferida. Mientras un archivo no exista, esa página simplemente no muestra
+imagen (nunca un recuadro vacío) y el build lo lista al final. Acepta `.webp`, `.avif`, `.jpg` y `.png`.
 
-| Archivo | Qué mostrar | Dónde aparece |
-|---|---|---|
-| `dron-en-vuelo-terreno` | El dron operando en terreno real | Pilar de dron |
-| `modelo-digital-elevacion` | Modelo de elevación en escala de colores | Home · Nube de puntos |
-| `curvas-de-nivel` | Plano de curvas sobre foto aérea | Home · Curvas de nivel |
-| `rectificacion-deslindes` | Plano de deslindes con vértices marcados | Deslindes · Capacidades |
-| `ortomosaico-predio` | Ortomosaico real de un vuelo hecho | Mapas y ortomosaicos |
-| `captura-modelacion-hidraulica` | Pantalla de EPANET o HEC-RAS | Pilar de hidráulica |
-| `modelacion-redes-epanet` | Red modelada en EPANET | Home · Modelación de redes |
-| `modelacion-golpe-de-ariete` | Gráfico de presión transitoria | Bombas · Capacidades |
-| `mapa-inundacion-hecras` | Mancha de inundación por profundidad | Estudios de inundación |
-| `drenaje-pluvial` | Plano de colectores o cámara en terreno | Drenaje · Capacidades |
-| `plano-red-agua-potable` | Plano de red domiciliaria | Proyectos sanitarios |
-| `retrato-profesional-rckt` | Tu foto, retrato o en terreno | Empresa |
-| `og-portada.jpg` | Composición 1200×630 para compartir | Todo el sitio (redes) |
+| Archivo | Qué mostrar | Dónde aparece | Estado |
+|---|---|---|---|
+| `curvas-de-nivel-modelo-elevacion-dron-patagua` | DEM y curvas cada 5 m, Patagua | Portada · Pilar de dron · Curvas de nivel | Listo |
+| `modelo-digital-elevacion-dron-ortomosaico` | DEM sobre ortomosaico | Portada · Nube de puntos | Listo |
+| `rectificacion-deslindes-ortomosaico-dron` | Deslindes con grilla UTM | Portada · Deslindes | Listo |
+| `modelacion-red-agua-potable-presiones` | Modelación de presiones de una red | Portada · Pilar de hidráulica · Modelación de redes | Listo |
+| `ortomosaico-predio` | Ortomosaico real de un vuelo hecho | Mapas y ortomosaicos | Falta |
+| `modelacion-golpe-de-ariete` | Gráfico de presión transitoria | Bombas e impulsiones | Falta |
+| `mapa-inundacion-hecras` | Mancha de inundación por profundidad | Estudios de inundación | Falta |
+| `drenaje-pluvial` | Plano de colectores o cámara en terreno | Drenaje pluvial | Falta |
+| `plano-proyecto-sanitario-agua-potable-alcantarillado` | Plano de emplazamiento: pozo, estanque, fosa y drenes | Pilar de proyecto sanitario | Falta |
+| `fosa-septica-drenes-alcantarillado-particular` | Detalle o foto de fosa séptica y drenes | Alcantarillado particular | Falta |
+| `retrato-profesional-rckt` | Tu foto, retrato o en terreno | Empresa | Falta |
+| `og-portada.jpg` | Composición 1200×630 para compartir | Todo el sitio (redes) | Falta |
 
-Si prefieres nombres que incluyan la zona del proyecto —recomendable para Google Imágenes, por ejemplo
-`ortomosaico-predio-pucon-2026.webp`— renombra el archivo y cambia el nombre en la llamada a `figura(...)`
-correspondiente dentro de `contenido.py`.
+Para agregar una imagen en una página nueva, usa `figura("nombre", "texto alternativo", "pie de foto")` en
+`contenido.py`. Opciones: `prioritaria=True` para la imagen principal de la página (se carga primero) y
+`estrecha=True` para imágenes cuadradas o verticales.
 
-## Cómo poner las imágenes
+Recomendaciones:
 
-Cada recuadro punteado tiene, justo debajo en el HTML generado, un comentario con el `<img>` que hay que
-dejar en su lugar. En `contenido.py` el bloque se genera con la función `figura(...)`.
+- Nombre descriptivo, idealmente con la zona: `ortomosaico-predio-maule-2026.webp`, nunca `IMG_4821.jpg`.
+- WebP, máximo 1600 px de ancho.
+- En el pie de foto, describe solo lo que la imagen muestra (lugar, escala, cotas). Nada inventado.
 
-- Guardar en `assets/img/` con nombre descriptivo: `ortomosaico-predio-maule-2026.webp`, nunca `IMG_4821.jpg`.
-- Convertir a **WebP**, máximo 1600 px de ancho.
-- Mantener `width`, `height`, `loading="lazy"` y `alt` descriptivo (80-140 caracteres).
-- La primera imagen visible de cada página no debe llevar `loading="lazy"`.
+La carpeta `imagenes-propuestas/` tiene ilustraciones técnicas dibujadas por código. No se usan en el sitio
+y está excluida en `.gitignore` para que no se publique: las imágenes reales pesan más en la confianza de
+un cliente que cualquier diagrama genérico.
 """
 
 
 def construir_sitemap(rutas):
     hoy = datetime.date.today().isoformat()
-    prioridades = {"": "1.0", "dron-fotogrametria": "0.9", "ingenieria-hidraulica": "0.9", "contacto": "0.8"}
+    prioridades = {"": "1.0", "dron-fotogrametria": "0.9", "ingenieria-hidraulica": "0.9",
+                   "proyecto-sanitario": "0.9", "contacto": "0.8"}
     urls = []
     for r in rutas:
         loc = CONFIG["dominio"] + "/" + (r + "/" if r else "")
@@ -2092,6 +2077,13 @@ def main():
         print("Servicios ocultos (" + str(len(contenido.PAGINAS) - len(visibles)) + " paginas):")
         for o in SERVICIOS_OCULTOS:
             print("  - " + o)
+    # contenido.py importa este archivo como el módulo "build" (una copia distinta de la
+    # que se está ejecutando), así que la lista que llenó figura() está en esa copia.
+    import build as modulo_build
+    if modulo_build.IMAGENES_FALTANTES:
+        print("Imagenes pedidas que todavia no estan en assets/img/ (no se muestran):")
+        for n in modulo_build.IMAGENES_FALTANTES:
+            print("  - " + n)
 
 
 if __name__ == "__main__":
